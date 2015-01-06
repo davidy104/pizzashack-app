@@ -1,0 +1,8 @@
+asspath
+.project
+.settings
+target
+.DS_Store
+bin
+.metadata
+activiti.properties
