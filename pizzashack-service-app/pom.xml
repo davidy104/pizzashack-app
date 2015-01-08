@@ -579,5 +579,6 @@
 
   <modules>
     <module>pizzashack-service-app-shared</module>
+    <module>pizzashack-service-app-repository</module>
   </modules>
 </project>
