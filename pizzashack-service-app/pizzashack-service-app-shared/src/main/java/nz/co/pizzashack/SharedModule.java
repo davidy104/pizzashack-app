@@ -14,6 +14,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -36,6 +37,14 @@ public class SharedModule extends AbstractModule {
 				.asEagerSingleton();
 		bind(AmazonSNSClient.class).toProvider(AmazonSNSClientProvider.class)
 				.asEagerSingleton();
+	}
+
+	@Provides
+	@Singleton
+	@Named("jacksonObjectMapper")
+	public ObjectMapper jacksonObjectMapper() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper;
 	}
 
 	@Provides

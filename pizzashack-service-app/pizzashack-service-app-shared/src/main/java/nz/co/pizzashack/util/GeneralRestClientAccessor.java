@@ -17,6 +17,10 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.ClientResponse.Status;
 import com.sun.jersey.api.client.WebResource;
 
+/**
+ * @author Davidy
+ *
+ */
 public class GeneralRestClientAccessor {
 
 	protected Client jerseyClient;
@@ -27,7 +31,8 @@ public class GeneralRestClientAccessor {
 		this.hostUri = hostUri;
 	}
 
-	protected String process(String path, final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters, final int expectedStatus, final RestClientExecuteCallback restClientCallback, final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
+	protected String process(String path, final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters, final int expectedStatus,
+			final RestClientExecuteCallback restClientCallback, final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
 		checkArgument(!StringUtils.isEmpty(path), "path can not be null");
 		checkArgument(restClientCallback != null, "restClientCallback can not be null");
 		WebResource webResource = jerseyClient.resource(hostUri);
@@ -49,7 +54,8 @@ public class GeneralRestClientAccessor {
 		return respStr;
 	}
 
-	protected String process(final String path, final int expectedStatus, final RestClientExecuteCallback restClientCallback, final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
+	protected String process(final String path, final int expectedStatus, final RestClientExecuteCallback restClientCallback,
+			final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
 		checkArgument(!StringUtils.isEmpty(path), "path can not be null");
 		checkArgument(restClientCallback != null, "restClientCallback can not be null");
 		WebResource webResource = jerseyClient.resource(hostUri).path(path);
@@ -62,9 +68,10 @@ public class GeneralRestClientAccessor {
 		return respStr;
 	}
 
-	private void doErrorHandle(final Status statusCode, final String responseString, final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
+	private void doErrorHandle(final Status statusCode, final String responseString, final RestClientCustomErrorHandler... customErrorHandlers)
+			throws Exception {
 		if (customErrorHandlers != null && customErrorHandlers.length > 0) {
-			for (RestClientCustomErrorHandler restClientCustomErrorHandler : customErrorHandlers) {
+			for (final RestClientCustomErrorHandler restClientCustomErrorHandler : customErrorHandlers) {
 				restClientCustomErrorHandler.handle(statusCode.getStatusCode(), responseString);
 			}
 		} else {

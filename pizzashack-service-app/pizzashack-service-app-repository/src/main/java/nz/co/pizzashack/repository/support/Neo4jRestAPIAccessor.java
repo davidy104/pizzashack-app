@@ -8,6 +8,7 @@ import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -21,7 +22,12 @@ public class Neo4jRestAPIAccessor {
 	@Named("NEO4J.HOST_URI")
 	private String neo4jHostUri;
 
-	public Map<String, Map<String, String>> getRelationsByNodeId(final String nodeUri, final RelationshipDirection direction, final String... types) {
+	@Inject
+	@Named("jacksonObjectMapper")
+	private ObjectMapper jacksonObjectMapper;
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getRelationsByNodeId(final String nodeUri, final RelationshipDirection direction, final String... types) throws Exception {
 		checkArgument(direction != null, "direction can not be null");
 		if (direction == RelationshipDirection.NONE && ArrayUtils.isEmpty(types)) {
 			throw new IllegalArgumentException("types can not be empty when relationship direction is none");
@@ -35,6 +41,7 @@ public class Neo4jRestAPIAccessor {
 			builder = Joiner.on("&").appendTo(builder, types);
 		}
 
-		return null;
+		final String responseString = generalJsonRestClientAccessor.get(neo4jHostUri + "/relationships");
+		return jacksonObjectMapper.readValue(responseString, Map.class);
 	}
 }
