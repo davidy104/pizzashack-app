@@ -5,6 +5,8 @@ import groovy.json.JsonBuilder
 
 import org.junit.Test
 
+import com.google.common.base.Joiner;
+
 class JsonConvertTest {
 	@Test
 	public void test() {
@@ -25,12 +27,17 @@ class JsonConvertTest {
 
 		println "${builder.toPrettyString()}"
 
-		def map = [isbn:"2837283AA", name:"cheese"]
+		Map map = [isbn:"2837283AA", name:"cheese"]
+		
+		String returnedString = Joiner.on(",").withKeyValueSeparator(":").join(map)
+		
+		
 
 		builder{
 			query "MATCH (book:${NodesLabel.Book.name()}{isbn:{isbn}})"
-			params(map.each {k,v-> [k: v]})
+			params builder(map).toString()
 		}
+
 		println "${builder.toPrettyString()}"
 	}
 }
