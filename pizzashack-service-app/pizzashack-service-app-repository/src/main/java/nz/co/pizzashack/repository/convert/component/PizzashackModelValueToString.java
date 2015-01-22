@@ -15,7 +15,8 @@ public class PizzashackModelValueToString implements Function<Pizzashack, String
 	@Override
 	public String apply(final Pizzashack pizzashack) {
 		String[] fieldValuePairArray = new String[] { "id:" + pizzashack.getPizzashackId(),
-				"description:" + pizzashack.getDescription(), "name" + pizzashack.getPizzaName(), "price:" + pizzashack.getPrice().toString() };
+				"description:" + pizzashack.getDescription(), "name" + pizzashack.getPizzaName(), "price:" + pizzashack.getPrice().toString()
+				, "icone:" + pizzashack.getIcon() };
 		return Joiner.on(",").join(fieldValuePairArray);
 	}
 

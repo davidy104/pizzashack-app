@@ -1,11 +1,12 @@
 package nz.co.pizzashack.repository;
 
 import groovy.json.JsonBuilder;
+import groovy.json.JsonSlurper;
 import nz.co.pizzashack.model.Pizzashack;
 import nz.co.pizzashack.repository.convert.PizzashackNeo4jRestConverter;
-import nz.co.pizzashack.repository.convert.component.CreateStatementsToJson;
 import nz.co.pizzashack.repository.convert.component.PizzashackModelToStatement;
 import nz.co.pizzashack.repository.convert.component.PizzashackModelValueToString;
+import nz.co.pizzashack.repository.convert.template.Neo4jRestGenericConverter;
 import nz.co.pizzashack.repository.impl.PizzashackRepositoryImpl;
 
 import com.google.common.base.Function;
@@ -43,8 +44,7 @@ public class RepositoryModule extends AbstractModule {
 
 	@Provides
 	@Singleton
-	@Named("createStatementsToJson")
-	public Function<String[], String> createStatementsToJson(final @Named("jsonBuilder") JsonBuilder jsonBuilder) {
-		return new CreateStatementsToJson(jsonBuilder);
+	public Neo4jRestGenericConverter neo4jRestGenericConverter(final @Named("jsonBuilder") JsonBuilder jsonBuilder, final @Named("jsonSlurper") JsonSlurper jsonSlurper) {
+		return new Neo4jRestGenericConverter(jsonBuilder, jsonSlurper);
 	}
 }

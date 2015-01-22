@@ -13,22 +13,24 @@ class JsonConvertTest {
 			"CREATE ( frontWheel:Wheel { spokes: 3 }"
 		]
 
-
-
-		//		statementArray.each {
-		//			println "$it"
-		//		}
-
 		def builder = new JsonBuilder()
 		builder{
 			statements(
-					statementArray.collect {it }
+					statementArray.collect { it }
 					)
 			resultDataContents(
-					['REST'].collect {it}
+					['REST'].collect { it }
 					)
 		}
 
+		println "${builder.toPrettyString()}"
+
+		def map = [isbn:"2837283AA", name:"cheese"]
+
+		builder{
+			query "MATCH (book:${NodesLabel.Book.name()}{isbn:{isbn}})"
+			params(map.each {k,v-> [k: v]})
+		}
 		println "${builder.toPrettyString()}"
 	}
 }

@@ -7,5 +7,5 @@ public interface RestClientCustomErrorHandler {
 	 * @param responseString
 	 * @return boolean if continue or stop
 	 */
-	void handle(int statusCode, String responseString);
+	void handle(int statusCode, String responseString) throws Exception;
 }

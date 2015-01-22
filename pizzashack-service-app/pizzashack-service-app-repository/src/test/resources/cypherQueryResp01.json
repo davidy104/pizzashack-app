@@ -1,0 +1,19 @@
+{
+	"columns":[
+		"type(r)",
+		"n.name",
+		"n.age"
+	],
+	"data":[
+		[
+			"know",
+			"him",
+			25
+		],
+		[
+			"know",
+			"you",
+			null
+		]
+	]
+}

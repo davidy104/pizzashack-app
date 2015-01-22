@@ -31,7 +31,7 @@ public class GeneralRestClientAccessor {
 		this.hostUri = hostUri;
 	}
 
-	protected String process(String path, final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters, final int expectedStatus,
+	public String process(String path, final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters, final int expectedStatus,
 			final RestClientExecuteCallback restClientCallback, final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
 		checkArgument(!StringUtils.isEmpty(path), "path can not be null");
 		checkArgument(restClientCallback != null, "restClientCallback can not be null");
@@ -54,7 +54,7 @@ public class GeneralRestClientAccessor {
 		return respStr;
 	}
 
-	protected String process(final String path, final int expectedStatus, final RestClientExecuteCallback restClientCallback,
+	public String process(final String path, final int expectedStatus, final RestClientExecuteCallback restClientCallback,
 			final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
 		checkArgument(!StringUtils.isEmpty(path), "path can not be null");
 		checkArgument(restClientCallback != null, "restClientCallback can not be null");
