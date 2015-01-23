@@ -580,5 +580,6 @@
   <modules>
     <module>pizzashack-service-app-shared</module>
     <module>pizzashack-service-app-repository</module>
+    <module>pizzashack-service-app-test</module>
   </modules>
 </project>

@@ -46,10 +46,10 @@ public class GeneralRestClientAccessor {
 		}
 		webResource = webResource.path(path);
 		final ClientResponse clientResponse = restClientCallback.execute(webResource);
-		final Status status = (Status) (clientResponse.getStatusInfo());
+		final int statusCode = clientResponse.getStatusInfo().getStatusCode();
 		final String respStr = getResponsePayload(clientResponse);
-		if (status.getStatusCode() != expectedStatus) {
-			this.doErrorHandle(status, respStr, customErrorHandlers);
+		if (statusCode != expectedStatus) {
+			this.doErrorHandle(statusCode, respStr, customErrorHandlers);
 		}
 		return respStr;
 	}
@@ -60,27 +60,26 @@ public class GeneralRestClientAccessor {
 		checkArgument(restClientCallback != null, "restClientCallback can not be null");
 		WebResource webResource = jerseyClient.resource(hostUri).path(path);
 		final ClientResponse clientResponse = restClientCallback.execute(webResource);
-		final Status status = (Status) (clientResponse.getStatusInfo());
+		final int statusCode = clientResponse.getStatusInfo().getStatusCode();
 		final String respStr = getResponsePayload(clientResponse);
-		if (status.getStatusCode() != expectedStatus) {
-			this.doErrorHandle(status, respStr, customErrorHandlers);
+		if (statusCode != expectedStatus) {
+			this.doErrorHandle(statusCode, respStr, customErrorHandlers);
 		}
 		return respStr;
 	}
 
-	private void doErrorHandle(final Status statusCode, final String responseString, final RestClientCustomErrorHandler... customErrorHandlers)
+	private void doErrorHandle(final int statusCode, final String responseString, final RestClientCustomErrorHandler... customErrorHandlers)
 			throws Exception {
 		if (customErrorHandlers != null && customErrorHandlers.length > 0) {
 			for (final RestClientCustomErrorHandler restClientCustomErrorHandler : customErrorHandlers) {
-				restClientCustomErrorHandler.handle(statusCode.getStatusCode(), responseString);
+				restClientCustomErrorHandler.handle(statusCode, responseString);
 			}
 		} else {
-			switch (statusCode) {
-			case NOT_FOUND:
+			if (statusCode == Status.NOT_FOUND.getStatusCode()) {
 				throw new NotFoundException(responseString);
-			case CONFLICT:
+			} else if (statusCode == Status.CONFLICT.getStatusCode()) {
 				throw new ConflictException(responseString);
-			default:
+			} else {
 				throw new IllegalStateException(responseString);
 			}
 		}

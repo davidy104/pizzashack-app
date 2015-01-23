@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import nz.co.pizzashack.ConflictException;
+import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryResult;
 import nz.co.pizzashack.repository.convert.template.Neo4jRestGenericConverter;
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
 import nz.co.pizzashack.util.RestClientCustomErrorHandler;
@@ -16,9 +17,10 @@ import nz.co.pizzashack.util.RestClientExecuteCallback;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -26,13 +28,9 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 public class Neo4jRestAPIAccessor {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(Neo4jRestAPIAccessor.class);
 	@Inject
 	private GeneralJsonRestClientAccessor generalJsonRestClientAccessor;
-
-	@Inject
-	@Named("NEO4J.HOST_URI")
-	private String neo4jHostUri;
 
 	@Inject
 	@Named("jacksonObjectMapper")
@@ -40,6 +38,8 @@ public class Neo4jRestAPIAccessor {
 
 	@Inject
 	private Neo4jRestGenericConverter neo4jRestGenericConverter;
+
+	private static final String CYPHER_DISTINCT_KEYWORD = "DISTINCT";
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getRelationsByNodeId(final String nodeUri, final RelationshipDirection direction, final String... types) throws Exception {
@@ -56,7 +56,7 @@ public class Neo4jRestAPIAccessor {
 			builder = Joiner.on("&").appendTo(builder, types);
 		}
 
-		final String responseString = generalJsonRestClientAccessor.get(neo4jHostUri + "/relationships");
+		final String responseString = generalJsonRestClientAccessor.get("/relationships");
 		return jacksonObjectMapper.readValue(responseString, Map.class);
 	}
 
@@ -67,15 +67,18 @@ public class Neo4jRestAPIAccessor {
 	 * @param value
 	 * @return NodeUrl
 	 */
-	public String createUniqueNode(final String createStatement, final String key, final String value) throws Exception {
-		final Map<String, Object> jsonMap = this.createNode(createStatement);
+	public String createUniqueNode(final Object obj, final String label, final String key) throws Exception {
+		final Object keyValue = obj.getClass().getDeclaredField(key);
+		LOGGER.info("key:{} ", String.valueOf(keyValue));
+		checkArgument(keyValue != null, "uniqueNodeKey can not be null");
+		final Map<String, Object> jsonMap = this.createNodeByObject(obj, label, "p");
 		String nodeUri = null;
 		Map<String, String> columnAndUriMap = neo4jRestGenericConverter.transCypherRestFormatResponseConvert(jsonMap);
 		if (!columnAndUriMap.isEmpty()) {
 			nodeUri = (String) columnAndUriMap.values().toArray()[0];
-			final String uniqueNodeReqBody = neo4jRestGenericConverter.buildUniqueNodeRequest(nodeUri, key, value);
+			final String uniqueNodeReqBody = neo4jRestGenericConverter.buildUniqueNodeRequest(nodeUri, key, String.valueOf(keyValue));
 			try {
-				generalJsonRestClientAccessor.process(neo4jHostUri + "/index/node/favorites", ClientResponse.Status.CREATED.getStatusCode(), new RestClientExecuteCallback() {
+				generalJsonRestClientAccessor.process("/index/node/favorites", ClientResponse.Status.CREATED.getStatusCode(), new RestClientExecuteCallback() {
 					@Override
 					public ClientResponse execute(WebResource webResource) {
 						return webResource.queryParam("uniqueness", "create_or_fail").accept(MediaType.APPLICATION_JSON)
@@ -111,12 +114,23 @@ public class Neo4jRestAPIAccessor {
 		generalJsonRestClientAccessor.delete(nodeUri);
 	}
 
-	public Map<String, Object> cypherQuery(final String cypherQueryStatement, final Map<String, String> queryParameters) throws Exception {
-		generalJsonRestClientAccessor.process(neo4jHostUri + "/cypher", ClientResponse.Status.OK.getStatusCode(), restClientCallback, customErrorHandlers);
-		
-		
-		generalJsonRestClientAccessor.create(path, jsonBody)
-		return null;
+	public AbstractCypherQueryResult cypherQuery(final String cypherQueryStatement, final Map<String, String> queryParameters) throws Exception {
+		final String distinctColumn = this.getDistinctPrefixFromCypherQueryStatement(cypherQueryStatement);
+		final String queryReqJson = neo4jRestGenericConverter.cypherQueryRequestConvert(cypherQueryStatement, queryParameters);
+		final String responseJson = generalJsonRestClientAccessor.process("/cypher", ClientResponse.Status.OK.getStatusCode(), new RestClientExecuteCallback() {
+			@Override
+			public ClientResponse execute(WebResource webResource) {
+				return webResource.accept(MediaType.APPLICATION_JSON)
+						.type(MediaType.APPLICATION_JSON)
+						.post(ClientResponse.class, queryReqJson);
+			}
+		});
+		return neo4jRestGenericConverter.cypherQueryRespConvert(responseJson, distinctColumn);
+	}
+
+	public Map<String, Object> createNodeByObject(final Object obj, final String label, final String returnPrefix) throws Exception {
+		final String createStatement = neo4jRestGenericConverter.modelToCreateStatement(obj, label, returnPrefix);
+		return this.createNode(createStatement);
 	}
 
 	/**
@@ -128,7 +142,13 @@ public class Neo4jRestAPIAccessor {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Map<String, Object> createNode(final String createStatement) throws Exception {
-		final String responseJson = generalJsonRestClientAccessor.create(neo4jHostUri + "/transaction/commit", createStatement);
+		final String responseJson = generalJsonRestClientAccessor.process("/transaction/commit", ClientResponse.Status.OK.getStatusCode(), new RestClientExecuteCallback() {
+			@Override
+			public ClientResponse execute(WebResource webResource) {
+				return webResource.accept(MediaType.APPLICATION_JSON)
+						.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, createStatement);
+			}
+		});
 		final Map<String, Object> jsonMap = jacksonObjectMapper.readValue(responseJson, Map.class);
 		this.handleErrors((List) jsonMap.get("errors"));
 		return jsonMap;
@@ -143,6 +163,15 @@ public class Neo4jRestAPIAccessor {
 				throw new IllegalStateException("errorCode[" + errorCode + "]-errorMessage[" + errorMessage + "]");
 			}
 		}
+	}
+
+	private String getDistinctPrefixFromCypherQueryStatement(final String cypherQueryStatement) {
+		int distinctKeyLen = CYPHER_DISTINCT_KEYWORD.length();
+		int disPos = cypherQueryStatement.toUpperCase().indexOf(CYPHER_DISTINCT_KEYWORD);
+		if (disPos != -1) {
+			return cypherQueryStatement.substring(disPos + distinctKeyLen, cypherQueryStatement.indexOf(",")).trim();
+		}
+		return null;
 	}
 
 }

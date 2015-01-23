@@ -8,18 +8,24 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Pizzashack {
+	private String nodeUri;
 	private String pizzashackId;
 	private String pizzaName;
 	private String description;
 	private BigDecimal price;
 	private String icon;
 
-	private Pizzashack(String pizzashackId, String pizzaName, String description, BigDecimal price, String icon) {
+	public Pizzashack() {
+		super();
+	}
+
+	public Pizzashack(String pizzashackId, String pizzaName, String description, BigDecimal price, String icon, String nodeUri) {
 		this.pizzashackId = pizzashackId;
 		this.pizzaName = pizzaName;
 		this.description = description;
 		this.price = price;
 		this.icon = icon;
+		this.nodeUri = nodeUri;
 	}
 
 	public String getPizzashackId() {
@@ -62,6 +68,14 @@ public class Pizzashack {
 		this.icon = icon;
 	}
 
+	public String getNodeUri() {
+		return nodeUri;
+	}
+
+	public void setNodeUri(String nodeUri) {
+		this.nodeUri = nodeUri;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		EqualsBuilder builder = new EqualsBuilder();
@@ -85,6 +99,7 @@ public class Pizzashack {
 				.append("description", description)
 				.append("price", price)
 				.append("icon", icon)
+				.append("nodeUri", nodeUri)
 				.toString();
 	}
 
@@ -94,13 +109,15 @@ public class Pizzashack {
 		private String description;
 		private BigDecimal price;
 		private String icon;
+		private String nodeUri;
 
-		public Builder(String pizzashackId, String pizzaName, String description, BigDecimal price, String icon) {
+		public Builder(String pizzashackId, String pizzaName, String description, BigDecimal price, String icon, String nodeUri) {
 			this.pizzashackId = pizzashackId;
 			this.pizzaName = pizzaName;
 			this.description = description;
 			this.price = price;
 			this.icon = icon;
+			this.nodeUri = nodeUri;
 		}
 
 		public Builder() {
@@ -131,8 +148,13 @@ public class Pizzashack {
 			return this;
 		}
 
+		public Builder nodeUri(String nodeUri) {
+			this.nodeUri = nodeUri;
+			return this;
+		}
+
 		public Pizzashack build() {
-			return new Pizzashack(pizzashackId, pizzaName, description, price, icon);
+			return new Pizzashack(pizzashackId, pizzaName, description, price, icon, nodeUri);
 		}
 	}
 }

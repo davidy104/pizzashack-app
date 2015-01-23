@@ -1,0 +1,24 @@
+{
+	"statements":[
+		{
+			"statement":[
+				"CREATE (p:Pizzashack{pizzashackId:'6b6da1d2-a3c6-434b-bf41-b606fc39fa47',pizzaName:'testPizzaname',description:'testDesc'}) RETURN p"
+			],
+			"resultDataContents":[
+				"REST"
+			]
+			
+		}
+		
+	]
+}
+{
+	"statements":[
+		{
+			"statement":"CREATE (p:Pizzashack{pizzaName:'abc',description:'abc pizzashack',price:'66.55'}) RETURN p",
+			"resultDataContents":[
+				"REST"
+			]
+		}
+	]
+}

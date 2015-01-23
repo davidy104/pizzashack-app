@@ -1,8 +1,13 @@
 package nz.co.pizzashack.repository.convert.template;
 
 import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
+
+import java.lang.reflect.Field
+
+import com.google.common.base.Joiner
 
 @Slf4j
 class Neo4jRestGenericConverter {
@@ -28,8 +33,14 @@ class Neo4jRestGenericConverter {
 	 */
 	String cypherQueryRequestConvert(final String cypherQueryStatement,final Map<String,String> queryParams){
 		jsonBuilder{
-			query "${cypherQueryStatement}"
-			params "${key}"
+			query cypherQueryStatement
+			if(queryParams){
+				params (
+						queryParams.each {k,v->
+							jsonBuilder "$k": "$v"
+						}
+						)
+			}
 		}
 		return jsonBuilder.toString()
 	}
@@ -42,22 +53,16 @@ class Neo4jRestGenericConverter {
 	String transCreateStatementsConvert(String[] statementArray){
 		jsonBuilder{
 			statements(
-					statementArray.collect {it}
-					)
-			resultDataContents(
-					['REST'].collect {it}
+					statementArray.collect {
+						[statement:it,resultDataContents:['REST'].collect { it }]
+					}
 					)
 		}
 		return jsonBuilder.toString()
 	}
 
-	String buildUniqueNodeRequest(final String existedNodeUri, final String key, final String value){
-		jsonBuilder{
-			value "${value}"
-			key "${key}"
-			uri "${existedNodeUri}"
-		}
-		return jsonBuilder.toString()
+	String buildUniqueNodeRequest(String existedNodeUri,  String key,  String value){
+		return JsonOutput.toJson([value: value, key: key,uri: existedNodeUri])
 	}
 
 	/**
@@ -72,7 +77,7 @@ class Neo4jRestGenericConverter {
 			Map resultMap = resultsList[0]
 			List columnList = (List)resultMap['columns']
 			List dataList = (List)resultMap['data']
-			columnList.eachWithIndex {obj, i ->
+			columnList.eachWithIndex { obj, i ->
 				Map dataMap = (Map)dataList[i]
 				Map metaMap = ((List)dataMap['rest'])[0]
 				convertedMap.put(obj, metaMap['self'])
@@ -86,19 +91,19 @@ class Neo4jRestGenericConverter {
 	 * @param jsonInput
 	 * @param distinctColumn
 	 * @return
-	 * @throws Exception
 	 */
 	AbstractCypherQueryResult cypherQueryRespConvert(final String jsonInput,final String distinctColumn) {
 		boolean distinctNode = false
-		AbstractCypherQueryResult result = new AbstractCypherQueryResult()
+		AbstractCypherQueryResult result
 		Map metaMap = (Map)jsonSlurper.parseText(jsonInput)
 		List columnList = metaMap.get('columns')
 		List metaDataList = metaMap.get('data')
 		if(metaDataList){
+			result = new AbstractCypherQueryResult()
 			if(distinctColumn){
-				metaDataList.each {meta->
+				metaDataList.each { meta->
 					boolean found = false
-					meta.eachWithIndex {obj,i->
+					meta.eachWithIndex { obj,i->
 						String column = columnList.get(i)
 						if(!found){
 							if(column == distinctColumn && obj instanceof Map){
@@ -113,13 +118,13 @@ class Neo4jRestGenericConverter {
 				}
 			}
 			if(distinctNode){
-				metaDataList.each {meta->
+				metaDataList.each { meta->
 					boolean found = false
 					AbstractCypherQueryNode disctNode
 					Map<String,AbstractCypherQueryNode> relatedNodeMap = [:]
 					Map<String,String> dataValuesMap = [:]
 
-					meta.eachWithIndex {obj,i->
+					meta.eachWithIndex { obj,i->
 						String column = columnList.get(i)
 						if(!found && distinctColumn == column){
 							String curNodeUri = ((Map)obj).get("self")
@@ -139,7 +144,7 @@ class Neo4jRestGenericConverter {
 							}
 						}
 					}
-					relatedNodeMap.each {k,v->
+					relatedNodeMap.each { k,v->
 						if(disctNode.relationAbstractCypherQueryNodes.containsKey(k)){
 							disctNode.relationAbstractCypherQueryNodes.get(k) << v
 						}else{
@@ -147,7 +152,7 @@ class Neo4jRestGenericConverter {
 						}
 					}
 
-					dataValuesMap.each{k,v->
+					dataValuesMap.each{ k,v->
 						if(disctNode.relationDataMap.containsKey(k)){
 							disctNode.relationDataMap.get(k) << v
 						}else{
@@ -156,8 +161,8 @@ class Neo4jRestGenericConverter {
 					}
 				}
 			} else {
-				metaDataList.each {meta->
-					meta.eachWithIndex {obj,i->
+				metaDataList.each { meta->
+					meta.eachWithIndex { obj,i->
 						String column = columnList.get(i)
 						if(obj instanceof Map){
 							Map<String,Object> nodeMap = (Map)obj
@@ -185,5 +190,30 @@ class Neo4jRestGenericConverter {
 			}
 		}
 		return result
+	}
+
+	String modelToCreateStatement(final Object instance, final String label,final String returnPrefix){
+		Field[] fields = instance.getClass().getDeclaredFields()
+		String resultString
+		if(fields){
+			List fieldValueList = []
+			fields.each {
+				it.setAccessible(true)
+				def val = it.get(instance)
+				if(val){
+					def str = "${it.name}:'${val}'"
+					fieldValueList << str
+				}
+			}
+			String objectString = Joiner.on(",").join(fieldValueList)
+			def objCreateStatement
+			if(returnPrefix){
+				objCreateStatement = "CREATE (${returnPrefix}:${label}{${objectString}}) RETURN ${returnPrefix}"
+			}else{
+				objCreateStatement = "CREATE (:${label}{${objectString}})"
+			}
+			return transCreateStatementsConvert([objCreateStatement] as String[])
+		}
+		return resultString
 	}
 }
