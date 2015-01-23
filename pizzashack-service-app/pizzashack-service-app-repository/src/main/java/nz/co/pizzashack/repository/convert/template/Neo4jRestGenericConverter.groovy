@@ -46,7 +46,13 @@ class Neo4jRestGenericConverter {
 	}
 
 	/**
-	 * 
+	 * @format 
+	 * {
+	 "statements" : [ {
+	 "statement" : "CREATE (n) RETURN n",
+	 "resultDataContents" : [ "REST" ]
+	 } ]
+	 }
 	 * @param statementArray
 	 * @return
 	 */
@@ -61,6 +67,13 @@ class Neo4jRestGenericConverter {
 		return jsonBuilder.toString()
 	}
 
+	/**
+	 * @format {"value" : "some value","uri" : "http://localhost:7474/db/data/node/134","key" : "some-key"}
+	 * @param existedNodeUri
+	 * @param key
+	 * @param value
+	 * @return
+	 */
 	String buildUniqueNodeRequest(String existedNodeUri,  String key,  String value){
 		return JsonOutput.toJson([value: value, key: key,uri: existedNodeUri])
 	}

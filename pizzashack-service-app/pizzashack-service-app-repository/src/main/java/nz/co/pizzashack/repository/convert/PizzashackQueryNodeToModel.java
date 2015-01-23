@@ -1,4 +1,4 @@
-package nz.co.pizzashack.repository.convert.component;
+package nz.co.pizzashack.repository.convert;
 
 import java.math.BigDecimal;
 import java.util.Map;

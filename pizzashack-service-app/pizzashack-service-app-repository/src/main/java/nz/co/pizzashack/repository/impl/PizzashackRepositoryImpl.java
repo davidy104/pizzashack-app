@@ -18,6 +18,11 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+/**
+ * 
+ * @author Davidy
+ *
+ */
 public class PizzashackRepositoryImpl implements PizzashackRepository {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackRepositoryImpl.class);
@@ -28,6 +33,10 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 	@Inject
 	@Named("pizzashackQueryNodeToModelConverter")
 	private Function<AbstractCypherQueryNode, Pizzashack> pizzashackQueryNodeToModelConverter;
+
+	@Inject
+	@Named("pizzashackModelToJsonConverter")
+	private Function<Pizzashack, String> pizzashackModelToJsonConverter;
 
 	@Override
 	public String createPizzashack(final String pizzashackId, final Pizzashack addPizzashack) throws Exception {
@@ -41,7 +50,7 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 				Maps.newHashMap(new ImmutableMap.Builder<String, String>()
 						.put("pizzashackId", pizzashackId)
 						.build()));
-		if (!result.getDistinctNodes().isEmpty()) {
+		if (result != null && !result.getDistinctNodes().isEmpty()) {
 			AbstractCypherQueryNode pizzashackNode = (AbstractCypherQueryNode) result.getDistinctNodes().toArray()[0];
 			return pizzashackQueryNodeToModelConverter.apply(pizzashackNode);
 		}
@@ -50,7 +59,14 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 
 	@Override
 	public void updatePizzashack(final String pizzashackId, final Pizzashack updatePizzashack) throws Exception {
-
+		final String props = pizzashackModelToJsonConverter.apply(updatePizzashack);
+		LOGGER.info("props:{} ", props);
+		final String updateJson = "MATCH (p:Pizzashack{pizzashackId:{pizzashackId}}) SET p = { props } RETURN p";
+		neo4jRestAPIAccessor.cypherQuery(updateJson,
+				Maps.newHashMap(new ImmutableMap.Builder<String, String>()
+						.put("pizzashackId", pizzashackId)
+						.put("props", props)
+						.build()));
 	}
 
 	@Override

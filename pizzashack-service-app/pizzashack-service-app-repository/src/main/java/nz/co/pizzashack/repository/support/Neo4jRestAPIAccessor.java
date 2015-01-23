@@ -2,6 +2,7 @@ package nz.co.pizzashack.repository.support;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +69,9 @@ public class Neo4jRestAPIAccessor {
 	 * @return NodeUrl
 	 */
 	public String createUniqueNode(final Object obj, final String label, final String key) throws Exception {
-		final Object keyValue = obj.getClass().getDeclaredField(key);
+		Field field = obj.getClass().getDeclaredField(key);
+		field.setAccessible(true);
+		final Object keyValue = field.get(obj);
 		LOGGER.info("key:{} ", String.valueOf(keyValue));
 		checkArgument(keyValue != null, "uniqueNodeKey can not be null");
 		final Map<String, Object> jsonMap = this.createNodeByObject(obj, label, "p");
@@ -169,7 +172,11 @@ public class Neo4jRestAPIAccessor {
 		int distinctKeyLen = CYPHER_DISTINCT_KEYWORD.length();
 		int disPos = cypherQueryStatement.toUpperCase().indexOf(CYPHER_DISTINCT_KEYWORD);
 		if (disPos != -1) {
-			return cypherQueryStatement.substring(disPos + distinctKeyLen, cypherQueryStatement.indexOf(",")).trim();
+			if (cypherQueryStatement.indexOf(",") != -1 && cypherQueryStatement.indexOf(",") > disPos) {
+				return cypherQueryStatement.substring(disPos + distinctKeyLen, cypherQueryStatement.indexOf(",")).trim();
+			} else {
+				return cypherQueryStatement.substring(disPos + distinctKeyLen, cypherQueryStatement.length()).trim();
+			}
 		}
 		return null;
 	}

@@ -14,20 +14,33 @@ public class JacksonTest {
 	public void test() throws Exception {
 		String str = "MATCH (book:Book{isbn:{isbn}}) OPTIONAL MATCH (:Publisher)<-[publishedBy:PublishedBy]-(book) RETURN DISTINCT book, publishedBy";
 		String str1 = "MATCH (book:Book{isbn:{isbn}}) OPTIONAL MATCH (:Publisher)<-[publishedBy:PublishedBy]-(book) RETURN Distinct book, publishedBy";
+		String str2 = "MATCH (book:Book{isbn:{isbn}}) RETURN Distinct book";
 
 		int len = "DISTINCT".length();
-		
+
 		int disPos = str.toUpperCase().indexOf("DISTINCT");
+		String distinctPrefix = null;
 
 		if (disPos != -1) {
-			String distinctPrefix = str.substring(disPos + len, str.indexOf(",")).trim();
+			distinctPrefix = str.substring(disPos + len, str.indexOf(",")).trim();
 			System.out.println("str distinctPrefix: " + distinctPrefix);
 		}
 
 		disPos = str1.toUpperCase().indexOf("DISTINCT");
 		if (disPos != -1) {
-			String distinctPrefix = str1.substring(disPos + len, str1.indexOf(",")).trim();
+			distinctPrefix = str1.substring(disPos + len, str1.indexOf(",")).trim();
 			System.out.println("str1 distinctPrefix: " + distinctPrefix);
+		}
+
+		disPos = str2.toUpperCase().indexOf("DISTINCT");
+		if (disPos != -1) {
+			if (str2.indexOf(",") != -1 && str2.indexOf(",") > disPos) {
+				distinctPrefix = str2.substring(disPos + len, str2.indexOf(",")).trim();
+			} else {
+				distinctPrefix = str2.substring(disPos + len, str2.length()).trim();
+			}
+
+			System.out.println("str2 distinctPrefix: " + distinctPrefix);
 		}
 
 		final String json = "{\"commit\" : \"http://localhost:7474/db/data/transaction/1/commit\",\"columns\" : [ \"n\",\"m\" ]}";

@@ -3,7 +3,8 @@ package nz.co.pizzashack.repository;
 import groovy.json.JsonBuilder;
 import groovy.json.JsonSlurper;
 import nz.co.pizzashack.model.Pizzashack;
-import nz.co.pizzashack.repository.convert.component.PizzashackQueryNodeToModel;
+import nz.co.pizzashack.repository.convert.PizzashackModelToJson;
+import nz.co.pizzashack.repository.convert.PizzashackQueryNodeToModel;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
 import nz.co.pizzashack.repository.convert.template.Neo4jRestGenericConverter;
 import nz.co.pizzashack.repository.impl.PizzashackRepositoryImpl;
@@ -45,6 +46,13 @@ public class RepositoryModule extends AbstractModule {
 	@Named("pizzashackQueryNodeToModelConverter")
 	public Function<AbstractCypherQueryNode, Pizzashack> pizzashackQueryNodeToModelConvert() {
 		return new PizzashackQueryNodeToModel();
+	}
+
+	@Provides
+	@Singleton
+	@Named("pizzashackModelToJsonConverter")
+	public Function<Pizzashack, String> pizzashackModelToJsonConvert() {
+		return new PizzashackModelToJson();
 	}
 
 	public static class GeneralJsonRestClientAccessorProvider implements Provider<GeneralJsonRestClientAccessor> {
