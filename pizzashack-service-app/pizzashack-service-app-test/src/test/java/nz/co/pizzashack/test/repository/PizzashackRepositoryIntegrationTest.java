@@ -37,16 +37,16 @@ public class PizzashackRepositoryIntegrationTest {
 			LOGGER.info("pizzashack:{} ", pizzashack);
 		}
 
-		Pizzashack found = pizzashackRepository.getPizzashackById(pizzashackId);
-		LOGGER.info("found---------------:{} ", found);
-
-		found.setDescription("updateDesc");
-		found.setPizzaName("updatePizzaname");
-		found.setIcon("updateIcon");
-		pizzashackRepository.updatePizzashack(pizzashackId, found);
-
-		found = pizzashackRepository.getPizzashackById(pizzashackId);
-		LOGGER.info("after update---------------:{} ", found);
+//		Pizzashack found = pizzashackRepository.getPizzashackById(pizzashackId);
+//		LOGGER.info("found---------------:{} ", found);
+//
+//		found.setDescription("updateDesc");
+//		found.setPizzaName("updatePizzaname");
+//		found.setIcon("updateIcon");
+//		pizzashackRepository.updatePizzashack(pizzashackId, found);
+//
+//		found = pizzashackRepository.getPizzashackById(pizzashackId);
+//		LOGGER.info("after update---------------:{} ", found);
 
 		pizzashackRepository.deletePizzashack(pizzashackId);
 	}

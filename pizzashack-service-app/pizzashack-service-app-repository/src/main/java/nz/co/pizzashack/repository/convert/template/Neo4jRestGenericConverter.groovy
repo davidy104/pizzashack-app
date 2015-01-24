@@ -32,17 +32,10 @@ class Neo4jRestGenericConverter {
 	 * @return
 	 */
 	String cypherQueryRequestConvert(final String cypherQueryStatement,final Map<String,String> queryParams){
-		jsonBuilder{
-			query cypherQueryStatement
-			if(queryParams){
-				params (
-						queryParams.each {k,v->
-							jsonBuilder "$k": "$v"
-						}
-						)
-			}
+		if(queryParams){
+			return JsonOutput.toJson([query: cypherQueryStatement, params: queryParams])
 		}
-		return jsonBuilder.toString()
+		JsonOutput.toJson([query: cypherQueryStatement])
 	}
 
 	/**

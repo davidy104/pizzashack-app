@@ -2,6 +2,7 @@ package nz.co.pizzashack.repository.test;
 
 import static org.junit.Assert.*
 import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
 import nz.co.pizzashack.model.Pizzashack
 
 import org.junit.Test
@@ -46,22 +47,22 @@ class JsonConvertTest {
 
 	@Test
 	public void test() {
-		String[] statementArray = [
-			"CREATE ( bike:Bike { weight: 10 } )",
-			"CREATE ( frontWheel:Wheel { spokes: 3 }"
-		]
-
+//		String[] statementArray = [
+//			"CREATE ( bike:Bike { weight: 10 } )",
+//			"CREATE ( frontWheel:Wheel { spokes: 3 }"
+//		]
+//
 		def builder = new JsonBuilder()
-		builder{
-			statements(
-					statementArray.collect { it }
-					)
-			resultDataContents(
-					['REST'].collect { it }
-					)
-		}
-
-		println "${builder.toPrettyString()}"
+//		builder{
+//			statements(
+//					statementArray.collect { it }
+//					)
+//			resultDataContents(
+//					['REST'].collect { it }
+//					)
+//		}
+//
+//		println "${builder.toPrettyString()}"
 
 		Map map = [isbn:"2837283AA", name:"cheese"]
 
@@ -76,15 +77,45 @@ class JsonConvertTest {
 
 		def stat = "MATCH (book:Book{isbn:{isbn}})"
 
+//		builder{
+//			query stat
+//			if(map){
+//				params (
+//					map.each {k,v->
+//						builder "$k": "$v"
+//					}
+//					)
+//			}
+//			
+//		}
+		StringBuilder sb = new StringBuilder("{");
+		map.eachWithIndex{obj,i->
+			println "$i"
+			String key = obj.key
+			String value = obj.value
+			sb.append("$key:$value")
+			if(i+1 < map.size()){
+				sb.append(",")
+			}
+		}
+		sb.append("}")
+		
+		String paramsString = sb.toString()
+		
+		def s = JsonOutput.toJson(map)
+		println "jsonout:{} $s"
+		
+				
 		builder{
 			query stat
-			params (
-					map.each {k,v->
-						builder "$k": "$v"
-					}
-					)
+			if(map){
+				params JsonOutput.toJson(map)
+			}
 		}
 
 		println "${builder.toPrettyString()}"
+		
+		
+		
 	}
 }
