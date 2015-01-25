@@ -1,0 +1,10 @@
+Chicken Parmesan||Grilled chicken, fresh tomatoes, feta and mozzarella cheese||38.00
+Spicy Italian||Pepperoni and a double portion of spicy Italian sausage||24.50
+Garden Fresh||Slices onions and green peppers, gourmet mushrooms, black olives and ripe Roma tomatoes||35.00
+Tuscan Six Cheese||Six cheese blend of mozzarella, Parmesan, Romano, Asiago and Fontina||26.00
+Spinach Alfredo||Rich and creamy blend of spinach and garlic Parmesan with Alfredo saucePepperoni and a double portion of spicy Italian sausage||18.00
+BBQ Chicken Bacon||Grilled white chicken, hickory-smoked bacon and fresh sliced onions in barbeque sauce||45.00
+Hawaiian BBQ Chicken||Grilled white chicken, hickory-smoked bacon, barbeque sauce topped with sweet pine-apple||37.50
+Grilled Chicken Club||Grilled white chicken, hickory-smoked bacon and fresh sliced onions topped with Roma tomatoes||29.99
+Double Bacon 6Cheese||Hickory-smoked bacon, Julienne cut Canadian bacon, Parmesan, mozzarella, Romano, Asiago and and Fontina cheese||35.99
+Chilly Chicken Cordon Bleu||Spinash Alfredo sauce topped with grilled chicken, ham, onions and mozzarella||28.99

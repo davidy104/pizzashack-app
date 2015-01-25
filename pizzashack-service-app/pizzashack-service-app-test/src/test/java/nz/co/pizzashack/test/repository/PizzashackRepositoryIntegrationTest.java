@@ -1,5 +1,10 @@
 package nz.co.pizzashack.test.repository;
 
+import static nz.co.pizzashack.test.TestUtils.initPizzashackFromFile;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,44 +16,82 @@ import nz.co.pizzashack.repository.RepositoryModule;
 import nz.co.pizzashack.test.GuiceJUnitRunner;
 import nz.co.pizzashack.test.GuiceJUnitRunner.GuiceModules;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 @RunWith(GuiceJUnitRunner.class)
 @GuiceModules({ ConfigurationServiceModule.class, SharedModule.class, RepositoryModule.class })
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PizzashackRepositoryIntegrationTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackRepositoryIntegrationTest.class);
-
+	private static Set<Pizzashack> initialPizzashacks = Collections.<Pizzashack>emptySet();
+	private final static String PIZZASHACK_INIT_FILE="pizzashack-data.txt";
+	
+	private Set<String> initPizzashackNodeUris = Sets.<String>newHashSet();
+	
 	@Inject
 	private PizzashackRepository pizzashackRepository;
-
+	
+	@BeforeClass
+	public static void setUp(){
+		initialPizzashacks = initPizzashackFromFile(PIZZASHACK_INIT_FILE);
+		assertNotNull(initialPizzashacks);
+		assertEquals(initialPizzashacks.size(),10);
+	}
+	
+	@Before
+	public void init()throws Exception {
+		for(final Pizzashack pizzashack : initialPizzashacks){
+			initPizzashackNodeUris.add(pizzashackRepository.createPizzashack(pizzashack.getPizzashackId(), pizzashack));
+		}
+	}
+	
+	@After
+	public void tearDown()throws Exception {
+		for(final Pizzashack pizzashack : initialPizzashacks){
+			pizzashackRepository.deletePizzashack(pizzashack.getPizzashackId());
+		}
+	}
+	
 	@Test
-	public void testGetAll() throws Exception {
+	public void testCRUD()throws Exception {
 		final String pizzashackId = UUID.randomUUID().toString();
 		final String nodeUri = pizzashackRepository.createPizzashack(pizzashackId, new Pizzashack.Builder().pizzaName("testPizzaname").pizzashackId(pizzashackId).description("testDesc").build());
 		LOGGER.info("nodeUri:{} ", nodeUri);
-		Set<Pizzashack> allPizzashacks = pizzashackRepository.getAllPizzashack();
-		for (final Pizzashack pizzashack : allPizzashacks) {
-			LOGGER.info("pizzashack:{} ", pizzashack);
-		}
 
-//		Pizzashack found = pizzashackRepository.getPizzashackById(pizzashackId);
-//		LOGGER.info("found---------------:{} ", found);
-//
-//		found.setDescription("updateDesc");
-//		found.setPizzaName("updatePizzaname");
-//		found.setIcon("updateIcon");
-//		pizzashackRepository.updatePizzashack(pizzashackId, found);
-//
-//		found = pizzashackRepository.getPizzashackById(pizzashackId);
-//		LOGGER.info("after update---------------:{} ", found);
+		Pizzashack found = pizzashackRepository.getPizzashackById(pizzashackId);
+		LOGGER.info("found---------------:{} ", found);
+
+		found.setDescription("updateDesc");
+		found.setPizzaName("updatePizzaname");
+		found.setIcon("updateIcon");
+		pizzashackRepository.updatePizzashack(pizzashackId, found);
+
+		found = pizzashackRepository.getPizzashackById(pizzashackId);
+		LOGGER.info("after update---------------:{} ", found);
 
 		pizzashackRepository.deletePizzashack(pizzashackId);
 	}
+	
+	@Test
+	public void testGetAll()throws Exception{
+		Set<Pizzashack> allPizzashacks = pizzashackRepository.getAllPizzashack();
+		assertEquals(allPizzashacks.size(),10);
+		for (final Pizzashack pizzashack : allPizzashacks) {
+			LOGGER.info("pizzashack:{} ", pizzashack);
+		}
+	}
+	
 
 }

@@ -117,7 +117,7 @@ public class Neo4jRestAPIAccessor {
 		generalJsonRestClientAccessor.delete(nodeUri);
 	}
 
-	public AbstractCypherQueryResult cypherQuery(final String cypherQueryStatement, final Map<String, String> queryParameters) throws Exception {
+	public AbstractCypherQueryResult cypherQuery(final String cypherQueryStatement, final Map<String, Object> queryParameters) throws Exception {
 		final String distinctColumn = this.getDistinctPrefixFromCypherQueryStatement(cypherQueryStatement);
 		final String queryReqJson = neo4jRestGenericConverter.cypherQueryRequestConvert(cypherQueryStatement, queryParameters);
 		final String responseJson = generalJsonRestClientAccessor.process("/cypher", ClientResponse.Status.OK.getStatusCode(), new RestClientExecuteCallback() {
