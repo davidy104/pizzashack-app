@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
@@ -179,6 +180,29 @@ public class Neo4jRestAPIAccessor {
 			}
 		}
 		return null;
+	}
+	
+	public Integer getCountFromQueryStatement(final String cypherQueryStatement,final Map<String, Object> queryParameters) throws Exception {
+		Integer count = 0;
+		String countQueryStatement = null;
+		int returnIndex = cypherQueryStatement.indexOf("RETURN");
+		if(returnIndex != -1){
+			 countQueryStatement =cypherQueryStatement.substring(0,returnIndex)+" RETURN COUNT(*) as total";
+		}else{
+			countQueryStatement =cypherQueryStatement+" RETURN COUNT(*) as total";
+		}
+		
+		final AbstractCypherQueryResult result = this.cypherQuery(countQueryStatement, queryParameters);
+		Set<String> countResultSet = result.getDataColumnMap().get("total");
+		if(countResultSet != null && !countResultSet.isEmpty()){
+			count = (Integer)(countResultSet.toArray()[0]);
+		}
+		return count;
+	}
+	
+	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement,final int pageOffset, final int pageSize, final Map<String, Object> queryParameters)throws Exception{
+		final String paginationQueryStatement = cypherQueryStatement+" SKIP "+pageOffset+" LIMIT "+pageSize;
+		return this.cypherQuery(paginationQueryStatement, queryParameters);
 	}
 
 }

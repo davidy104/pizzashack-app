@@ -2,6 +2,7 @@ package nz.co.pizzashack.repository.impl;
 
 import java.util.Set;
 
+import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
 import nz.co.pizzashack.repository.PizzashackRepository;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
@@ -39,12 +40,12 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 	private Function<Pizzashack, String> pizzashackModelToJsonConverter;
 
 	@Override
-	public String createPizzashack(final String pizzashackId, final Pizzashack addPizzashack) throws Exception {
+	public String create(final String pizzashackId, final Pizzashack addPizzashack) throws Exception {
 		return neo4jRestAPIAccessor.createUniqueNode(addPizzashack, "Pizzashack", "pizzashackId");
 	}
 
 	@Override
-	public Pizzashack getPizzashackById(final String pizzashackId) throws Exception {
+	public Pizzashack getById(final String pizzashackId) throws Exception {
 		final String queryJson = "MATCH (p:Pizzashack{pizzashackId:{pizzashackId}}) RETURN DISTINCT p";
 		final AbstractCypherQueryResult result = neo4jRestAPIAccessor.cypherQuery(queryJson,
 				Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
@@ -58,7 +59,7 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 	}
 
 	@Override
-	public void updatePizzashack(final String pizzashackId, final Pizzashack updatePizzashack) throws Exception {
+	public void updateById(final String pizzashackId, final Pizzashack updatePizzashack) throws Exception {
 		final String props = pizzashackModelToJsonConverter.apply(updatePizzashack);
 		LOGGER.info("props:{} ", props);
 		final String updateJson = "MATCH (p:Pizzashack{pizzashackId:{pizzashackId}}) SET p = { props } RETURN p";
@@ -70,7 +71,7 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 	}
 
 	@Override
-	public void deletePizzashack(final String pizzashackId) throws Exception {
+	public void deleteById(final String pizzashackId) throws Exception {
 		final String deleteJson = "MATCH (p:Pizzashack{pizzashackId:{pizzashackId}}) DELETE p";
 		neo4jRestAPIAccessor.cypherQuery(deleteJson,
 				Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
@@ -79,7 +80,7 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 	}
 
 	@Override
-	public Set<Pizzashack> getAllPizzashack() throws Exception {
+	public Set<Pizzashack> getAll() throws Exception {
 		LOGGER.info("getAllPizzashack start..");
 		Set<Pizzashack> resultSet = Sets.<Pizzashack> newHashSet();
 		final String queryJson = "MATCH (p:Pizzashack) RETURN p";
@@ -91,5 +92,22 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 		}
 		return resultSet;
 	}
+
+	@Override
+	public Page<Pizzashack> paginateAll(final int pageOffset,final int pageSize) throws Exception {
+		final String queryStatement = "MATCH (p:Pizzashack) RETURN p";
+		final Integer totalCount = neo4jRestAPIAccessor.getCountFromQueryStatement(queryStatement, null);
+		final AbstractCypherQueryResult result = neo4jRestAPIAccessor.paginationThruQueryStatement(queryStatement, pageOffset, pageSize, null);
+		
+		Page<Pizzashack> page = new Page.Builder<Pizzashack>().pageOffset(pageOffset).pageSize(pageSize).totalCount(totalCount).build();
+		if (result != null) {
+			for (final AbstractCypherQueryNode node : result.getDistinctNodes()) {
+				page.addContent(pizzashackQueryNodeToModelConverter.apply(node));
+			}
+		}
+		return page;
+	}
+	
+	
 
 }

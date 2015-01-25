@@ -53,40 +53,40 @@ public class PizzashackRepositoryIntegrationTest {
 	@Before
 	public void init()throws Exception {
 		for(final Pizzashack pizzashack : initialPizzashacks){
-			initPizzashackNodeUris.add(pizzashackRepository.createPizzashack(pizzashack.getPizzashackId(), pizzashack));
+			initPizzashackNodeUris.add(pizzashackRepository.create(pizzashack.getPizzashackId(), pizzashack));
 		}
 	}
 	
 	@After
 	public void tearDown()throws Exception {
 		for(final Pizzashack pizzashack : initialPizzashacks){
-			pizzashackRepository.deletePizzashack(pizzashack.getPizzashackId());
+			pizzashackRepository.deleteById(pizzashack.getPizzashackId());
 		}
 	}
 	
 	@Test
 	public void testCRUD()throws Exception {
 		final String pizzashackId = UUID.randomUUID().toString();
-		final String nodeUri = pizzashackRepository.createPizzashack(pizzashackId, new Pizzashack.Builder().pizzaName("testPizzaname").pizzashackId(pizzashackId).description("testDesc").build());
+		final String nodeUri = pizzashackRepository.create(pizzashackId, new Pizzashack.Builder().pizzaName("testPizzaname").pizzashackId(pizzashackId).description("testDesc").build());
 		LOGGER.info("nodeUri:{} ", nodeUri);
 
-		Pizzashack found = pizzashackRepository.getPizzashackById(pizzashackId);
+		Pizzashack found = pizzashackRepository.getById(pizzashackId);
 		LOGGER.info("found---------------:{} ", found);
 
 		found.setDescription("updateDesc");
 		found.setPizzaName("updatePizzaname");
 		found.setIcon("updateIcon");
-		pizzashackRepository.updatePizzashack(pizzashackId, found);
+		pizzashackRepository.updateById(pizzashackId, found);
 
-		found = pizzashackRepository.getPizzashackById(pizzashackId);
+		found = pizzashackRepository.getById(pizzashackId);
 		LOGGER.info("after update---------------:{} ", found);
 
-		pizzashackRepository.deletePizzashack(pizzashackId);
+		pizzashackRepository.deleteById(pizzashackId);
 	}
 	
 	@Test
 	public void testGetAll()throws Exception{
-		Set<Pizzashack> allPizzashacks = pizzashackRepository.getAllPizzashack();
+		Set<Pizzashack> allPizzashacks = pizzashackRepository.getAll();
 		assertEquals(allPizzashacks.size(),10);
 		for (final Pizzashack pizzashack : allPizzashacks) {
 			LOGGER.info("pizzashack:{} ", pizzashack);
