@@ -1,5 +1,6 @@
 package nz.co.pizzashack.repository.impl;
 
+import java.util.Map;
 import java.util.Set;
 
 import nz.co.pizzashack.model.Page;
@@ -38,6 +39,11 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 	@Inject
 	@Named("pizzashackModelToJsonConverter")
 	private Function<Pizzashack, String> pizzashackModelToJsonConverter;
+	
+	@Inject
+	@Named("pizzashackMetaMapToModelConverter")
+	private Function<Map<String, String>, Pizzashack> pizzashackMetaMapToModelConverter;
+	
 
 	@Override
 	public String create(final String pizzashackId, final Pizzashack addPizzashack) throws Exception {
@@ -98,13 +104,17 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 		final String queryStatement = "MATCH (p:Pizzashack) RETURN p";
 		final Integer totalCount = neo4jRestAPIAccessor.getCountFromQueryStatement(queryStatement, null);
 		final AbstractCypherQueryResult result = neo4jRestAPIAccessor.paginationThruQueryStatement(queryStatement, pageOffset, pageSize, null);
-		
 		Page<Pizzashack> page = new Page.Builder<Pizzashack>().pageOffset(pageOffset).pageSize(pageSize).totalCount(totalCount).build();
-		if (result != null) {
-			for (final AbstractCypherQueryNode node : result.getDistinctNodes()) {
-				page.addContent(pizzashackQueryNodeToModelConverter.apply(node));
+		
+		Map<String,Map<String,String>> metaMap = result.getNodeColumnMap().get("p");
+		if(metaMap != null){
+			for (final Map.Entry<String,Map<String,String>> entry : metaMap.entrySet()) {
+				Pizzashack pizzashack = pizzashackMetaMapToModelConverter.apply(entry.getValue());
+				pizzashack.setNodeUri(entry.getKey());
+				page.addContent(pizzashack);
 			}
 		}
+		
 		return page;
 	}
 	

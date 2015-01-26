@@ -195,7 +195,7 @@ public class Neo4jRestAPIAccessor {
 		final AbstractCypherQueryResult result = this.cypherQuery(countQueryStatement, queryParameters);
 		Set<String> countResultSet = result.getDataColumnMap().get("total");
 		if(countResultSet != null && !countResultSet.isEmpty()){
-			count = (Integer)(countResultSet.toArray()[0]);
+			count = Integer.valueOf((String)countResultSet.toArray()[0]);
 		}
 		return count;
 	}

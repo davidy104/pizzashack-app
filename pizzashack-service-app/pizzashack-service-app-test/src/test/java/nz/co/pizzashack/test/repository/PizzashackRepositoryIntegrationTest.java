@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import nz.co.pizzashack.SharedModule;
 import nz.co.pizzashack.config.ConfigurationServiceModule;
+import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
 import nz.co.pizzashack.repository.PizzashackRepository;
 import nz.co.pizzashack.repository.RepositoryModule;
@@ -93,5 +94,14 @@ public class PizzashackRepositoryIntegrationTest {
 		}
 	}
 	
+	@Test
+	public void testPagination()throws Exception {
+		Page<Pizzashack> page = pizzashackRepository.paginateAll(0, 3);
+		LOGGER.info("---------page:{} ",page);
+		
+		for (final Pizzashack pizzashack : page.getContent()) {
+			LOGGER.info("------------pizzashack:{} ", pizzashack);
+		}
+	}
 
 }

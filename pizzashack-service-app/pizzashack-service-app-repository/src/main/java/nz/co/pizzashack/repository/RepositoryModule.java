@@ -2,7 +2,11 @@ package nz.co.pizzashack.repository;
 
 import groovy.json.JsonBuilder;
 import groovy.json.JsonSlurper;
+
+import java.util.Map;
+
 import nz.co.pizzashack.model.Pizzashack;
+import nz.co.pizzashack.repository.convert.PizzashackMetaMapToModel;
 import nz.co.pizzashack.repository.convert.PizzashackModelToJson;
 import nz.co.pizzashack.repository.convert.PizzashackQueryNodeToModel;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
@@ -40,18 +44,25 @@ public class RepositoryModule extends AbstractModule {
 	public Neo4jRestGenericConverter neo4jRestGenericConverter(final @Named("jsonBuilder") JsonBuilder jsonBuilder, final @Named("jsonSlurper") JsonSlurper jsonSlurper) {
 		return new Neo4jRestGenericConverter(jsonBuilder, jsonSlurper);
 	}
+	
+	@Provides
+	@Singleton
+	@Named("pizzashackMetaMapToModelConverter")
+	public Function<Map<String, String>, Pizzashack> pizzashackMetaMapToModelConverter() {
+		return new PizzashackMetaMapToModel();
+	}
 
 	@Provides
 	@Singleton
 	@Named("pizzashackQueryNodeToModelConverter")
-	public Function<AbstractCypherQueryNode, Pizzashack> pizzashackQueryNodeToModelConvert() {
-		return new PizzashackQueryNodeToModel();
+	public Function<AbstractCypherQueryNode, Pizzashack> pizzashackQueryNodeToModelConverter(final @Named("pizzashackMetaMapToModelConverter") Function<Map<String, String>, Pizzashack> pizzashackMetaMapToModelConverter) {
+		return new PizzashackQueryNodeToModel(pizzashackMetaMapToModelConverter);
 	}
 
 	@Provides
 	@Singleton
 	@Named("pizzashackModelToJsonConverter")
-	public Function<Pizzashack, String> pizzashackModelToJsonConvert() {
+	public Function<Pizzashack, String> pizzashackModelToJsonConverter() {
 		return new PizzashackModelToJson();
 	}
 
