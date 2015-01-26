@@ -117,6 +117,11 @@ public class Neo4jRestAPIAccessor {
 	public void deleteNode(final String nodeUri) throws Exception {
 		generalJsonRestClientAccessor.delete(nodeUri);
 	}
+	
+	public AbstractCypherQueryResult cypherQuery(final String cypherQueryStatement) throws Exception {
+		return this.cypherQuery(cypherQueryStatement, null);
+	}
+	
 
 	public AbstractCypherQueryResult cypherQuery(final String cypherQueryStatement, final Map<String, Object> queryParameters) throws Exception {
 		final String distinctColumn = this.getDistinctPrefixFromCypherQueryStatement(cypherQueryStatement);
@@ -182,6 +187,10 @@ public class Neo4jRestAPIAccessor {
 		return null;
 	}
 	
+	public Integer getCountFromQueryStatement(final String cypherQueryStatement) throws Exception {
+		return this.getCountFromQueryStatement(cypherQueryStatement,null);
+	}
+	
 	public Integer getCountFromQueryStatement(final String cypherQueryStatement,final Map<String, Object> queryParameters) throws Exception {
 		Integer count = 0;
 		String countQueryStatement = null;
@@ -198,6 +207,9 @@ public class Neo4jRestAPIAccessor {
 			count = Integer.valueOf((String)countResultSet.toArray()[0]);
 		}
 		return count;
+	}
+	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement,final int pageOffset, final int pageSize)throws Exception{
+		return this.paginationThruQueryStatement(cypherQueryStatement, pageOffset, pageSize, null);
 	}
 	
 	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement,final int pageOffset, final int pageSize, final Map<String, Object> queryParameters)throws Exception{

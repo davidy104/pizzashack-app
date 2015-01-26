@@ -90,7 +90,7 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 		LOGGER.info("getAllPizzashack start..");
 		Set<Pizzashack> resultSet = Sets.<Pizzashack> newHashSet();
 		final String queryJson = "MATCH (p:Pizzashack) RETURN p";
-		final AbstractCypherQueryResult result = neo4jRestAPIAccessor.cypherQuery(queryJson, null);
+		final AbstractCypherQueryResult result = neo4jRestAPIAccessor.cypherQuery(queryJson);
 		if (result != null) {
 			for (final AbstractCypherQueryNode node : result.getDistinctNodes()) {
 				resultSet.add(pizzashackQueryNodeToModelConverter.apply(node));
@@ -102,8 +102,8 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 	@Override
 	public Page<Pizzashack> paginateAll(final int pageOffset,final int pageSize) throws Exception {
 		final String queryStatement = "MATCH (p:Pizzashack) RETURN p";
-		final Integer totalCount = neo4jRestAPIAccessor.getCountFromQueryStatement(queryStatement, null);
-		final AbstractCypherQueryResult result = neo4jRestAPIAccessor.paginationThruQueryStatement(queryStatement, pageOffset, pageSize, null);
+		final Integer totalCount = neo4jRestAPIAccessor.getCountFromQueryStatement(queryStatement);
+		final AbstractCypherQueryResult result = neo4jRestAPIAccessor.paginationThruQueryStatement(queryStatement, pageOffset, pageSize);
 		Page<Pizzashack> page = new Page.Builder<Pizzashack>().pageOffset(pageOffset).pageSize(pageSize).totalCount(totalCount).build();
 		
 		Map<String,Map<String,String>> metaMap = result.getNodeColumnMap().get("p");
@@ -117,7 +117,6 @@ public class PizzashackRepositoryImpl implements PizzashackRepository {
 		
 		return page;
 	}
-	
 	
 
 }
