@@ -45,7 +45,7 @@ public class PizzashackRepositoryIntegrationTest {
 	private PizzashackRepository pizzashackRepository;
 
 	@BeforeClass
-	public static void setUp() {
+	public static void setUp() throws Exception {
 		initialPizzashacks = initPizzashackFromFile(PIZZASHACK_INIT_FILE);
 		assertNotNull(initialPizzashacks);
 		assertEquals(initialPizzashacks.size(), 10);
@@ -55,7 +55,7 @@ public class PizzashackRepositoryIntegrationTest {
 	public void init() throws Exception {
 		for (final Pizzashack pizzashack : initialPizzashacks) {
 			final String nodeUri = pizzashackRepository.create(pizzashack);
-			LOGGER.info("----createdNodeUri:{} ", nodeUri);
+			LOGGER.info("----id:{} ", pizzashack.getPizzashackId());
 			initPizzashackNodeUris.add(nodeUri);
 		}
 	}
@@ -69,7 +69,8 @@ public class PizzashackRepositoryIntegrationTest {
 
 	@Test
 	public void testCRUD() throws Exception {
-		final String pizzashackId = UUID.randomUUID().toString();
+		final String pizzashackId = "P-"+UUID.randomUUID().toString();
+		
 		final String nodeUri = pizzashackRepository.create(new Pizzashack.Builder().pizzaName("testPizzaname").pizzashackId(pizzashackId).description("testDesc").build());
 		LOGGER.info("nodeUri:{} ", nodeUri);
 

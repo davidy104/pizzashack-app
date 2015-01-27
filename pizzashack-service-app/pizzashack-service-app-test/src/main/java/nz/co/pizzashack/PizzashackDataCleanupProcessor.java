@@ -12,9 +12,8 @@ import nz.co.pizzashack.repository.RepositoryModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-public class PizzashackDataInitProcessor {
-
-	private final static String PIZZASHACK_INIT_FILE = "pizzashack-init.txt";
+public class PizzashackDataCleanupProcessor {
+private final static String PIZZASHACK_INIT_FILE = "pizzashack-init.txt";
 	
 	private static Set<Pizzashack> initPizzashacks = null;
 	
@@ -24,7 +23,7 @@ public class PizzashackDataInitProcessor {
 		final PizzashackRepository pizzashackRepository = injector.getInstance(PizzashackRepository.class);
 		
 		for(final Pizzashack pizzashack : initPizzashacks){
-			pizzashackRepository.create(pizzashack);
+			pizzashackRepository.deleteById(pizzashack.getPizzashackId());
 		}
 	}
 }
