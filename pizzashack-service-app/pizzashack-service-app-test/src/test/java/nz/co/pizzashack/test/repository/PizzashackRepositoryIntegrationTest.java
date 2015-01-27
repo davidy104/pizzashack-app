@@ -36,39 +36,41 @@ import com.google.inject.Inject;
 public class PizzashackRepositoryIntegrationTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackRepositoryIntegrationTest.class);
-	private static Set<Pizzashack> initialPizzashacks = Collections.<Pizzashack>emptySet();
-	private final static String PIZZASHACK_INIT_FILE="pizzashack-data.txt";
-	
-	private Set<String> initPizzashackNodeUris = Sets.<String>newHashSet();
-	
+	private static Set<Pizzashack> initialPizzashacks = Collections.<Pizzashack> emptySet();
+	private final static String PIZZASHACK_INIT_FILE = "pizzashack-data.txt";
+
+	private Set<String> initPizzashackNodeUris = Sets.<String> newHashSet();
+
 	@Inject
 	private PizzashackRepository pizzashackRepository;
-	
+
 	@BeforeClass
-	public static void setUp(){
+	public static void setUp() {
 		initialPizzashacks = initPizzashackFromFile(PIZZASHACK_INIT_FILE);
 		assertNotNull(initialPizzashacks);
-		assertEquals(initialPizzashacks.size(),10);
+		assertEquals(initialPizzashacks.size(), 10);
 	}
-	
+
 	@Before
-	public void init()throws Exception {
-		for(final Pizzashack pizzashack : initialPizzashacks){
-			initPizzashackNodeUris.add(pizzashackRepository.create(pizzashack.getPizzashackId(), pizzashack));
+	public void init() throws Exception {
+		for (final Pizzashack pizzashack : initialPizzashacks) {
+			final String nodeUri = pizzashackRepository.create(pizzashack);
+			LOGGER.info("----createdNodeUri:{} ", nodeUri);
+			initPizzashackNodeUris.add(nodeUri);
 		}
 	}
-	
+
 	@After
-	public void tearDown()throws Exception {
-		for(final Pizzashack pizzashack : initialPizzashacks){
+	public void tearDown() throws Exception {
+		for (final Pizzashack pizzashack : initialPizzashacks) {
 			pizzashackRepository.deleteById(pizzashack.getPizzashackId());
 		}
 	}
-	
+
 	@Test
-	public void testCRUD()throws Exception {
+	public void testCRUD() throws Exception {
 		final String pizzashackId = UUID.randomUUID().toString();
-		final String nodeUri = pizzashackRepository.create(pizzashackId, new Pizzashack.Builder().pizzaName("testPizzaname").pizzashackId(pizzashackId).description("testDesc").build());
+		final String nodeUri = pizzashackRepository.create(new Pizzashack.Builder().pizzaName("testPizzaname").pizzashackId(pizzashackId).description("testDesc").build());
 		LOGGER.info("nodeUri:{} ", nodeUri);
 
 		Pizzashack found = pizzashackRepository.getById(pizzashackId);
@@ -84,21 +86,23 @@ public class PizzashackRepositoryIntegrationTest {
 
 		pizzashackRepository.deleteById(pizzashackId);
 	}
-	
+
 	@Test
-	public void testGetAll()throws Exception{
+	public void testGetAll() throws Exception {
 		Set<Pizzashack> allPizzashacks = pizzashackRepository.getAll();
-		assertEquals(allPizzashacks.size(),10);
+		assertEquals(allPizzashacks.size(), 10);
 		for (final Pizzashack pizzashack : allPizzashacks) {
+			LOGGER.info("pizzashack name:{} ", pizzashack.getClass().getSimpleName());
 			LOGGER.info("pizzashack:{} ", pizzashack);
+
 		}
 	}
-	
+
 	@Test
-	public void testPagination()throws Exception {
+	public void testPagination() throws Exception {
 		Page<Pizzashack> page = pizzashackRepository.paginateAll(0, 3);
-		LOGGER.info("---------page:{} ",page);
-		
+		LOGGER.info("---------page:{} ", page);
+
 		for (final Pizzashack pizzashack : page.getContent()) {
 			LOGGER.info("------------pizzashack:{} ", pizzashack);
 		}

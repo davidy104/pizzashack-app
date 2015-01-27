@@ -1,8 +1,8 @@
 package nz.co.pizzashack.repository.support;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static nz.co.pizzashack.util.GenericUtils.getValueByField;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,8 +29,15 @@ import com.google.inject.name.Named;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
+/**
+ * 
+ * @author Davidy
+ *
+ */
 public class Neo4jRestAPIAccessor {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(Neo4jRestAPIAccessor.class);
+
 	@Inject
 	private GeneralJsonRestClientAccessor generalJsonRestClientAccessor;
 
@@ -43,8 +50,15 @@ public class Neo4jRestAPIAccessor {
 
 	private static final String CYPHER_DISTINCT_KEYWORD = "DISTINCT";
 
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> getRelationsByNodeId(final String nodeUri, final RelationshipDirection direction, final String... types) throws Exception {
+	/**
+	 * 
+	 * @param nodeUri
+	 * @param direction
+	 * @param types
+	 * @return <relationshipid,<field,value>>
+	 * @throws Exception
+	 */
+	public Map<String, Map<String, String>> getRelationsByNodeId(final String nodeUri, final RelationshipDirection direction, final String... types) throws Exception {
 		checkArgument(direction != null, "direction can not be null");
 		if (direction == RelationshipDirection.NONE && ArrayUtils.isEmpty(types)) {
 			throw new IllegalArgumentException("types can not be empty when relationship direction is none");
@@ -58,8 +72,38 @@ public class Neo4jRestAPIAccessor {
 			builder = Joiner.on("&").appendTo(builder, types);
 		}
 
-		final String responseString = generalJsonRestClientAccessor.get("/relationships");
-		return jacksonObjectMapper.readValue(responseString, Map.class);
+		final String responseString = generalJsonRestClientAccessor.doProcess(nodeUri, "/relationships", ClientResponse.Status.OK.getStatusCode(), new RestClientExecuteCallback() {
+			@Override
+			public ClientResponse execute(WebResource webResource) {
+				return webResource.accept(MediaType.APPLICATION_JSON)
+						.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+			}
+		});
+		return neo4jRestGenericConverter.relationshipsQueryResponseToMap(responseString);
+	}
+
+	public Map<String, Map<String, String>> buildRelationshipBetween2Nodes(final String fromNodeUri, final String toNodeUri, final String relationshipsLabel) throws Exception {
+		return this.buildRelationshipBetween2Nodes(fromNodeUri, toNodeUri, relationshipsLabel, null);
+	}
+
+	/**
+	 * 
+	 * @param fromNodeUri
+	 * @param toNodeUri
+	 * @param relationshipsLabel
+	 * @param propertyMap
+	 * @return
+	 */
+	public Map<String, Map<String, String>> buildRelationshipBetween2Nodes(final String fromNodeUri, final String toNodeUri, final String relationshipsLabel, final Map<String, String> propertyMap) throws Exception {
+		final String createRelationshipsJsonReq = neo4jRestGenericConverter.createRelationshipsConvert(toNodeUri, relationshipsLabel, propertyMap);
+		final String jsonResponse = generalJsonRestClientAccessor.doProcess(fromNodeUri, "/relationships", ClientResponse.Status.CREATED.getStatusCode(), new RestClientExecuteCallback() {
+			@Override
+			public ClientResponse execute(final WebResource webResource) {
+				return webResource.accept(MediaType.APPLICATION_JSON)
+						.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, createRelationshipsJsonReq);
+			}
+		});
+		return neo4jRestGenericConverter.relationshipsQueryResponseToMap(jsonResponse);
 	}
 
 	/**
@@ -70,9 +114,7 @@ public class Neo4jRestAPIAccessor {
 	 * @return NodeUrl
 	 */
 	public String createUniqueNode(final Object obj, final String label, final String key) throws Exception {
-		Field field = obj.getClass().getDeclaredField(key);
-		field.setAccessible(true);
-		final Object keyValue = field.get(obj);
+		final Object keyValue = getValueByField(obj, key);
 		LOGGER.info("key:{} ", String.valueOf(keyValue));
 		checkArgument(keyValue != null, "uniqueNodeKey can not be null");
 		final Map<String, Object> jsonMap = this.createNodeByObject(obj, label, "p");
@@ -106,7 +148,7 @@ public class Neo4jRestAPIAccessor {
 				});
 			} catch (final Exception e) {
 				if (!StringUtils.isEmpty(nodeUri)) {
-					this.deleteNode(nodeUri);
+					this.deleteNodeByUri(nodeUri);
 				}
 				throw e;
 			}
@@ -114,14 +156,44 @@ public class Neo4jRestAPIAccessor {
 		return nodeUri;
 	}
 
-	public void deleteNode(final String nodeUri) throws Exception {
-		generalJsonRestClientAccessor.delete(nodeUri);
+	/**
+	 * Delete node by nodeUri
+	 * 
+	 * @param nodeUri
+	 * @throws Exception
+	 */
+	public void deleteNodeByUri(final String nodeUri) throws Exception {
+		generalJsonRestClientAccessor.doProcess(nodeUri, null, ClientResponse.Status.NO_CONTENT.getStatusCode(), new RestClientExecuteCallback() {
+			@Override
+			public ClientResponse execute(WebResource webResource) {
+				return webResource.accept(MediaType.APPLICATION_JSON)
+						.delete(ClientResponse.class);
+			}
+		});
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getNodeByUri(final String nodeUri) throws Exception {
+		final String jsonResponse = generalJsonRestClientAccessor.doProcess(nodeUri, null, ClientResponse.Status.OK.getStatusCode(), new RestClientExecuteCallback() {
+			@Override
+			public ClientResponse execute(final WebResource webResource) {
+				return webResource.accept(MediaType.APPLICATION_JSON)
+						.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+			}
+		});
+		return jacksonObjectMapper.readValue(jsonResponse, Map.class);
+	}
+
+	/**
+	 * Cypher Query statement
+	 * 
+	 * @param cypherQueryStatement
+	 * @return
+	 * @throws Exception
+	 */
 	public AbstractCypherQueryResult cypherQuery(final String cypherQueryStatement) throws Exception {
 		return this.cypherQuery(cypherQueryStatement, null);
 	}
-	
 
 	public AbstractCypherQueryResult cypherQuery(final String cypherQueryStatement, final Map<String, Object> queryParameters) throws Exception {
 		final String distinctColumn = this.getDistinctPrefixFromCypherQueryStatement(cypherQueryStatement);
@@ -137,6 +209,15 @@ public class Neo4jRestAPIAccessor {
 		return neo4jRestGenericConverter.cypherQueryRespConvert(responseJson, distinctColumn);
 	}
 
+	/**
+	 * Create Node via Model
+	 * 
+	 * @param obj
+	 * @param label
+	 * @param returnPrefix
+	 * @return
+	 * @throws Exception
+	 */
 	public Map<String, Object> createNodeByObject(final Object obj, final String label, final String returnPrefix) throws Exception {
 		final String createStatement = neo4jRestGenericConverter.modelToCreateStatement(obj, label, returnPrefix);
 		return this.createNode(createStatement);
@@ -186,34 +267,51 @@ public class Neo4jRestAPIAccessor {
 		}
 		return null;
 	}
-	
+
 	public Integer getCountFromQueryStatement(final String cypherQueryStatement) throws Exception {
-		return this.getCountFromQueryStatement(cypherQueryStatement,null);
+		return this.getCountFromQueryStatement(cypherQueryStatement, null);
 	}
-	
-	public Integer getCountFromQueryStatement(final String cypherQueryStatement,final Map<String, Object> queryParameters) throws Exception {
+
+	/**
+	 * 
+	 * @param cypherQueryStatement
+	 * @param queryParameters
+	 * @return
+	 * @throws Exception
+	 */
+	public Integer getCountFromQueryStatement(final String cypherQueryStatement, final Map<String, Object> queryParameters) throws Exception {
 		Integer count = 0;
 		String countQueryStatement = null;
 		int returnIndex = cypherQueryStatement.indexOf("RETURN");
-		if(returnIndex != -1){
-			 countQueryStatement =cypherQueryStatement.substring(0,returnIndex)+" RETURN COUNT(*) as total";
-		}else{
-			countQueryStatement =cypherQueryStatement+" RETURN COUNT(*) as total";
+		if (returnIndex != -1) {
+			countQueryStatement = cypherQueryStatement.substring(0, returnIndex) + " RETURN COUNT(*) as total";
+		} else {
+			countQueryStatement = cypherQueryStatement + " RETURN COUNT(*) as total";
 		}
-		
+
 		final AbstractCypherQueryResult result = this.cypherQuery(countQueryStatement, queryParameters);
 		Set<String> countResultSet = result.getDataColumnMap().get("total");
-		if(countResultSet != null && !countResultSet.isEmpty()){
-			count = Integer.valueOf((String)countResultSet.toArray()[0]);
+		if (countResultSet != null && !countResultSet.isEmpty()) {
+			count = Integer.valueOf((String) countResultSet.toArray()[0]);
 		}
 		return count;
 	}
-	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement,final int pageOffset, final int pageSize)throws Exception{
+
+	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement, final int pageOffset, final int pageSize) throws Exception {
 		return this.paginationThruQueryStatement(cypherQueryStatement, pageOffset, pageSize, null);
 	}
-	
-	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement,final int pageOffset, final int pageSize, final Map<String, Object> queryParameters)throws Exception{
-		final String paginationQueryStatement = cypherQueryStatement+" SKIP "+pageOffset+" LIMIT "+pageSize;
+
+	/**
+	 * 
+	 * @param cypherQueryStatement
+	 * @param pageOffset
+	 * @param pageSize
+	 * @param queryParameters
+	 * @return
+	 * @throws Exception
+	 */
+	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement, final int pageOffset, final int pageSize, final Map<String, Object> queryParameters) throws Exception {
+		final String paginationQueryStatement = cypherQueryStatement + " SKIP " + pageOffset + " LIMIT " + pageSize;
 		return this.cypherQuery(paginationQueryStatement, queryParameters);
 	}
 

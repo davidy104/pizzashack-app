@@ -7,7 +7,7 @@ import nz.co.pizzashack.model.Pizzashack;
 
 public interface PizzashackRepository {
 
-	String create(String pizzashackId, Pizzashack addPizzashack) throws Exception;
+	String create(Pizzashack addPizzashack) throws Exception;
 
 	Pizzashack getById(String pizzashackId) throws Exception;
 
@@ -16,6 +16,6 @@ public interface PizzashackRepository {
 	void deleteById(String pizzashackId) throws Exception;
 
 	Set<Pizzashack> getAll() throws Exception;
-	
-	Page<Pizzashack> paginateAll(int pageOffset,int pageSize)throws Exception;
+
+	Page<Pizzashack> paginateAll(int pageOffset, int pageSize) throws Exception;
 }

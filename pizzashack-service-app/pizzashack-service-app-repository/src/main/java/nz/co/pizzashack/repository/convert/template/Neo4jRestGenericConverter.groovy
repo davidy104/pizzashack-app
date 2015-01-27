@@ -39,6 +39,28 @@ class Neo4jRestGenericConverter {
 	}
 
 	/**
+	 * @format
+	 * {
+	 "to" : "http://localhost:7474/db/data/node/19",
+	 "type" : "LOVES",
+	 "data" : {
+	 "foo" : "bar"
+	 }
+	 }
+	 * @param toNodeUri
+	 * @param relationshipType
+	 * @param propertiesMap
+	 * @return
+	 */
+	String createRelationshipsConvert(final String toNodeUri,final String relationshipType,final Map<String,String> propertiesMap){
+		if(propertiesMap){
+			return JsonOutput.toJson([to: toNodeUri,type: relationshipType, data: propertiesMap])
+		} else{
+			return JsonOutput.toJson([to: toNodeUri,type: relationshipType])
+		}
+	}
+
+	/**
 	 * @format 
 	 * {
 	 "statements" : [ {
@@ -221,5 +243,44 @@ class Neo4jRestGenericConverter {
 			return transCreateStatementsConvert([objCreateStatement] as String[])
 		}
 		return resultString
+	}
+
+	/**
+	 * @format
+	 * {
+	 "extensions" : {},
+	 "start" : "http://localhost:7474/db/data/node/10",
+	 "property" : "http://localhost:7474/db/data/relationship/3/properties/{key}",
+	 "self" : "http://localhost:7474/db/data/relationship/3",
+	 "properties" : "http://localhost:7474/db/data/relationship/3/properties",
+	 "type" : "LOVES",
+	 "end" : "http://localhost:7474/db/data/node/9",
+	 "metadata" : {
+	 "id" : 3,
+	 "type" : "LOVES"},
+	 "data" : {}
+	 }
+	 * @return <relationshipsId, <field, value>>
+	 */
+	Map<String,Map<String,String>> relationshipsQueryResponseToMap(final String jsonResp){
+		Map resultMap = [:]
+		Object metaResult = jsonSlurper.parseText(jsonResp)
+		if(metaResult instanceof Map){
+			this.doRelationshipsQueryResponseToMap((Map)metaResult, resultMap)
+		} else if(metaResult instanceof List){
+			((List)metaResult).each{
+				this.doRelationshipsQueryResponseToMap(it, resultMap)
+			}
+		}
+		return resultMap
+	}
+
+	void doRelationshipsQueryResponseToMap(Map<String,Object> singleRelationshipMetaMap,Map resultMap){
+		Map<String,String> dataMap = [:]
+		String relationshipId = singleRelationshipMetaMap.get('self')
+		dataMap.put("start", singleRelationshipMetaMap.get('start'))
+		dataMap.put("end", singleRelationshipMetaMap.get('end'))
+		dataMap.put("type", singleRelationshipMetaMap.get('type'))
+		resultMap.put(relationshipId, dataMap)
 	}
 }

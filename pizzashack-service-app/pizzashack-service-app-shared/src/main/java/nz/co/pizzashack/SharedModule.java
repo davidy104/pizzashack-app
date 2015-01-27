@@ -2,6 +2,9 @@ package nz.co.pizzashack;
 
 import groovy.json.JsonBuilder;
 import groovy.json.JsonSlurper;
+
+import java.util.concurrent.Executors;
+
 import nz.co.pizzashack.config.ConfigurationService;
 
 import com.amazonaws.ClientConfiguration;
@@ -15,12 +18,15 @@ import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.eventbus.AsyncEventBus;
+import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.filter.LoggingFilter;
 import com.sun.jersey.api.json.JSONConfiguration;
@@ -29,14 +35,18 @@ public class SharedModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(Client.class).toProvider(JerseyClientProvider.class)
-				.asEagerSingleton();
-		bind(AmazonS3.class).toProvider(AmazonS3Provider.class)
-				.asEagerSingleton();
-		bind(AmazonSQS.class).toProvider(AmazonSQSProvider.class)
-				.asEagerSingleton();
-		bind(AmazonSNSClient.class).toProvider(AmazonSNSClientProvider.class)
-				.asEagerSingleton();
+		bind(EventBus.class).annotatedWith(Names.named("integrationEventBus")).toProvider(IntegrationEventBusProvider.class).asEagerSingleton();
+		bind(Client.class).toProvider(JerseyClientProvider.class).asEagerSingleton();
+		bind(AmazonS3.class).toProvider(AmazonS3Provider.class).asEagerSingleton();
+		bind(AmazonSQS.class).toProvider(AmazonSQSProvider.class).asEagerSingleton();
+		bind(AmazonSNSClient.class).toProvider(AmazonSNSClientProvider.class).asEagerSingleton();
+	}
+
+	public static class IntegrationEventBusProvider implements Provider<EventBus> {
+		@Override
+		public EventBus get() {
+			return new AsyncEventBus(Executors.newCachedThreadPool());
+		}
 	}
 
 	@Provides

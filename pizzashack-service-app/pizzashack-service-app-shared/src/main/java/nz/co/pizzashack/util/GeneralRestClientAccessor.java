@@ -34,17 +34,26 @@ public class GeneralRestClientAccessor {
 	public String process(String path, final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters, final int expectedStatus,
 			final RestClientExecuteCallback restClientCallback, final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
 		checkArgument(!StringUtils.isEmpty(path), "path can not be null");
+		return this.doProcess(hostUri, path, emunQueryParameters, expectedStatus, restClientCallback, customErrorHandlers);
+	}
+
+	public String doProcess(final String resource, String path, final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters, final int expectedStatus,
+			final RestClientExecuteCallback restClientCallback, final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
+		checkArgument(!StringUtils.isEmpty(resource), "resource can not be null");
 		checkArgument(restClientCallback != null, "restClientCallback can not be null");
-		WebResource webResource = jerseyClient.resource(hostUri);
+		WebResource webResource = jerseyClient.resource(resource);
 		if (!MapUtils.isEmpty(emunQueryParameters)) {
 			for (Map.Entry<? extends AbstractEnumQueryParameter, String> entry : emunQueryParameters.entrySet()) {
 				webResource = webResource.queryParam(entry.getKey().name(), entry.getValue());
 			}
 		}
-		if (path.lastIndexOf('/') == path.length() - 1) {
-			path = path.substring(0, path.lastIndexOf('/'));
+		if (!StringUtils.isEmpty(path)) {
+			if (path.lastIndexOf('/') == path.length() - 1) {
+				path = path.substring(0, path.lastIndexOf('/'));
+			}
+			webResource = webResource.path(path);
 		}
-		webResource = webResource.path(path);
+
 		final ClientResponse clientResponse = restClientCallback.execute(webResource);
 		final int statusCode = clientResponse.getStatusInfo().getStatusCode();
 		final String respStr = getResponsePayload(clientResponse);
@@ -57,8 +66,22 @@ public class GeneralRestClientAccessor {
 	public String process(final String path, final int expectedStatus, final RestClientExecuteCallback restClientCallback,
 			final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
 		checkArgument(!StringUtils.isEmpty(path), "path can not be null");
+		return this.doProcess(hostUri, path, expectedStatus, restClientCallback, customErrorHandlers);
+	}
+
+	public String doProcess(String resource, String path, final int expectedStatus, final RestClientExecuteCallback restClientCallback,
+			final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
+		checkArgument(!StringUtils.isEmpty(resource), "resource can not be null");
 		checkArgument(restClientCallback != null, "restClientCallback can not be null");
-		WebResource webResource = jerseyClient.resource(hostUri).path(path);
+		WebResource webResource = jerseyClient.resource(resource);
+
+		if (!StringUtils.isEmpty(path)) {
+			if (path.lastIndexOf('/') == path.length() - 1) {
+				path = path.substring(0, path.lastIndexOf('/'));
+			}
+			webResource = webResource.path(path);
+		}
+
 		final ClientResponse clientResponse = restClientCallback.execute(webResource);
 		final int statusCode = clientResponse.getStatusInfo().getStatusCode();
 		final String respStr = getResponsePayload(clientResponse);
@@ -84,4 +107,13 @@ public class GeneralRestClientAccessor {
 			}
 		}
 	}
+
+	public Client getJerseyClient() {
+		return jerseyClient;
+	}
+
+	public String getHostUri() {
+		return hostUri;
+	}
+
 }

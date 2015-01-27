@@ -3,7 +3,7 @@ package nz.co.pizzashack.repository.test;
 import static org.junit.Assert.*
 import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
-import nz.co.pizzashack.model.Pizzashack
+import nz.co.pizzashack.model.Pizzashack;
 
 import org.junit.Test
 
