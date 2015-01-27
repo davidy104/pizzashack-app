@@ -1,13 +1,33 @@
 package nz.co.pizzashack.repository.test;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+
+import nz.co.pizzashack.model.Pizzashack;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JacksonTest {
+	
+	@Test
+	public void testModelToJson() throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		Pizzashack pizzashack = new Pizzashack.Builder().pizzaName("Chicken Parmesan")
+				.pizzashackId("P-0f4b1e88-a3a9-419a-b42b-0312059fc0b3")
+				.price(new BigDecimal("35.00"))
+				.nodeUri("http://localhost:7575/db/data/node/12456")
+				.description("Grilled chicken, fresh tomatoes, feta and mozzarella cheese").build();
+		
+		System.out.println(pizzashack);
+		
+		String json = objectMapper.writeValueAsString(pizzashack);
+		System.out.println(json);
+		
+	}
 
 	@SuppressWarnings({ "unchecked" })
 	@Test

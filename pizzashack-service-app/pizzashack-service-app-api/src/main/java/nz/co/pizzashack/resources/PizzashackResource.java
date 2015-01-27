@@ -15,7 +15,9 @@ import nz.co.pizzashack.repository.PizzashackRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 
 @Path("/pizzashack")
@@ -25,6 +27,10 @@ public class PizzashackResource {
 
 	@Inject
 	private PizzashackRepository pizzashackRepository;
+	
+	@Inject
+	@Named("jacksonObjectMapper")
+	private ObjectMapper jacksonObjectMapper;
 
 	@GET
 	public Response doGet() {
@@ -38,6 +44,6 @@ public class PizzashackResource {
 	public Response list() throws Exception {
 		LOGGER.info("list start..");
 		final Set<Pizzashack> pizzashacks = pizzashackRepository.getAll();
-		return Response.ok(pizzashacks).type(MediaType.APPLICATION_JSON).build();
+		return Response.ok(jacksonObjectMapper.writeValueAsString(pizzashacks)).type(MediaType.APPLICATION_JSON).build();
 	}
 }
