@@ -6,7 +6,7 @@
 	<display-name>Pizzashack</display-name>
 
 	<listener>
-		<listener-class>nz.co.pizzashack.Bootstrap</listener-class>
+		<listener-class>nz.co.pizzashack.BootStrap</listener-class>
 	</listener>
 
 	<servlet>

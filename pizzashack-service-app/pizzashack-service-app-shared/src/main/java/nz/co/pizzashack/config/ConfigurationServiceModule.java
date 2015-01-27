@@ -23,7 +23,7 @@ public class ConfigurationServiceModule extends AbstractModule {
 			properties.load(new FileReader(Resources.getResource("pizzashack.properties").getFile()));
 			Names.bindProperties(binder(), properties);
 		} catch (final FileNotFoundException e) {
-			LOGGER.error("The configuration file image.properties can not be found", e);
+			LOGGER.error("The configuration file pizzashack.properties can not be found", e);
 		} catch (final IOException e) {
 			LOGGER.error("I/O Exception during loading configuration", e);
 		}
