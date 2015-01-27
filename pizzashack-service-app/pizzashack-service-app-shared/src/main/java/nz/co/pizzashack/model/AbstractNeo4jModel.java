@@ -5,9 +5,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class AbstractNeo4jModel {
-	@JsonIgnore
+
 	public String nodeUri;
 
+	@JsonIgnore
 	public String getNodeUri() {
 		return nodeUri;
 	}
