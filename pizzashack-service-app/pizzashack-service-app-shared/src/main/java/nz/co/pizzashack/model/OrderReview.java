@@ -129,6 +129,7 @@ public class OrderReview extends AbstractNeo4jModel {
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
+				.append("nodeUri", nodeUri)
 				.append("orderNo", orderNo)
 				.append("content", content)
 				.append("reviewStatus", reviewStatus)
