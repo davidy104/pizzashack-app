@@ -67,6 +67,7 @@ public class RepositoryModule extends AbstractModule {
 	}
 
 	public static class GeneralJsonRestClientAccessorProvider implements Provider<GeneralJsonRestClientAccessor> {
+		
 		@Inject
 		private Client jerseyClient;
 
