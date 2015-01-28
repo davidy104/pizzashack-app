@@ -56,7 +56,7 @@ public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String>
 	}
 
 	@Override
-	public void updateById(final String pizzashackId, final Pizzashack updatePizzashack) throws Exception {
+	public void updateById(final Pizzashack updatePizzashack) throws Exception {
 		this.updateBasicById(updatePizzashack, pizzashackModelToJsonConverter);
 	}
 

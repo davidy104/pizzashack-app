@@ -5,8 +5,11 @@ import java.util.Date;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-public abstract class Person extends AbstractNeo4jModel {
+@JsonInclude(Include.NON_EMPTY)
+public class Person extends AbstractNeo4jModel {
 	protected String lastName;
 	protected String firstName;
 

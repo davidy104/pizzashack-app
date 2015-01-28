@@ -14,7 +14,7 @@ public interface UserRepository {
 
 	User getByNameAndPwd(String userName, String password) throws Exception;
 
-	void updateByName(String userName, User updateUser) throws Exception;
+	void updateByName(User updateUser) throws Exception;
 
 	void deleteByName(String userName) throws Exception;
 }
