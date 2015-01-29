@@ -11,7 +11,7 @@ public interface PizzashackRepository {
 
 	Pizzashack getById(String pizzashackId) throws Exception;
 
-	void updateById(Pizzashack updatePizzashack) throws Exception;
+	void update(Pizzashack updatePizzashack) throws Exception;
 
 	void deleteById(String pizzashackId) throws Exception;
 

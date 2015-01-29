@@ -1,6 +1,6 @@
 package nz.co.pizzashack.test.repository;
 
-import static nz.co.pizzashack.test.TestUtils.initPizzashackFromFile;
+import static nz.co.pizzashack.PizzashackInitUtils.initPizzashackFromFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -69,8 +69,8 @@ public class PizzashackRepositoryIntegrationTest {
 
 	@Test
 	public void testCRUD() throws Exception {
-		final String pizzashackId = "P-"+UUID.randomUUID().toString();
-		
+		final String pizzashackId = "P-" + UUID.randomUUID().toString();
+
 		final String nodeUri = pizzashackRepository.create(new Pizzashack.Builder().pizzaName("testPizzaname").pizzashackId(pizzashackId).description("testDesc").build());
 		LOGGER.info("nodeUri:{} ", nodeUri);
 
@@ -80,7 +80,7 @@ public class PizzashackRepositoryIntegrationTest {
 		found.setDescription("updateDesc");
 		found.setPizzaName("updatePizzaname");
 		found.setIcon("updateIcon");
-		pizzashackRepository.updateById(pizzashackId, found);
+		pizzashackRepository.update(found);
 
 		found = pizzashackRepository.getById(pizzashackId);
 		LOGGER.info("after update---------------:{} ", found);

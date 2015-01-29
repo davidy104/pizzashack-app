@@ -6,9 +6,12 @@ import groovy.json.JsonSlurper;
 import java.util.Map;
 
 import nz.co.pizzashack.model.Pizzashack;
+import nz.co.pizzashack.model.User;
 import nz.co.pizzashack.repository.convert.PizzashackMetaMapToModel;
 import nz.co.pizzashack.repository.convert.PizzashackModelToJson;
 import nz.co.pizzashack.repository.convert.PizzashackQueryNodeToModel;
+import nz.co.pizzashack.repository.convert.UserMetaMapToModel;
+import nz.co.pizzashack.repository.convert.UserModelToJson;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
 import nz.co.pizzashack.repository.convert.template.Neo4jRestGenericConverter;
 import nz.co.pizzashack.repository.impl.PizzashackRepositoryImpl;
@@ -44,7 +47,7 @@ public class RepositoryModule extends AbstractModule {
 	public Neo4jRestGenericConverter neo4jRestGenericConverter(final @Named("jsonBuilder") JsonBuilder jsonBuilder, final @Named("jsonSlurper") JsonSlurper jsonSlurper) {
 		return new Neo4jRestGenericConverter(jsonBuilder, jsonSlurper);
 	}
-	
+
 	@Provides
 	@Singleton
 	@Named("pizzashackMetaMapToModelConverter")
@@ -66,8 +69,22 @@ public class RepositoryModule extends AbstractModule {
 		return new PizzashackModelToJson();
 	}
 
+	@Provides
+	@Singleton
+	@Named("userModelToJsonConverter")
+	public Function<User, String> userModelToJsonConverter() {
+		return new UserModelToJson();
+	}
+
+	@Provides
+	@Singleton
+	@Named("UserMetaMapToModelConverter")
+	public Function<Map<String, String>, User> UserMetaMapToModelConverter() {
+		return new UserMetaMapToModel();
+	}
+
 	public static class GeneralJsonRestClientAccessorProvider implements Provider<GeneralJsonRestClientAccessor> {
-		
+
 		@Inject
 		private Client jerseyClient;
 

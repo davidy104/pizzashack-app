@@ -10,6 +10,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.common.collect.Sets;
@@ -21,7 +22,9 @@ public class Order extends AbstractNeo4jModel {
 	private BigDecimal totalPrice = BigDecimal.ZERO;
 	private String address;
 	private OrderStatus status;
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date orderTime;
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date deliverTime;
 	private Set<OrderDetail> orderDetails = Collections.<OrderDetail> emptySet();
 	private Customer customer;

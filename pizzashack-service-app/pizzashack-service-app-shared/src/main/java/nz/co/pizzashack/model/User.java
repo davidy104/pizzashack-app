@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -14,6 +15,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class User extends AbstractNeo4jModel {
 	private String userName;
 	private String password;
+
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createTime;
 
 	public String getUserName() {

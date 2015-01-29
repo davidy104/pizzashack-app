@@ -220,8 +220,20 @@ class Neo4jRestGenericConverter {
 		return result
 	}
 
+	/**
+	 * 
+	 * @param instance
+	 * @param label
+	 * @param returnPrefix
+	 * @return
+	 */
 	String modelToCreateStatement(final Object instance, final String label,final String returnPrefix){
 		Field[] fields = instance.getClass().getDeclaredFields()
+		Class superClz = instance.getClass().getSuperclass()
+		if(superClz){
+			fields += superClz.getDeclaredFields()
+		}
+		
 		String resultString
 		if(fields){
 			List fieldValueList = []

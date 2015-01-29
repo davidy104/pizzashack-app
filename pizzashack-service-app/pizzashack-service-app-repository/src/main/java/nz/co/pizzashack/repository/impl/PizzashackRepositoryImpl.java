@@ -6,7 +6,6 @@ import java.util.Set;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
 import nz.co.pizzashack.repository.PizzashackRepository;
-import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
 import nz.co.pizzashack.repository.support.Neo4jRestAPIAccessor;
 import nz.co.pizzashack.repository.support.RepositoryBase;
 
@@ -28,10 +27,6 @@ public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String>
 
 	@Inject
 	private Neo4jRestAPIAccessor neo4jRestAPIAccessor;
-
-	@Inject
-	@Named("pizzashackQueryNodeToModelConverter")
-	private Function<AbstractCypherQueryNode, Pizzashack> pizzashackQueryNodeToModelConverter;
 
 	@Inject
 	@Named("pizzashackModelToJsonConverter")
@@ -56,8 +51,8 @@ public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String>
 	}
 
 	@Override
-	public void updateById(final Pizzashack updatePizzashack) throws Exception {
-		this.updateBasicById(updatePizzashack, pizzashackModelToJsonConverter);
+	public void update(final Pizzashack updatePizzashack) throws Exception {
+		this.updateBasic(updatePizzashack, pizzashackModelToJsonConverter);
 	}
 
 	@Override

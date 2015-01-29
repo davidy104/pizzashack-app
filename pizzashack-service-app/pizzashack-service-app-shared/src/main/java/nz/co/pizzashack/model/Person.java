@@ -2,14 +2,15 @@ package nz.co.pizzashack.model;
 
 import java.util.Date;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_EMPTY)
-public class Person extends AbstractNeo4jModel {
+public abstract class Person extends AbstractNeo4jModel {
 	protected String lastName;
 	protected String firstName;
 
@@ -59,7 +60,17 @@ public class Person extends AbstractNeo4jModel {
 	}
 
 	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+	public boolean equals(Object obj) {
+		EqualsBuilder builder = new EqualsBuilder();
+		return builder.append(this.email, ((Person) obj).email)
+				.isEquals();
 	}
+
+	@Override
+	public int hashCode() {
+		HashCodeBuilder builder = new HashCodeBuilder();
+		return builder.append(this.email)
+				.toHashCode();
+	}
+
 }

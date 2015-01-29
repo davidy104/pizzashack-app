@@ -4,17 +4,17 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_EMPTY)
 public class Customer extends Person {
 	private String customerNo;
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createTime;
 	private Set<Order> orders = Collections.<Order> emptySet();
 
@@ -111,21 +111,6 @@ public class Customer extends Person {
 			customer.setUser(user);
 			return customer;
 		}
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		EqualsBuilder builder = new EqualsBuilder();
-		return builder.append(this.customerNo, ((Customer) obj).customerNo)
-				.isEquals();
-	}
-
-	@Override
-	public int hashCode() {
-		HashCodeBuilder builder = new HashCodeBuilder();
-		return builder.append(this.customerNo)
-				.toHashCode();
-
 	}
 
 	@Override

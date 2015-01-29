@@ -83,7 +83,7 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 		return resultSet;
 	}
 
-	protected void updateBasicById(final T updatedModel, final Function<T, String> toJsonConverter) throws Exception {
+	protected void updateBasic(final T updatedModel, final Function<T, String> toJsonConverter) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
 		checkArgument(toJsonConverter != null, "toJsonConverter can not be null");
 		checkArgument(updatedModel != null && getValueByField(updatedModel, uniqueKey) != null, "updatedModel and its unique value can not be null");
