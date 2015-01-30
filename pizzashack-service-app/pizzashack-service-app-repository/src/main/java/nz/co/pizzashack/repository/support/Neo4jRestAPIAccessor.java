@@ -106,6 +106,12 @@ public class Neo4jRestAPIAccessor {
 		return neo4jRestGenericConverter.relationshipsQueryResponseToMap(jsonResponse);
 	}
 
+	public String createUniqueNode(final String objFieldsCreateStatement, final Object obj, final String label, final String key) throws Exception {
+		final String createStatement = neo4jRestGenericConverter.doCreateStatement(objFieldsCreateStatement, label, "p");
+		final Map<String, Object> jsonMap = this.createNode(createStatement);
+		return this.doCreateUniqueNode(jsonMap, obj, key);
+	}
+
 	/**
 	 * 
 	 * @param createStatement
@@ -114,10 +120,15 @@ public class Neo4jRestAPIAccessor {
 	 * @return NodeUrl
 	 */
 	public String createUniqueNode(final Object obj, final String label, final String key) throws Exception {
+		final Map<String, Object> jsonMap = this.createNodeByObject(obj, label, "p");
+		return this.doCreateUniqueNode(jsonMap, obj, key);
+	}
+
+	private String doCreateUniqueNode(final Map<String, Object> jsonMap, final Object obj, final String key) throws Exception {
 		final Object keyValue = getValueByField(obj, key);
 		LOGGER.info("key:{} ", String.valueOf(keyValue));
 		checkArgument(keyValue != null, "uniqueNodeKey can not be null");
-		final Map<String, Object> jsonMap = this.createNodeByObject(obj, label, "p");
+
 		String nodeUri = null;
 		Map<String, String> columnAndUriMap = neo4jRestGenericConverter.transCypherRestFormatResponseConvert(jsonMap);
 		if (!columnAndUriMap.isEmpty()) {

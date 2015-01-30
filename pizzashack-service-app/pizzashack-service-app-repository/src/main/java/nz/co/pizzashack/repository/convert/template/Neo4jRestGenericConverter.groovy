@@ -233,7 +233,7 @@ class Neo4jRestGenericConverter {
 		if(superClz){
 			fields += superClz.getDeclaredFields()
 		}
-		
+
 		String resultString
 		if(fields){
 			List fieldValueList = []
@@ -246,15 +246,20 @@ class Neo4jRestGenericConverter {
 				}
 			}
 			String objectString = Joiner.on(",").join(fieldValueList)
-			def objCreateStatement
-			if(returnPrefix){
-				objCreateStatement = "CREATE (${returnPrefix}:${label}{${objectString}}) RETURN ${returnPrefix}"
-			}else{
-				objCreateStatement = "CREATE (:${label}{${objectString}})"
-			}
-			return transCreateStatementsConvert([objCreateStatement] as String[])
+			return doCreateStatement(objectString, label, returnPrefix)
 		}
 		return resultString
+	}
+
+
+	String doCreateStatement(final String objectFieldsCreateStatement,final String label,final String returnPrefix){
+		def objCreateStatement
+		if(returnPrefix){
+			objCreateStatement = "CREATE (${returnPrefix}:${label}{${objectFieldsCreateStatement}}) RETURN ${returnPrefix}"
+		}else{
+			objCreateStatement = "CREATE (:${label}{${objectFieldsCreateStatement}})"
+		}
+		return transCreateStatementsConvert([objCreateStatement] as String[])
 	}
 
 	/**

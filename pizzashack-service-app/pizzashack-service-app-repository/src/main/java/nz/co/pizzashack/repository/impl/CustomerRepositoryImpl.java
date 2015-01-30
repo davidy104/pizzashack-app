@@ -1,60 +1,65 @@
 package nz.co.pizzashack.repository.impl;
 
+import java.util.Map;
 import java.util.Set;
 
 import nz.co.pizzashack.model.Customer;
 import nz.co.pizzashack.model.Page;
-import nz.co.pizzashack.model.Person;
 import nz.co.pizzashack.repository.CustomerRepository;
+import nz.co.pizzashack.repository.convert.CustomerModelToCreateStatement;
 import nz.co.pizzashack.repository.support.Neo4jRestAPIAccessor;
 import nz.co.pizzashack.repository.support.RepositoryBase;
 
-public class CustomerRepositoryImpl extends RepositoryBase<Person, String> implements CustomerRepository {
+import com.google.common.base.Function;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
+public class CustomerRepositoryImpl extends RepositoryBase<Customer, String> implements CustomerRepository {
+
+	@Inject
+	private Neo4jRestAPIAccessor neo4jRestAPIAccessor;
+
+	@Inject
+	@Named("customerMetaMapToModelConverter")
+	private Function<Map<String, String>, Customer> customerMetaMapToModelConverter;
 
 	public CustomerRepositoryImpl() {
-		super("customerNo", Person.class);
+		super("Person", "customerNo");
 	}
 
 	@Override
-	public String create(Customer addCustomer) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public String create(final Customer addCustomer) throws Exception {
+		return this.createUnique(addCustomer, new CustomerModelToCreateStatement());
 	}
 
 	@Override
-	public Customer getByCustomerNo(String customerNo) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public Customer getByCustomerNo(final String customerNo) throws Exception {
+		return this.getBasicById(customerNo, customerMetaMapToModelConverter);
 	}
 
 	@Override
 	public Set<Customer> getAll() throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Page<Customer> paginateAll() throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void update(Customer updateCustomer) throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void deleteByCustomerNo(String customerNo) throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected Neo4jRestAPIAccessor getNeo4jRestAPIAccessor() {
-		// TODO Auto-generated method stub
-		return null;
+		return neo4jRestAPIAccessor;
 	}
 
 }

@@ -33,12 +33,17 @@ public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String>
 	private Function<Map<String, String>, Pizzashack> pizzashackMetaMapToModelConverter;
 
 	public PizzashackRepositoryImpl() {
-		super("pizzashackId", Pizzashack.class);
+		super("Pizzashack", "pizzashackId");
 	}
 
 	@Override
 	protected Neo4jRestAPIAccessor getNeo4jRestAPIAccessor() {
 		return neo4jRestAPIAccessor;
+	}
+
+	@Override
+	public String create(final Pizzashack addPizzashack) throws Exception {
+		return this.createUnique(addPizzashack);
 	}
 
 	@Override

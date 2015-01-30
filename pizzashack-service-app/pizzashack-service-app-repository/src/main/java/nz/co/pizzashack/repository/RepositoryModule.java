@@ -5,14 +5,18 @@ import groovy.json.JsonSlurper;
 
 import java.util.Map;
 
+import nz.co.pizzashack.model.Customer;
 import nz.co.pizzashack.model.Pizzashack;
 import nz.co.pizzashack.model.User;
+import nz.co.pizzashack.repository.convert.CustomerMetaMapToModel;
 import nz.co.pizzashack.repository.convert.PizzashackMetaMapToModel;
 import nz.co.pizzashack.repository.convert.PizzashackQueryNodeToModel;
 import nz.co.pizzashack.repository.convert.UserMetaMapToModel;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
 import nz.co.pizzashack.repository.convert.template.Neo4jRestGenericConverter;
+import nz.co.pizzashack.repository.impl.CustomerRepositoryImpl;
 import nz.co.pizzashack.repository.impl.PizzashackRepositoryImpl;
+import nz.co.pizzashack.repository.impl.UserRepositoryImpl;
 import nz.co.pizzashack.repository.support.Neo4jRestAPIAccessor;
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
 
@@ -38,6 +42,8 @@ public class RepositoryModule extends AbstractModule {
 				.asEagerSingleton();
 		bind(Neo4jRestAPIAccessor.class).asEagerSingleton();
 		bind(PizzashackRepository.class).to(PizzashackRepositoryImpl.class).asEagerSingleton();
+		bind(UserRepository.class).to(UserRepositoryImpl.class).asEagerSingleton();
+		bind(CustomerRepository.class).to(CustomerRepositoryImpl.class).asEagerSingleton();
 	}
 
 	@Provides
@@ -62,9 +68,16 @@ public class RepositoryModule extends AbstractModule {
 
 	@Provides
 	@Singleton
-	@Named("UserMetaMapToModelConverter")
-	public Function<Map<String, String>, User> UserMetaMapToModelConverter() {
+	@Named("userMetaMapToModelConverter")
+	public Function<Map<String, String>, User> userMetaMapToModelConverter() {
 		return new UserMetaMapToModel();
+	}
+
+	@Provides
+	@Singleton
+	@Named("customerMetaMapToModelConverter")
+	public Function<Map<String, String>, Customer> customerMetaMapToModelConverter() {
+		return new CustomerMetaMapToModel();
 	}
 
 	public static class GeneralJsonRestClientAccessorProvider implements Provider<GeneralJsonRestClientAccessor> {

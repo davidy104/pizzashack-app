@@ -1,7 +1,7 @@
 package nz.co.pizzashack.repository.convert;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import static nz.co.pizzashack.util.GenericUtils.parseToDate;
+
 import java.util.Map;
 
 import nz.co.pizzashack.model.User;
@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Function;
 
 public class UserMetaMapToModel implements Function<Map<String, String>, User> {
-	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
 	@Override
 	public User apply(Map<String, String> inputMap) {
@@ -21,13 +20,9 @@ public class UserMetaMapToModel implements Function<Map<String, String>, User> {
 					.userName(inputMap.get("userName"))
 					.password(inputMap.get("password"))
 					.build();
-			try {
-				final String createTimeStr = inputMap.get("createTime");
-				if (!StringUtils.isEmpty(createTimeStr)) {
-					result.setCreateTime(FORMAT.parse(createTimeStr));
-				}
-			} catch (final ParseException e) {
-				throw new RuntimeException(e);
+			final String createTimeStr = inputMap.get("createTime");
+			if (!StringUtils.isEmpty(createTimeStr)) {
+				result.setCreateTime(parseToDate("yyyy-MM-dd hh:mm:ss", createTimeStr));
 			}
 		}
 		return result;

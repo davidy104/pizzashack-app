@@ -27,11 +27,11 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 	private Neo4jRestAPIAccessor neo4jRestAPIAccessor;
 
 	@Inject
-	@Named("UserMetaMapToModelConverter")
-	private Function<Map<String, String>, User> UserMetaMapToModelConverter;
+	@Named("userMetaMapToModelConverter")
+	private Function<Map<String, String>, User> userMetaMapToModelConverter;
 
 	public UserRepositoryImpl() {
-		super("userName", User.class);
+		super("User", "userName");
 	}
 
 	@Override
@@ -40,15 +40,21 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 	}
 
 	@Override
+	public String create(User addUser) throws Exception {
+		return this.createUnique(addUser);
+	}
+
+	@Override
 	public Set<User> getAll() throws Exception {
-		return this.getBasicAll(UserMetaMapToModelConverter);
+		return this.getBasicAll(userMetaMapToModelConverter);
 	}
 
 	@Override
 	public User getByName(final String userName) throws Exception {
-		return this.getBasicById(userName, UserMetaMapToModelConverter);
+		return this.getBasicById(userName, userMetaMapToModelConverter);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public User getByNameAndPwd(final String userName, final String password) throws Exception {
 		User found = null;
@@ -65,7 +71,7 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 			if (metaMap != null && !metaMap.isEmpty()) {
 				final String nodeUri = (String) metaMap.keySet().toArray()[0];
 				final Map<String, String> fieldValueMap = (Map<String, String>) metaMap.values().toArray()[0];
-				found = UserMetaMapToModelConverter.apply(fieldValueMap);
+				found = userMetaMapToModelConverter.apply(fieldValueMap);
 				found.setNodeUri(nodeUri);
 			}
 		}
@@ -84,7 +90,7 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 
 	@Override
 	public Page<User> paginateAll(final int pageOffset, final int pageSize) throws Exception {
-		return this.paginationBasic(pageOffset, pageSize, UserMetaMapToModelConverter);
+		return this.paginationBasic(pageOffset, pageSize, userMetaMapToModelConverter);
 	}
 
 }
