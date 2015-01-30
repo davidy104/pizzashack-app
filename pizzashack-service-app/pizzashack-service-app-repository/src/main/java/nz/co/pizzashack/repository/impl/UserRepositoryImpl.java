@@ -80,7 +80,7 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 
 	@Override
 	public void update(final User updateUser) throws Exception {
-		this.updateBasic(updateUser);
+		this.updateBasicById(updateUser);
 	}
 
 	@Override

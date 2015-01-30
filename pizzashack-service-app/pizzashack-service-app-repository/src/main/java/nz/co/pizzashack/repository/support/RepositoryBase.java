@@ -95,14 +95,25 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 		return resultSet;
 	}
 
-	protected void updateBasic(final T updatedModel) throws Exception {
+	protected void updateBasicById(final T updatedModel) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
 		checkArgument(updatedModel != null && getValueByField(updatedModel, uniqueKey) != null, "updatedModel and its unique value can not be null");
+		this.doUpdateBasicById(getValueByField(updatedModel, uniqueKey), updatedModel);
+	}
+
+	protected void updateBasicById(final T updatedModel, final Function<T, Map<String, String>> toUpdateStatementConverter) throws Exception {
+		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
+		checkArgument(updatedModel != null && getValueByField(updatedModel, uniqueKey) != null, "updatedModel and its unique value can not be null");
+		checkArgument(toUpdateStatementConverter != null, "toUpdateStatementConverter can not be null");
+		this.doUpdateBasicById(getValueByField(updatedModel, uniqueKey), toUpdateStatementConverter.apply(updatedModel));
+	}
+
+	private void doUpdateBasicById(final Object uniqueKeyValue, final Object props) throws Exception {
 		final String updateJson = "MATCH (p:" + label + "{" + uniqueKey + ":{" + uniqueKey + "}}) SET p = { props }";
 		this.getNeo4jRestAPIAccessor().cypherQuery(updateJson,
 				Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
-						.put(uniqueKey, getValueByField(updatedModel, uniqueKey))
-						.put("props", updatedModel)
+						.put(uniqueKey, uniqueKeyValue)
+						.put("props", props)
 						.build()));
 	}
 

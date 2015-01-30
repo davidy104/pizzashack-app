@@ -53,7 +53,7 @@ public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String>
 
 	@Override
 	public void update(final Pizzashack updatePizzashack) throws Exception {
-		this.updateBasic(updatePizzashack);
+		this.updateBasicById(updatePizzashack);
 	}
 
 	@Override
