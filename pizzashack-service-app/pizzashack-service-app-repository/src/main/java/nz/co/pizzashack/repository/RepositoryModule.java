@@ -8,10 +8,8 @@ import java.util.Map;
 import nz.co.pizzashack.model.Pizzashack;
 import nz.co.pizzashack.model.User;
 import nz.co.pizzashack.repository.convert.PizzashackMetaMapToModel;
-import nz.co.pizzashack.repository.convert.PizzashackModelToJson;
 import nz.co.pizzashack.repository.convert.PizzashackQueryNodeToModel;
 import nz.co.pizzashack.repository.convert.UserMetaMapToModel;
-import nz.co.pizzashack.repository.convert.UserModelToJson;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
 import nz.co.pizzashack.repository.convert.template.Neo4jRestGenericConverter;
 import nz.co.pizzashack.repository.impl.PizzashackRepositoryImpl;
@@ -60,20 +58,6 @@ public class RepositoryModule extends AbstractModule {
 	@Named("pizzashackQueryNodeToModelConverter")
 	public Function<AbstractCypherQueryNode, Pizzashack> pizzashackQueryNodeToModelConverter(final @Named("pizzashackMetaMapToModelConverter") Function<Map<String, String>, Pizzashack> pizzashackMetaMapToModelConverter) {
 		return new PizzashackQueryNodeToModel(pizzashackMetaMapToModelConverter);
-	}
-
-	@Provides
-	@Singleton
-	@Named("pizzashackModelToJsonConverter")
-	public Function<Pizzashack, String> pizzashackModelToJsonConverter() {
-		return new PizzashackModelToJson();
-	}
-
-	@Provides
-	@Singleton
-	@Named("userModelToJsonConverter")
-	public Function<User, String> userModelToJsonConverter() {
-		return new UserModelToJson();
 	}
 
 	@Provides

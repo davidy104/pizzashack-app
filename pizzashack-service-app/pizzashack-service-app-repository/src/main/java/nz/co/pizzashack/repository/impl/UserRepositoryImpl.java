@@ -30,10 +30,6 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 	@Named("UserMetaMapToModelConverter")
 	private Function<Map<String, String>, User> UserMetaMapToModelConverter;
 
-	@Inject
-	@Named("userModelToJsonConverter")
-	private Function<User, String> userModelToJsonConverter;
-
 	public UserRepositoryImpl() {
 		super("userName", User.class);
 	}
@@ -78,7 +74,7 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 
 	@Override
 	public void update(final User updateUser) throws Exception {
-		this.updateBasic(updateUser, userModelToJsonConverter);
+		this.updateBasic(updateUser);
 	}
 
 	@Override

@@ -29,10 +29,6 @@ public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String>
 	private Neo4jRestAPIAccessor neo4jRestAPIAccessor;
 
 	@Inject
-	@Named("pizzashackModelToJsonConverter")
-	private Function<Pizzashack, String> pizzashackModelToJsonConverter;
-
-	@Inject
 	@Named("pizzashackMetaMapToModelConverter")
 	private Function<Map<String, String>, Pizzashack> pizzashackMetaMapToModelConverter;
 
@@ -52,7 +48,7 @@ public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String>
 
 	@Override
 	public void update(final Pizzashack updatePizzashack) throws Exception {
-		this.updateBasic(updatePizzashack, pizzashackModelToJsonConverter);
+		this.updateBasic(updatePizzashack);
 	}
 
 	@Override
