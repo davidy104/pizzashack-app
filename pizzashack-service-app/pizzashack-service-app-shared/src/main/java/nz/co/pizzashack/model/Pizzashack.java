@@ -9,13 +9,19 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_EMPTY)
 public class Pizzashack extends AbstractNeo4jModel {
+	@JsonProperty
 	private String pizzashackId;
+	@JsonProperty
 	private String pizzaName;
+	@JsonProperty
 	private String description;
+	@JsonProperty
 	private BigDecimal price;
+	@JsonProperty
 	private String icon;
 
 	public Pizzashack() {

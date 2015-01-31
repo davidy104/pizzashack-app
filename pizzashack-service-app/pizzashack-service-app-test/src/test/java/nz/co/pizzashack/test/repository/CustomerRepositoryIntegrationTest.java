@@ -27,19 +27,31 @@ public class CustomerRepositoryIntegrationTest {
 	private CustomerRepository customerRepository;
 
 	@Test
-	public void testCreate() throws Exception {
+	public void testCRUD() throws Exception {
 		final String customerNo = "CUST-" + UUID.randomUUID().toString();
 		Customer customer = new Customer.Builder()
 				.email("david.yuan@gmail.com")
 				.customerNo(customerNo)
 				.lastName("Yuan")
-				.firstName("David")
+				.firstName("John")
 				.createTime(new Date()).build();
 		final String nodeUri = customerRepository.create(customer);
 		LOGGER.info("nodeUri:{} ", nodeUri);
 
 		customer = customerRepository.getByCustomerNo(customerNo);
 		LOGGER.info("found customer:{} ", customer);
+		
+		customer.setEmail("david.yuan@propellerhead.co.nz");
+		customer.setFirstName("David");
+		
+		customerRepository.update(customer);
+		
+		customer = customerRepository.getByCustomerNo(customerNo);
+		LOGGER.info("after update customer:{} ", customer);
+		
+		customerRepository.deleteByCustomerNo(customerNo);
+		customer = customerRepository.getByCustomerNo(customerNo);
+		LOGGER.info("after delelte customer:{} ", customer);
 	}
 
 }

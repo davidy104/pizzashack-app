@@ -7,6 +7,7 @@ import nz.co.pizzashack.model.Customer;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.repository.CustomerRepository;
 import nz.co.pizzashack.repository.convert.CustomerModelToCreateStatement;
+import nz.co.pizzashack.repository.convert.CustomerModelToMap;
 import nz.co.pizzashack.repository.support.Neo4jRestAPIAccessor;
 import nz.co.pizzashack.repository.support.RepositoryBase;
 
@@ -39,7 +40,7 @@ public class CustomerRepositoryImpl extends RepositoryBase<Customer, String> imp
 
 	@Override
 	public Set<Customer> getAll() throws Exception {
-		return null;
+		return this.getBasicAll(customerMetaMapToModelConverter);
 	}
 
 	@Override
@@ -48,13 +49,13 @@ public class CustomerRepositoryImpl extends RepositoryBase<Customer, String> imp
 	}
 
 	@Override
-	public void update(Customer updateCustomer) throws Exception {
-
+	public void update(final Customer updateCustomer) throws Exception {
+		this.updateBasicById(updateCustomer, new CustomerModelToMap());
 	}
 
 	@Override
 	public void deleteByCustomerNo(String customerNo) throws Exception {
-
+		this.deleteAllById(customerNo, true);
 	}
 
 	@Override

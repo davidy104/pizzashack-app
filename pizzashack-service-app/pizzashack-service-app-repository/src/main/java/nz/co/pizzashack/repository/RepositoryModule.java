@@ -12,6 +12,7 @@ import nz.co.pizzashack.repository.convert.CustomerMetaMapToModel;
 import nz.co.pizzashack.repository.convert.PizzashackMetaMapToModel;
 import nz.co.pizzashack.repository.convert.PizzashackQueryNodeToModel;
 import nz.co.pizzashack.repository.convert.UserMetaMapToModel;
+import nz.co.pizzashack.repository.convert.UserModelToMap;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
 import nz.co.pizzashack.repository.convert.template.Neo4jRestGenericConverter;
 import nz.co.pizzashack.repository.impl.CustomerRepositoryImpl;
@@ -71,6 +72,13 @@ public class RepositoryModule extends AbstractModule {
 	@Named("userMetaMapToModelConverter")
 	public Function<Map<String, String>, User> userMetaMapToModelConverter() {
 		return new UserMetaMapToModel();
+	}
+	
+	@Provides
+	@Singleton
+	@Named("userModelToMapConverter")
+	public Function<User,Map<String, String>> userModelToMapConverter() {
+		return new UserModelToMap();
 	}
 
 	@Provides
