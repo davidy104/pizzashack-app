@@ -2,12 +2,15 @@ package nz.co.pizzashack.test.repository;
 
 import static nz.co.pizzashack.PizzashackInitUtils.initPizzashackFromFile;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
+import nz.co.pizzashack.ConflictException;
+import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.SharedModule;
 import nz.co.pizzashack.config.ConfigurationServiceModule;
 import nz.co.pizzashack.model.Page;
@@ -38,6 +41,8 @@ public class PizzashackRepositoryIntegrationTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackRepositoryIntegrationTest.class);
 	private static Set<Pizzashack> initialPizzashacks = Collections.<Pizzashack> emptySet();
 	private final static String PIZZASHACK_INIT_FILE = "pizzashack-data.txt";
+
+	private final static String NOT_EXIST_ID = "not exist id";
 
 	private Set<String> initPizzashackNodeUris = Sets.<String> newHashSet();
 
@@ -88,15 +93,35 @@ public class PizzashackRepositoryIntegrationTest {
 		pizzashackRepository.deleteById(pizzashackId);
 	}
 
+	@Test(expected = ConflictException.class)
+	public void testCreateConflict() throws Exception {
+		final String duplicatedId = "P-1234567890";
+		final String nodeUri = pizzashackRepository.create(new Pizzashack.Builder().pizzaName("testExistPizzaname").pizzashackId(duplicatedId).description("testExistPizzadesc").build());
+		assertNotNull(nodeUri);
+		pizzashackRepository.create(new Pizzashack.Builder().pizzaName("testConflictPizzaname").pizzashackId(duplicatedId).description("testConflictPizzadesc").build());
+	}
+
 	@Test
 	public void testGetAll() throws Exception {
 		Set<Pizzashack> allPizzashacks = pizzashackRepository.getAll();
-		assertEquals(allPizzashacks.size(), 10);
+		assertNotNull(allPizzashacks);
+		assertFalse(allPizzashacks.isEmpty());
+		// assertEquals(allPizzashacks.size(), 10);
 		for (final Pizzashack pizzashack : allPizzashacks) {
 			LOGGER.info("pizzashack name:{} ", pizzashack.getClass().getSimpleName());
 			LOGGER.info("pizzashack:{} ", pizzashack);
 
 		}
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void testGetNotFound() throws Exception {
+		pizzashackRepository.getById(NOT_EXIST_ID);
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void testDeleteNotFound() throws Exception {
+		pizzashackRepository.deleteById(NOT_EXIST_ID);
 	}
 
 	@Test

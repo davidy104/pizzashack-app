@@ -55,6 +55,7 @@ public class GeneralRestClientAccessor {
 		}
 
 		final ClientResponse clientResponse = restClientCallback.execute(webResource);
+		
 		final int statusCode = clientResponse.getStatusInfo().getStatusCode();
 		final String respStr = getResponsePayload(clientResponse);
 		if (statusCode != expectedStatus) {
@@ -65,7 +66,6 @@ public class GeneralRestClientAccessor {
 
 	public String process(final String path, final int expectedStatus, final RestClientExecuteCallback restClientCallback,
 			final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
-		checkArgument(!StringUtils.isEmpty(path), "path can not be null");
 		return this.doProcess(hostUri, path, expectedStatus, restClientCallback, customErrorHandlers);
 	}
 

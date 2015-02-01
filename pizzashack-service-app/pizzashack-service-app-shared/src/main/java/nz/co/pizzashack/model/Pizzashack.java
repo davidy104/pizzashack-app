@@ -2,6 +2,8 @@ package nz.co.pizzashack.model;
 
 import java.math.BigDecimal;
 
+import nz.co.pizzashack.model.convert.PizzashackJsonDeserializer;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -10,8 +12,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonInclude(Include.NON_EMPTY)
+@JsonDeserialize(using = PizzashackJsonDeserializer.class)
 public class Pizzashack extends AbstractNeo4jModel {
 	@JsonProperty
 	private String pizzashackId;
