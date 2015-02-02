@@ -73,7 +73,12 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 		return returnModel;
 	}
 
-	private AbstractCypherQueryResult doGetBasicById(final PK id) {
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	protected AbstractCypherQueryResult doGetBasicById(final PK id) {
 		final String queryJson = "MATCH (p:" + label + "{" + uniqueKey + ":{" + uniqueKey + "}}) RETURN p";
 		try {
 			return this.getNeo4jRestAPIAccessor().cypherQuery(queryJson,
