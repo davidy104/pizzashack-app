@@ -54,6 +54,13 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 		return this.getBasicById(userName, userMetaMapToModelConverter);
 	}
 
+	/**
+	 * { "query" :
+	 * "(u:User{userName:{userName},password:{password}}) RETURN u", 
+	 * "params" : { "password" : "{password}", "userName" : "{userName}" } 
+	 * } 
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public User getByNameAndPwd(final String userName, final String password) throws Exception {

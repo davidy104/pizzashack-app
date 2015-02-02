@@ -1,0 +1,182 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link href="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.css" rel="stylesheet">
+    <link href="styles/style.css" rel="stylesheet">
+
+    <meta name="description" content="">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+  </head>
+  <body ng-app="pizzashackWebApp">
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Add your site or application content here-->
+    <div class="container">
+       <nav class="navbar navbar-inverse  navbar-static-top no-margin" role="navigation" >
+    <div class="container-fluid">
+      <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-WDM-navbar-collapse-1">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+        <a class="navbar-brand no-margin no-padding" href="#"><img src="images/shack-logo.png" height="50px" ></a>
+      </div>
+
+      <div class="collapse navbar-collapse navbar-right" id="bs-WDM-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="index.html">Home</a></li>
+          <li><a ng-href="#/about">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">WDM Dropdown <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#">Link1</a></li>
+                  <li><a href="#">Link2</a></li>
+                  <li><a href="#">Link3</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#">Separated link</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#">One more separated link</a></li>
+                </ul>
+              </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+      <div ng-view="">
+        <!-- start of website main content -->
+  <div class="jumbotron">
+    <div class="container">
+    <img src="images/pizzashack-sample.png" height="240px" class="pull-right" style="margin:6px;">
+    <h2 class="no-margin">
+      <p>In 1959, Mary Fazio opened the original Shack, using her father’s recipes and her kitchen’s pots and pans.  She created a warm and cozy place where her friends and family gathered to enjoy her home-cooked meals.  She made everything from scratch, from pizza dough to soups, pasta sauces to salad dressings.  Mary’s Italian comfort food kept her friends coming back to the Shack again and again. Mary pioneered the “open kitchen” concept so she could greet each guest as they walked through the door, and keep an eye out to make sure that no one left hungry.
+      </p>
+      <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+    </h2>
+    </div>
+  </div>
+  <!-- total column is 12 -->
+  <div class="container">
+  <div class="row">
+    <!-- sm:small; xs:xtreme samll; md:medium-->
+    <div class="col-md-4">
+    <h4>Title 1</h4>
+    <p class="text-justify">
+      This is the best pizza I have ever had! I came to visit my parents and we ordered take out from here. I was welcomed by two wonderful and sweet girls when picking up, and when we got home, I was AMAZED by the flavor!!! I am very disappointed this is not near me, or this would be a definite favorite. 
+      </p>
+    </div>
+
+  <div class="col-md-4">
+    <h4>Title 2</h4>
+    <p class="text-justify">
+      This is the best pizza I have ever had! I came to visit my parents and we ordered take out from here. I was welcomed by two wonderful and sweet girls when picking up, and when we got home, I was AMAZED by the flavor!!! I am very disappointed this is not near me, or this would be a definite favorite. 
+      </p>
+    </div>
+
+  <div class="col-md-4">
+    <h4>Title 3</h4>
+    <p class="text-justify">
+      This is the best pizza I have ever had! I came to visit my parents and we ordered take out from here. I was welcomed by two wonderful and sweet girls when picking up, and when we got home, I was AMAZED by the flavor!!! I am very disappointed this is not near me, or this would be a definite favorite. 
+      </p>
+    </div>
+    </div>
+  </div>
+  <!-- end of website main content -->
+
+
+
+      </div>
+
+       <!-- start of footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-5">
+          <h4>Contact Address</h4>
+          <address>
+            #25, Opal Ave, <br>
+            Pakuaranga, <br>
+            Auckland <br>
+          </address>
+        </div>
+      </div>
+      <div class="bottom-footer">
+        <div class="col-md-5">© Copyright Pizzashack 2015.</div>
+        <div class="col-md-7">
+          <ul class="footer-nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contacts</a></li>
+            <li><a href="Link.html">Link</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- end of footer -->
+    </div>
+ 
+
+
+   
+
+
+ 
+
+    
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID
+     <script>
+       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+       ga('create', 'UA-XXXXX-X');
+       ga('send', 'pageview');
+    </script>
+     -->
+
+    <!-- build:js(.) scripts/oldieshim.js -->
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.js"></script>
+    <![endif]-->
+    <!-- endbuild -->
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
+        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/about.js"></script>
+        <!-- endbuild -->
+</body>
+</html>
