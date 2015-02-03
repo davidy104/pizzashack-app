@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
-    <link href="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.css" rel="stylesheet">
+    <link href="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js" rel="stylesheet">
     <link href="styles/style.css" rel="stylesheet">
 
     <meta name="description" content="">
@@ -41,6 +41,13 @@
       <div class="collapse navbar-collapse navbar-right" id="bs-WDM-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <li class="active"><a href="#/">Home</a></li>
+          <li class="dropdown">
+                <a href="#/pizza" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pizza <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Create</a></li>
+                  <li><a ng-href="#/pizza">Show</a></li>
+                </ul>
+              </li>
           <li><a ng-href="#/about">About</a></li>
           <li><a href="contact.html">Contact</a></li>
           <li class="dropdown">
@@ -158,7 +165,6 @@
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
@@ -170,7 +176,10 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
+        <script src="scripts/pizza-admin.js"></script>
+        <script src="scripts/pizza-admin-ui.js"></script>
         <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/pizzamain.js"></script>
         <script src="scripts/controllers/about.js"></script>
         <!-- endbuild -->
 </body>

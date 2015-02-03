@@ -1,0 +1,67 @@
+[
+	{
+		"pizzashackId":"P-fea77b62-2e9c-43b5-9345-6b5922e37412",
+		"pizzaName":"Chicken Parmesan",
+		"description":"Grilled chicken, fresh tomatoes, feta and mozzarella cheese",
+		"price":38.00
+	},
+	{
+		"pizzashackId":"P-1234567890",
+		"pizzaName":"testExistPizzaname",
+		"description":"testExistPizzadesc"
+	},
+	{
+		"pizzashackId":"P-3e761f87-d9a5-4494-af96-e1b279c7adcf",
+		"pizzaName":"Spinach Alfredo",
+		"description":"Rich and creamy blend of spinach and garlic Parmesan with Alfredo saucePepperoni and a double portion of spicy Italian sausage",
+		"price":18.00
+	},
+	{
+		"pizzashackId":"P-0f4b1e88-a3a9-419a-b42b-0312059fc0b3",
+		"pizzaName":"BBQ Chicken Bacon",
+		"description":"Grilled white chicken, hickory-smoked bacon and fresh sliced onions in barbeque sauce",
+		"price":45.00
+	},
+	{
+		"pizzashackId":"P-6c8256e9-b452-4370-8ae1-f91bad33f76e",
+		"pizzaName":"Garden Fresh",
+		"description":"Slices onions and green peppers, gourmet mushrooms, black olives and ripe Roma tomatoes",
+		"price":35.00
+	},
+	{
+		"pizzashackId":"P-9b9a2325-3299-4f90-a823-6c0f2ea6f123",
+		"pizzaName":"Spicy Italian",
+		"description":"Pepperoni and a double portion of spicy Italian sausage",
+		"price":24.50
+	},
+	{
+		"pizzashackId":"P-de38b7f8-6919-46f9-98a6-ef19ffb60285",
+		"pizzaName":"Tuscan Six Cheese",
+		"description":"Six cheese blend of mozzarella, Parmesan, Romano, Asiago and Fontina",
+		"price":26.00
+	},
+	{
+		"pizzashackId":"P-b99d8ee1-e6b7-4e7d-9c2f-e9d5e67d7614",
+		"pizzaName":"Hawaiian BBQ Chicken",
+		"description":"Grilled white chicken, hickory-smoked bacon, barbeque sauce topped with sweet pine-apple",
+		"price":37.50
+	},
+	{
+		"pizzashackId":"P-079f9223-ef66-498a-8175-d0cba1a98973",
+		"pizzaName":"Chilly Chicken Cordon Bleu",
+		"description":"Spinash Alfredo sauce topped with grilled chicken, ham, onions and mozzarella",
+		"price":28.99
+	},
+	{
+		"pizzashackId":"P-af325cca-0492-4f28-9447-3865fb81a391",
+		"pizzaName":"Grilled Chicken Club",
+		"description":"Grilled white chicken, hickory-smoked bacon and fresh sliced onions topped with Roma tomatoes",
+		"price":29.99
+	},
+	{
+		"pizzashackId":"P-8e1d96e7-fc83-4327-8038-631b2e1ac8d3",
+		"pizzaName":"Double Bacon 6Cheese",
+		"description":"Hickory-smoked bacon, Julienne cut Canadian bacon, Parmesan, mozzarella, Romano, Asiago and and Fontina cheese",
+		"price":35.99
+	}
+]

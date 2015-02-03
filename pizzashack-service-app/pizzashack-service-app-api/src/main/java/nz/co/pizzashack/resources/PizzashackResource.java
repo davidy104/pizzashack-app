@@ -67,7 +67,9 @@ public class PizzashackResource {
 	public Response list() throws Exception {
 		LOGGER.info("list start..");
 		final Set<Pizzashack> pizzashacks = pizzashackRepository.getAll();
-		return Response.ok(jacksonObjectMapper.writeValueAsString(pizzashacks)).type(MediaType.APPLICATION_JSON).build();
+		return Response.ok(jacksonObjectMapper.writeValueAsString(pizzashacks)).type(MediaType.APPLICATION_JSON)
+				.header("Access-Control-Allow-Origin", "*")
+				.build();
 	}
 
 	@GET
