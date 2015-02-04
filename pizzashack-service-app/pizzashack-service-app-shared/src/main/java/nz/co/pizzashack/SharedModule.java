@@ -81,6 +81,7 @@ public class SharedModule extends AbstractModule {
 			client.setConnectTimeout(10000);
 			client.setReadTimeout(10000);
 			client.addFilter(new LoggingFilter(System.out));
+			
 			return client;
 		}
 	}
