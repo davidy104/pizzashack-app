@@ -1,18 +1,18 @@
 package nz.co.pizzashack;
 
-import java.io.IOException;
-
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 
-public class CORSResponseFilter implements ContainerResponseFilter{
+import com.sun.jersey.spi.container.ContainerRequest;
+import com.sun.jersey.spi.container.ContainerResponse;
+import com.sun.jersey.spi.container.ContainerResponseFilter;
+
+public class CORSResponseFilter implements ContainerResponseFilter {
 
 	@Override
-	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-		MultivaluedMap<String, Object> headers = responseContext.getHeaders();
+	public ContainerResponse filter(ContainerRequest request, ContainerResponse response) {
+		MultivaluedMap<String, Object> headers = response.getHttpHeaders();
 		headers.add("Access-Control-Allow-Origin", "*");
+		return response;
 	}
 
 }

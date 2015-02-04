@@ -24,7 +24,7 @@
 		<servlet-name>Resteasy</servlet-name>
 		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
 		<init-param>
-			<param-name>javax.ws.rs.container.ContainerResponseFilter</param-name>
+			<param-name>com.sun.jersey.spi.container.ContainerResponseFilter</param-name>
 			<param-value>nz.co.pizzashack.CORSResponseFilter</param-value>
 		</init-param>
 	</servlet>
