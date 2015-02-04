@@ -29,6 +29,15 @@ angular
         templateUrl: 'views/pizza-main.html',
         controller: 'PizzaCtrl'
       })
+      .when('/pizza/info/:id', {
+        templateUrl: 'views/pizza-info.html',
+        resolve: {
+                    id: function ($q, $route, pizzaAdminApi) {
+                    return pizzaAdminApi.getOne($route.current.params.id);
+                    }
+                },
+        controller: 'PizzaDetailCtrl'
+      })
       .when('/about', {
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'

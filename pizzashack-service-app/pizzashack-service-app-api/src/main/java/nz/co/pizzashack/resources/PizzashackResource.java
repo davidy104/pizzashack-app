@@ -83,7 +83,9 @@ public class PizzashackResource {
 		} catch (final Exception e) {
 			return buildResponseOnException(e);
 		}
-		return Response.ok(jacksonObjectMapper.writeValueAsString(found)).type(MediaType.APPLICATION_JSON).build();
+		return Response.ok(jacksonObjectMapper.writeValueAsString(found)).type(MediaType.APPLICATION_JSON)
+				.header("Access-Control-Allow-Origin", "*")
+				.build();
 	}
 
 	@DELETE
