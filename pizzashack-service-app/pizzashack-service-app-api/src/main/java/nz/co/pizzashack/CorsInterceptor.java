@@ -16,6 +16,7 @@ import org.jboss.resteasy.spi.interception.MessageBodyWriterContext;
 import org.jboss.resteasy.spi.interception.MessageBodyWriterInterceptor;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
 
+@SuppressWarnings("deprecation")
 @Provider
 @ServerInterceptor
 public class CorsInterceptor implements PreProcessInterceptor,
