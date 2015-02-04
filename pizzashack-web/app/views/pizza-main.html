@@ -33,7 +33,8 @@
 										<th>Price</th>
 										<th>Operation</th>
 									</tr>
-									<tr ng-repeat="pitem in pizzas">
+									<tr ng-repeat="pitem in pizzas" >
+
 										<th style="font-weight:normal;">{{pitem.pizzashackId}}</th>
 										<th style="font-weight:normal;">{{pitem.pizzaName}}</th>
 										<th style="font-weight:normal;">$ {{pitem.price}}</th>
@@ -41,6 +42,7 @@
 										<button type="button" class="btn btn-primary">Edit</button>
 										<button type="button" class="btn btn-warning">Delete</button>
 										</th>	
+										
 									</tr>
 								</tbody>
 							</table>
