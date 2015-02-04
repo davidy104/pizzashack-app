@@ -4,6 +4,11 @@
 
 <web-app>
 	<display-name>Pizzashack</display-name>
+	
+	<context-param>
+    <param-name>resteasy.providers</param-name>
+    <param-value>nz.co.pizzashack.CorsInterceptor</param-value>
+	</context-param>
 
 	<listener>
 		<listener-class>nz.co.pizzashack.BootStrap</listener-class>
@@ -23,14 +28,6 @@
 	<servlet>
 		<servlet-name>Resteasy</servlet-name>
 		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
-		<init-param>
-			<param-name>com.sun.jersey.spi.container.ContainerRequestFilter</param-name>
-			<param-value>nz.co.pizzashack.ContainerRequest</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.spi.container.ContainerResponseFilter</param-name>
-			<param-value>nz.co.pizzashack.CORSResponseFilter</param-value>
-		</init-param>
 	</servlet>
 
 	<servlet-mapping>
