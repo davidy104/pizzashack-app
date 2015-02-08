@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc function
- * @name pizzashackWebApp.controller:MainCtrl
+ * @name pizzashackAdminWebApp.controller:MainCtrl
  * @description
  * # MainCtrl
- * Controller of the pizzashackWebApp
+ * Controller of the pizzashackAdminWebApp
  */
-angular.module('pizzashackWebApp')
+angular.module('pizzashackAdminWebApp')
   .controller('MainCtrl', function ($scope) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',

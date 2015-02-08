@@ -1,7 +1,7 @@
 package nz.co.pizzashack.repository.convert;
 
 import groovy.json.JsonOutput
-import nz.co.pizzashack.model.Pizzashack
+import nz.co.pizzashack.model.Pizzashack;
 
 import com.google.common.base.Function
 

@@ -2,14 +2,14 @@
 
 /**
  * @ngdoc overview
- * @name pizzashackWebApp
+ * @name pizzashackAdminWebApp
  * @description
- * # pizzashackWebApp
+ * # pizzashackAdminWebApp
  *
  * Main module of the application.
  */
 angular
-  .module('pizzashackWebApp', [
+  .module('pizzashackAdminWebApp', [
     'ngAnimate',
     'ngCookies',
     'ngResource',

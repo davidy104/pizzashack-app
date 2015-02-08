@@ -1,21 +1,21 @@
 package nz.co.pizzashack.model;
 
 import java.math.BigDecimal;
-
-import nz.co.pizzashack.model.convert.PizzashackJsonDeserializer;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonInclude(Include.NON_EMPTY)
-@JsonDeserialize(using = PizzashackJsonDeserializer.class)
 public class Pizzashack extends AbstractNeo4jModel {
 	@JsonProperty
 	private String pizzashackId;
@@ -27,18 +27,27 @@ public class Pizzashack extends AbstractNeo4jModel {
 	private BigDecimal price;
 	@JsonProperty
 	private String icon;
+	@JsonProperty
+	private Integer amount;
+	@JsonProperty
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date createTime;
+	@JsonProperty
+	private Set<PizzashackComment> comments = Collections.<PizzashackComment>emptySet();
 
 	public Pizzashack() {
 		super();
 	}
 
-	public Pizzashack(String pizzashackId, String pizzaName, String description, BigDecimal price, String icon, String nodeUri) {
+	public Pizzashack(String pizzashackId, String pizzaName, String description, BigDecimal price, String icon, String nodeUri,Integer amount,Date createTime,Set<PizzashackComment> comments) {
 		this.pizzashackId = pizzashackId;
 		this.pizzaName = pizzaName;
 		this.description = description;
 		this.price = price;
 		this.icon = icon;
 		this.nodeUri = nodeUri;
+		this.amount = amount;
+		this.createTime = createTime;
 	}
 
 	public String getPizzashackId() {
@@ -88,6 +97,30 @@ public class Pizzashack extends AbstractNeo4jModel {
 	public void setNodeUri(String nodeUri) {
 		this.nodeUri = nodeUri;
 	}
+	
+	public Integer getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Integer amount) {
+		this.amount = amount;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Set<PizzashackComment> getComments() {
+		return comments;
+	}
+
+	public void setComments(Set<PizzashackComment> comments) {
+		this.comments = comments;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -101,7 +134,6 @@ public class Pizzashack extends AbstractNeo4jModel {
 		HashCodeBuilder builder = new HashCodeBuilder();
 		return builder.append(this.pizzashackId)
 				.toHashCode();
-
 	}
 
 	@Override
@@ -113,6 +145,8 @@ public class Pizzashack extends AbstractNeo4jModel {
 				.append("price", price)
 				.append("icon", icon)
 				.append("nodeUri", nodeUri)
+				.append("amount", amount)
+				.append("createTime", createTime)
 				.toString();
 	}
 
@@ -123,8 +157,11 @@ public class Pizzashack extends AbstractNeo4jModel {
 		private BigDecimal price;
 		private String icon;
 		private String nodeUri;
+		private Integer amount;
+		private Date createTime;
+		private Set<PizzashackComment> comments = Collections.<PizzashackComment>emptySet();
 
-		public Builder(String pizzashackId, String pizzaName, String description, BigDecimal price, String icon, String nodeUri) {
+		public Builder(String pizzashackId, String pizzaName, String description, BigDecimal price, String icon, String nodeUri,Integer amount,Date creatTime) {
 			this.pizzashackId = pizzashackId;
 			this.pizzaName = pizzaName;
 			this.description = description;
@@ -165,9 +202,23 @@ public class Pizzashack extends AbstractNeo4jModel {
 			this.nodeUri = nodeUri;
 			return this;
 		}
-
+		
+		public Builder amount(Integer amount) {
+			this.amount = amount;
+			return this;
+		}
+		
+		public Builder createTime(Date createTime) {
+			this.createTime = createTime;
+			return this;
+		}
+		public Builder comments(Set<PizzashackComment> comments) {
+			this.comments = comments;
+			return this;
+		}
+		
 		public Pizzashack build() {
-			return new Pizzashack(pizzashackId, pizzaName, description, price, icon, nodeUri);
+			return new Pizzashack(pizzashackId, pizzaName, description, price, icon, nodeUri,amount,createTime,comments);
 		}
 	}
 }
