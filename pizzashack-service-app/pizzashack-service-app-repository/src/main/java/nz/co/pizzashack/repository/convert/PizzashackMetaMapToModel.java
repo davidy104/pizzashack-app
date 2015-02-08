@@ -1,5 +1,7 @@
 package nz.co.pizzashack.repository.convert;
 
+import static nz.co.pizzashack.util.GenericUtils.parseToDate;
+
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -25,6 +27,16 @@ public class PizzashackMetaMapToModel implements Function<Map<String, String>, P
 			final String priceStr = metaMap.get("price");
 			if (!StringUtils.isEmpty(priceStr)) {
 				result.setPrice(new BigDecimal(priceStr));
+			}
+			
+			final String amountStr = metaMap.get("amount");
+			if(!StringUtils.isEmpty(amountStr)){
+				result.setAmount(Integer.valueOf(amountStr));
+			}
+			
+			final String createTimeStr = metaMap.get("createTime");
+			if(!StringUtils.isEmpty(createTimeStr)){
+				result.setCreateTime(parseToDate("yyyy-MM-dd hh:mm:ss", createTimeStr));
 			}
 		}
 		return result;

@@ -18,11 +18,16 @@ public class PizzashackDataInitProcessor {
 	
 	private static Set<Pizzashack> initPizzashacks = null;
 	
+	private static Injector injector = null;
+	
 	public static void main(String[] args) throws Exception {
+		injector = Guice.createInjector(new RepositoryModule(),new ConfigurationServiceModule(),new SharedModule());
+		initPizzashacks();
+	}
+	
+	private static void initPizzashacks()throws Exception {
 		initPizzashacks = initPizzashackFromFile(PIZZASHACK_INIT_FILE);
-		Injector injector = Guice.createInjector(new RepositoryModule(),new ConfigurationServiceModule(),new SharedModule());
 		final PizzashackRepository pizzashackRepository = injector.getInstance(PizzashackRepository.class);
-		
 		for(final Pizzashack pizzashack : initPizzashacks){
 			pizzashackRepository.create(pizzashack);
 		}

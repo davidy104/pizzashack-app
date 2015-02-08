@@ -40,7 +40,7 @@ public class PizzashackRepositoryIntegrationTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackRepositoryIntegrationTest.class);
 	private static Set<Pizzashack> initialPizzashacks = Collections.<Pizzashack> emptySet();
-	private final static String PIZZASHACK_INIT_FILE = "pizzashack-data.txt";
+	private final static String PIZZASHACK_INIT_FILE = "pizzashack-init.txt";
 
 	private final static String NOT_EXIST_ID = "not exist id";
 
@@ -95,9 +95,7 @@ public class PizzashackRepositoryIntegrationTest {
 
 	@Test(expected = ConflictException.class)
 	public void testCreateConflict() throws Exception {
-		final String duplicatedId = "P-1234567890";
-		final String nodeUri = pizzashackRepository.create(new Pizzashack.Builder().pizzaName("testExistPizzaname").pizzashackId(duplicatedId).description("testExistPizzadesc").build());
-		assertNotNull(nodeUri);
+		final String duplicatedId = "P-fea77b62-2e9c-43b5-9345-6b5922e37412";
 		pizzashackRepository.create(new Pizzashack.Builder().pizzaName("testConflictPizzaname").pizzashackId(duplicatedId).description("testConflictPizzadesc").build());
 	}
 

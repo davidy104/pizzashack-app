@@ -28,8 +28,12 @@ public class PizzashackInitUtils {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				Iterable<String> values = Splitter.on(delimiter).split(line);
+				
 				final Pizzashack pizzashack = new Pizzashack.Builder().pizzashackId(Iterables.get(values, 0)).pizzaName(Iterables.get(values, 1))
-						.description(Iterables.get(values, 2)).price(new BigDecimal(Iterables.get(values, 3))).build();
+						.description(Iterables.get(values, 2)).price(new BigDecimal(Iterables.get(values, 3))).icon(Iterables.get(values, 4))
+						.amount(Integer.valueOf(Iterables.get(values, 5)))
+						.createTime(FORMAT.parse(Iterables.get(values, 6)))
+						.build();
 				System.out.println("pizzashack:{} " + pizzashack);
 				pizzashackSet.add(pizzashack);
 			}
