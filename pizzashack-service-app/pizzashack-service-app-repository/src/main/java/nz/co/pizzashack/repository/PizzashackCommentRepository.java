@@ -7,7 +7,7 @@ import nz.co.pizzashack.model.PizzashackComment;
 
 public interface PizzashackCommentRepository {
 
-	String createPizzashackComment(String pizzashackId,String userName,PizzashackComment comment)throws Exception;
+	String createPizzashackComment(String pizzashackNodeUri,String userNodeUri,PizzashackComment comment)throws Exception;
 	
 	Set<PizzashackComment> getAllByPizzashackId(String pizzashackId)throws Exception;
 	
@@ -15,6 +15,6 @@ public interface PizzashackCommentRepository {
 	
 	Page<PizzashackComment> paginateByPizzashackIdAndUserName(int pageOffset,int pageSize,String pizzashackId,String userName)throws Exception;
 	
-	void deleteComment(String userName,String pizzashackId)throws Exception;
+	void deleteComment(String userNodeUri,String pizzashackNodeUri)throws Exception;
 
 }

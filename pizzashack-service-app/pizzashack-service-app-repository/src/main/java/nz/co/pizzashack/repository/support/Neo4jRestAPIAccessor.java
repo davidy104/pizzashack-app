@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import nz.co.pizzashack.ConflictException;
+import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryResult;
 import nz.co.pizzashack.repository.convert.template.Neo4jRestGenericConverter;
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
@@ -105,10 +106,36 @@ public class Neo4jRestAPIAccessor {
 		});
 		return neo4jRestGenericConverter.relationshipsQueryResponseToMap(jsonResponse);
 	}
+	
+	public void deleteRelationship(final String nodeUri,final String relationshipNodeUri, final String type, RelationshipDirection relationshipDirection) throws Exception {
+		String relationshipUri = null;
+		relationshipDirection = relationshipDirection == null?RelationshipDirection.ALL:relationshipDirection;
+		final Map<String,Map<String,String>> resultMap = this.getRelationsByNodeId(nodeUri,relationshipDirection,type);
+		
+		for (final Map.Entry<String,Map<String,String>> entry : resultMap.entrySet()) {
+			final Map<String,String> dataMap = entry.getValue();
+			if(dataMap.get("start")==nodeUri && dataMap.get("end") == relationshipNodeUri && ((dataMap.get("type")).toLowerCase()).equals(type.toLowerCase())){
+				relationshipUri = entry.getKey();
+				break;
+			}
+		}
+		
+		if(StringUtils.isEmpty(relationshipUri)){
+			throw new NotFoundException("Relationship not found.");
+		}
+		
+		generalJsonRestClientAccessor.doProcess(relationshipUri, null, ClientResponse.Status.NO_CONTENT.getStatusCode(), new RestClientExecuteCallback() {
+			@Override
+			public ClientResponse execute(WebResource webResource) {
+				return webResource.accept(MediaType.APPLICATION_JSON)
+						.delete(ClientResponse.class);
+			}
+		});
+	}
 
 	public String createUniqueNode(final String objFieldsCreateStatement, final Object obj, final String label, final String key) throws Exception {
 		final String createStatement = neo4jRestGenericConverter.doCreateStatement(objFieldsCreateStatement, label, "p");
-		final Map<String, Object> jsonMap = this.createNode(createStatement);
+		final Map<String, Object> jsonMap = this.doCreateNode(createStatement);
 		return this.doCreateUniqueNode(jsonMap, obj, key);
 	}
 
@@ -231,7 +258,16 @@ public class Neo4jRestAPIAccessor {
 	 */
 	public Map<String, Object> createNodeByObject(final Object obj, final String label, final String returnPrefix) throws Exception {
 		final String createStatement = neo4jRestGenericConverter.modelToCreateStatement(obj, label, returnPrefix);
-		return this.createNode(createStatement);
+		return this.doCreateNode(createStatement);
+	}
+	
+	public String createNode(final String objFieldsCreateStatement,final String label) throws Exception {
+		final String createStatement = neo4jRestGenericConverter.doCreateStatement(objFieldsCreateStatement, label, "p");
+		final Map<String, String> columnAndUriMap = neo4jRestGenericConverter.transCypherRestFormatResponseConvert(this.doCreateNode(createStatement));
+		if (!columnAndUriMap.isEmpty()) {
+			return (String) columnAndUriMap.values().toArray()[0];
+		}
+		return null;
 	}
 
 	/**
@@ -242,7 +278,7 @@ public class Neo4jRestAPIAccessor {
 	 * @throws Exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Map<String, Object> createNode(final String createStatement) throws Exception {
+	public Map<String, Object> doCreateNode(final String createStatement) throws Exception {
 		final String responseJson = generalJsonRestClientAccessor.process("/transaction/commit", ClientResponse.Status.OK.getStatusCode(), new RestClientExecuteCallback() {
 			@Override
 			public ClientResponse execute(WebResource webResource) {

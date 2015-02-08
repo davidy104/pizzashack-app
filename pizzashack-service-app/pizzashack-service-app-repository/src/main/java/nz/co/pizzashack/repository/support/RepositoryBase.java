@@ -42,6 +42,13 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 		this.label = label;
 		this.uniqueKey = uniqueKey;
 	}
+	
+	public String create(final T addModel, final Function<T, String> objectFieldsCreateStatementConverter)throws Exception {
+		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
+		checkArgument(addModel != null, "addModel can not be null");
+		checkState(objectFieldsCreateStatementConverter != null, "objectFieldsCreateStatementConverter can not be null");
+		return getNeo4jRestAPIAccessor().createNode(objectFieldsCreateStatementConverter.apply(addModel), label);
+	}
 
 	public String createUnique(final T addModel) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
