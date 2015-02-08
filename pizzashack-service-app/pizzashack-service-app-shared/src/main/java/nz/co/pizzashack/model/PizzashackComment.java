@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_EMPTY)
-public class PizzashackComment {
+public class PizzashackComment extends AbstractNeo4jModel{
 	private Pizzashack pizzashack;
 	private PizzashackCommentType commentType = PizzashackCommentType.LIKE;
 	private String message;
@@ -49,6 +49,8 @@ public class PizzashackComment {
 	public void setPizzashack(Pizzashack pizzashack) {
 		this.pizzashack = pizzashack;
 	}
+	
+	
 	@Override
 	public boolean equals(Object obj) {
 		EqualsBuilder builder = new EqualsBuilder();

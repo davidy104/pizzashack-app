@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nz.co.pizzashack.ConflictException;
 import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.model.AbstractNeo4jModel;
@@ -28,7 +30,12 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 
 	protected final String label;
 
-	protected final String uniqueKey;
+	protected String uniqueKey;
+	
+	public RepositoryBase(final String label) {
+		super();
+		this.label = label;
+	}
 
 	public RepositoryBase(final String label, final String uniqueKey) {
 		super();
@@ -38,6 +45,9 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 
 	public String createUnique(final T addModel) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
+		if(StringUtils.isEmpty(uniqueKey)){
+			return null;
+		}
 		checkArgument(addModel != null && getValueByField(addModel, uniqueKey) != null, "addModel and its unique value can not be null");
 		return getNeo4jRestAPIAccessor().createUniqueNode(addModel, label, uniqueKey);
 	}
@@ -45,6 +55,9 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 	public String createUnique(final T addModel, final Function<T, String> objectFieldsCreateStatementConverter) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
 		checkArgument(addModel != null && getValueByField(addModel, uniqueKey) != null, "addModel and its unique value can not be null");
+		if(StringUtils.isEmpty(uniqueKey)){
+			return null;
+		}
 		if (objectFieldsCreateStatementConverter != null) {
 			final String createStatement = objectFieldsCreateStatementConverter.apply(addModel);
 			return getNeo4jRestAPIAccessor().createUniqueNode(createStatement, addModel, label, uniqueKey);
@@ -56,6 +69,9 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 	protected T getBasicById(PK id, Function<Map<String, String>, T> converter) throws NotFoundException {
 		checkArgument(converter != null, "converter can not be null");
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
+		if(StringUtils.isEmpty(uniqueKey)){
+			return null;
+		}
 		T returnModel = null;
 		final AbstractCypherQueryResult result = this.doGetBasicById(id);
 
@@ -112,14 +128,18 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 	protected void updateBasicById(final T updatedModel) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
 		checkArgument(updatedModel != null && getValueByField(updatedModel, uniqueKey) != null, "updatedModel and its unique value can not be null");
-		this.doUpdateBasicById(getValueByField(updatedModel, uniqueKey), updatedModel);
+		if(!StringUtils.isEmpty(uniqueKey)){
+			this.doUpdateBasicById(getValueByField(updatedModel, uniqueKey), updatedModel);
+		}
 	}
 
 	protected void updateBasicById(final T updatedModel, final Function<T, Map<String, String>> toUpdateStatementConverter) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
 		checkArgument(updatedModel != null && getValueByField(updatedModel, uniqueKey) != null, "updatedModel and its unique value can not be null");
 		checkArgument(toUpdateStatementConverter != null, "toUpdateStatementConverter can not be null");
-		this.doUpdateBasicById(getValueByField(updatedModel, uniqueKey), toUpdateStatementConverter.apply(updatedModel));
+		if(!StringUtils.isEmpty(uniqueKey)){
+			this.doUpdateBasicById(getValueByField(updatedModel, uniqueKey), toUpdateStatementConverter.apply(updatedModel));
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -136,32 +156,37 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 	}
 
 	public void deleteAllById(final PK id, final boolean forceDeleteIfHasRelationships) throws Exception {
-		if (this.doGetBasicById(id) == null) {
-			throw new NotFoundException("Entity not found by id[" + id + "].");
-		}
-		String deleteJson = "MATCH (p:" + label + "{" + uniqueKey + ":{" + uniqueKey + "}}) DELETE p";
-		final Set<AbstractCypherQueryNode> relationshipsNodes = this.getAllRelationshipsNodesById(id);
-
-		if (relationshipsNodes != null) {
-			if (forceDeleteIfHasRelationships) {
-				deleteJson = "MATCH (p:" + label + "{" + uniqueKey + ":{" + uniqueKey + "}})-[r]-() DELETE p,r";
-			} else {
-				Set<String> relationshipNodeUris = Sets.<String> newHashSet();
-				for (final AbstractCypherQueryNode relationNode : relationshipsNodes) {
-					relationshipNodeUris.add(relationNode.getUri());
-				}
-				String conflictNodesStr = Joiner.on(",").join(relationshipNodeUris);
-				throw new ConflictException("Current Node has been refered by Other Nodes:" + conflictNodesStr);
+		if(!StringUtils.isEmpty(uniqueKey)){
+			if (this.doGetBasicById(id) == null) {
+				throw new NotFoundException("Entity not found by id[" + id + "].");
 			}
-		}
+			String deleteJson = "MATCH (p:" + label + "{" + uniqueKey + ":{" + uniqueKey + "}}) DELETE p";
+			final Set<AbstractCypherQueryNode> relationshipsNodes = this.getAllRelationshipsNodesById(id);
 
-		getNeo4jRestAPIAccessor().cypherQuery(deleteJson,
-				Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
-						.put(uniqueKey, id)
-						.build()));
+			if (relationshipsNodes != null) {
+				if (forceDeleteIfHasRelationships) {
+					deleteJson = "MATCH (p:" + label + "{" + uniqueKey + ":{" + uniqueKey + "}})-[r]-() DELETE p,r";
+				} else {
+					Set<String> relationshipNodeUris = Sets.<String> newHashSet();
+					for (final AbstractCypherQueryNode relationNode : relationshipsNodes) {
+						relationshipNodeUris.add(relationNode.getUri());
+					}
+					String conflictNodesStr = Joiner.on(",").join(relationshipNodeUris);
+					throw new ConflictException("Current Node has been refered by Other Nodes:" + conflictNodesStr);
+				}
+			}
+
+			getNeo4jRestAPIAccessor().cypherQuery(deleteJson,
+					Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
+							.put(uniqueKey, id)
+							.build()));
+		}
 	}
 
 	protected Set<AbstractCypherQueryNode> getAllRelationshipsNodesById(final PK id) throws Exception {
+		if(StringUtils.isEmpty(uniqueKey)){
+			return null;
+		}
 		final String getAllRelationshipsJson = "MATCH (p:" + label + "{" + uniqueKey + ":{" + uniqueKey + "}})-[r]-(a) RETURN DISTINCT a, r";
 		final AbstractCypherQueryResult result = this.getNeo4jRestAPIAccessor().cypherQuery(getAllRelationshipsJson,
 				Maps.newHashMap(new ImmutableMap.Builder<String, Object>()

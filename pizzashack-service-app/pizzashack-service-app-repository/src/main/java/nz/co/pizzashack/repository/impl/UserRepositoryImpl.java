@@ -10,9 +10,6 @@ import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryResult;
 import nz.co.pizzashack.repository.support.Neo4jRestAPIAccessor;
 import nz.co.pizzashack.repository.support.RepositoryBase;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -21,7 +18,7 @@ import com.google.inject.name.Named;
 
 public class UserRepositoryImpl extends RepositoryBase<User, String> implements UserRepository {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
 	@Inject
 	private Neo4jRestAPIAccessor neo4jRestAPIAccessor;
