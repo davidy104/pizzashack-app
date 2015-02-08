@@ -14,6 +14,7 @@ import nz.co.pizzashack.repository.PizzashackCommentRepository;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryResult;
 import nz.co.pizzashack.repository.support.Neo4jRestAPIAccessor;
+import nz.co.pizzashack.repository.support.RelationshipDirection;
 import nz.co.pizzashack.repository.support.RepositoryBase;
 
 import com.google.common.base.Function;
@@ -88,6 +89,7 @@ public class PizzashackCommentRepositoryImpl extends RepositoryBase<PizzashackCo
 	@Override
 	public void deleteComment(final String userNodeUri,final String pizzashackNodeUri) throws Exception {
 		
+		neo4jRestAPIAccessor.deleteRelationship(pizzashackNodeUri, relationshipNodeUri, RelationshipsLabel.HasComment.name(), RelationshipDirection.OUT);
 	}
 
 	@Override
