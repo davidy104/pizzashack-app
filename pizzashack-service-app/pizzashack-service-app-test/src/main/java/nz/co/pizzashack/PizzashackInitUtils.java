@@ -21,14 +21,17 @@ public class PizzashackInitUtils {
 	private static final String delimiter = "||";
 	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-	public static Set<Pizzashack> initPizzashackFromFile(final String clzPathFile) throws Exception {
+	private final static String PIZZASHACK_INIT_FILE = "pizzashack-init.txt";
+	private final static String USER_INIT_FILE = "user-init.txt";
+
+	public static Set<Pizzashack> initPizzashackFromFile() throws Exception {
 		Set<Pizzashack> pizzashackSet = Sets.<Pizzashack> newHashSet();
-		File initPizzashackFile = new File(Resources.getResource(clzPathFile).getFile());
+		File initPizzashackFile = new File(Resources.getResource(PIZZASHACK_INIT_FILE).getFile());
 		try (BufferedReader reader = Files.newReader(initPizzashackFile, Charsets.UTF_8)) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				Iterable<String> values = Splitter.on(delimiter).split(line);
-				
+
 				final Pizzashack pizzashack = new Pizzashack.Builder().pizzashackId(Iterables.get(values, 0)).pizzaName(Iterables.get(values, 1))
 						.description(Iterables.get(values, 2)).price(new BigDecimal(Iterables.get(values, 3))).icon(Iterables.get(values, 4))
 						.amount(Integer.valueOf(Iterables.get(values, 5)))
@@ -41,9 +44,9 @@ public class PizzashackInitUtils {
 		return pizzashackSet;
 	}
 
-	public static Set<User> initUserFromFile(final String clzPathFile) throws Exception {
+	public static Set<User> initUserFromFile() throws Exception {
 		Set<User> userSet = Sets.<User> newHashSet();
-		File initPizzashackFile = new File(Resources.getResource(clzPathFile).getFile());
+		File initPizzashackFile = new File(Resources.getResource(USER_INIT_FILE).getFile());
 		try (BufferedReader reader = Files.newReader(initPizzashackFile, Charsets.UTF_8)) {
 			String line;
 			while ((line = reader.readLine()) != null) {

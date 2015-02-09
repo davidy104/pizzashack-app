@@ -1,0 +1,6 @@
+
+match (p)-[r:HasComment]->(a) where p.pizzaName = 'Spinach Alfredo' or p.pizzaName='Chicken Parmesan' delete p,r;
+
+match (p)-[r]-(a) where p.userName = 'david' or p.userName = 'mike' delete p,r,a;
+
+match p where p.pizzaName = 'BBQ Chicken Bacon' delete p;

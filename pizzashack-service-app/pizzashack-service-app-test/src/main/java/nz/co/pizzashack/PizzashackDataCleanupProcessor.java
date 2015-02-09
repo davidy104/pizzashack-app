@@ -13,16 +13,15 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public class PizzashackDataCleanupProcessor {
-private final static String PIZZASHACK_INIT_FILE = "pizzashack-init.txt";
-	
+
 	private static Set<Pizzashack> initPizzashacks = null;
-	
+
 	public static void main(String[] args) throws Exception {
-		initPizzashacks = initPizzashackFromFile(PIZZASHACK_INIT_FILE);
-		Injector injector = Guice.createInjector(new RepositoryModule(),new ConfigurationServiceModule(),new SharedModule());
+		initPizzashacks = initPizzashackFromFile();
+		Injector injector = Guice.createInjector(new RepositoryModule(), new ConfigurationServiceModule(), new SharedModule());
 		final PizzashackRepository pizzashackRepository = injector.getInstance(PizzashackRepository.class);
-		
-		for(final Pizzashack pizzashack : initPizzashacks){
+
+		for (final Pizzashack pizzashack : initPizzashacks) {
 			pizzashackRepository.deleteById(pizzashack.getPizzashackId());
 		}
 	}

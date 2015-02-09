@@ -39,4 +39,8 @@ public class GenericUtils {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public static <T extends Enum<T>> T getEnumFromString(Class<T> c, String string) {
+		return Enum.valueOf(c, string.trim().toUpperCase());
+	}
 }

@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class CamelContextConfiguration extends GuiceCamelContext {
+	
 	@Inject
 	public CamelContextConfiguration(final Injector injector) {
 		super(injector);

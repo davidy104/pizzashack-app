@@ -40,8 +40,6 @@ public class PizzashackRepositoryIntegrationTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackRepositoryIntegrationTest.class);
 	private static Set<Pizzashack> initialPizzashacks = Collections.<Pizzashack> emptySet();
-	private final static String PIZZASHACK_INIT_FILE = "pizzashack-init.txt";
-
 	private final static String NOT_EXIST_ID = "not exist id";
 
 	private Set<String> initPizzashackNodeUris = Sets.<String> newHashSet();
@@ -51,7 +49,7 @@ public class PizzashackRepositoryIntegrationTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		initialPizzashacks = initPizzashackFromFile(PIZZASHACK_INIT_FILE);
+		initialPizzashacks = initPizzashackFromFile();
 		assertNotNull(initialPizzashacks);
 		assertEquals(initialPizzashacks.size(), 10);
 	}
@@ -81,13 +79,14 @@ public class PizzashackRepositoryIntegrationTest {
 
 		Pizzashack found = pizzashackRepository.getById(pizzashackId);
 		LOGGER.info("found---------------:{} ", found);
-
+		assertNotNull(found);
 		found.setDescription("updateDesc");
 		found.setPizzaName("updatePizzaname");
 		found.setIcon("updateIcon");
 		pizzashackRepository.update(found);
 
 		found = pizzashackRepository.getById(pizzashackId);
+		assertNotNull(found);
 		LOGGER.info("after update---------------:{} ", found);
 
 		pizzashackRepository.deleteById(pizzashackId);

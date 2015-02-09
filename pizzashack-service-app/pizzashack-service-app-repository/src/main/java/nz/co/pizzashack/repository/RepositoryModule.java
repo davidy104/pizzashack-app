@@ -2,26 +2,14 @@ package nz.co.pizzashack.repository;
 
 import groovy.json.JsonBuilder;
 import groovy.json.JsonSlurper;
-
-import java.util.Map;
-
-import nz.co.pizzashack.model.Customer;
-import nz.co.pizzashack.model.Pizzashack;
-import nz.co.pizzashack.model.User;
-import nz.co.pizzashack.repository.convert.CustomerMetaMapToModel;
-import nz.co.pizzashack.repository.convert.PizzashackMetaMapToModel;
-import nz.co.pizzashack.repository.convert.PizzashackQueryNodeToModel;
-import nz.co.pizzashack.repository.convert.UserMetaMapToModel;
-import nz.co.pizzashack.repository.convert.UserModelToMap;
-import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
 import nz.co.pizzashack.repository.convert.template.Neo4jRestGenericConverter;
 import nz.co.pizzashack.repository.impl.CustomerRepositoryImpl;
+import nz.co.pizzashack.repository.impl.PizzashackCommentRepositoryImpl;
 import nz.co.pizzashack.repository.impl.PizzashackRepositoryImpl;
 import nz.co.pizzashack.repository.impl.UserRepositoryImpl;
 import nz.co.pizzashack.repository.support.Neo4jRestAPIAccessor;
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
 
-import com.google.common.base.Function;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -39,53 +27,20 @@ public class RepositoryModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		this.install(new ConverterModule());
 		bind(GeneralJsonRestClientAccessor.class).toProvider(GeneralJsonRestClientAccessorProvider.class)
 				.asEagerSingleton();
 		bind(Neo4jRestAPIAccessor.class).asEagerSingleton();
 		bind(PizzashackRepository.class).to(PizzashackRepositoryImpl.class).asEagerSingleton();
 		bind(UserRepository.class).to(UserRepositoryImpl.class).asEagerSingleton();
 		bind(CustomerRepository.class).to(CustomerRepositoryImpl.class).asEagerSingleton();
+		bind(PizzashackCommentRepository.class).to(PizzashackCommentRepositoryImpl.class).asEagerSingleton();
 	}
 
 	@Provides
 	@Singleton
 	public Neo4jRestGenericConverter neo4jRestGenericConverter(final @Named("jsonBuilder") JsonBuilder jsonBuilder, final @Named("jsonSlurper") JsonSlurper jsonSlurper) {
 		return new Neo4jRestGenericConverter(jsonBuilder, jsonSlurper);
-	}
-
-	@Provides
-	@Singleton
-	@Named("pizzashackMetaMapToModelConverter")
-	public Function<Map<String, String>, Pizzashack> pizzashackMetaMapToModelConverter() {
-		return new PizzashackMetaMapToModel();
-	}
-
-	@Provides
-	@Singleton
-	@Named("pizzashackQueryNodeToModelConverter")
-	public Function<AbstractCypherQueryNode, Pizzashack> pizzashackQueryNodeToModelConverter(final @Named("pizzashackMetaMapToModelConverter") Function<Map<String, String>, Pizzashack> pizzashackMetaMapToModelConverter) {
-		return new PizzashackQueryNodeToModel(pizzashackMetaMapToModelConverter);
-	}
-
-	@Provides
-	@Singleton
-	@Named("userMetaMapToModelConverter")
-	public Function<Map<String, String>, User> userMetaMapToModelConverter() {
-		return new UserMetaMapToModel();
-	}
-	
-	@Provides
-	@Singleton
-	@Named("userModelToMapConverter")
-	public Function<User,Map<String, String>> userModelToMapConverter() {
-		return new UserModelToMap();
-	}
-
-	@Provides
-	@Singleton
-	@Named("customerMetaMapToModelConverter")
-	public Function<Map<String, String>, Customer> customerMetaMapToModelConverter() {
-		return new CustomerMetaMapToModel();
 	}
 
 	public static class GeneralJsonRestClientAccessorProvider implements Provider<GeneralJsonRestClientAccessor> {

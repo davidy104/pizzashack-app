@@ -24,7 +24,6 @@ public class IntegrationModule extends CamelModuleWithMatchingRoutes {
 	}
 
 	public static class RegistryProvider implements Provider<Registry> {
-
 		@Inject
 		AmazonS3 amazonS3;
 

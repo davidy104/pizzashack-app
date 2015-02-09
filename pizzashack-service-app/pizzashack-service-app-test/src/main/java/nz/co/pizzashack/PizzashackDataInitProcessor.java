@@ -14,21 +14,19 @@ import com.google.inject.Injector;
 
 public class PizzashackDataInitProcessor {
 
-	private final static String PIZZASHACK_INIT_FILE = "pizzashack-init.txt";
-	
 	private static Set<Pizzashack> initPizzashacks = null;
-	
+
 	private static Injector injector = null;
-	
+
 	public static void main(String[] args) throws Exception {
-		injector = Guice.createInjector(new RepositoryModule(),new ConfigurationServiceModule(),new SharedModule());
+		injector = Guice.createInjector(new RepositoryModule(), new ConfigurationServiceModule(), new SharedModule());
 		initPizzashacks();
 	}
-	
-	private static void initPizzashacks()throws Exception {
-		initPizzashacks = initPizzashackFromFile(PIZZASHACK_INIT_FILE);
+
+	private static void initPizzashacks() throws Exception {
+		initPizzashacks = initPizzashackFromFile();
 		final PizzashackRepository pizzashackRepository = injector.getInstance(PizzashackRepository.class);
-		for(final Pizzashack pizzashack : initPizzashacks){
+		for (final Pizzashack pizzashack : initPizzashacks) {
 			pizzashackRepository.create(pizzashack);
 		}
 	}

@@ -106,31 +106,25 @@ public class Neo4jRestAPIAccessor {
 		});
 		return neo4jRestGenericConverter.relationshipsQueryResponseToMap(jsonResponse);
 	}
-	
-	public void deleteRelationship(final String nodeUri,final String relationshipNodeUri, final String type, RelationshipDirection relationshipDirection) throws Exception {
+
+	public void deleteRelationship(final String nodeUri, final String relationshipNodeUri, final String type, RelationshipDirection relationshipDirection) throws Exception {
 		String relationshipUri = null;
-		relationshipDirection = relationshipDirection == null?RelationshipDirection.ALL:relationshipDirection;
-		final Map<String,Map<String,String>> resultMap = this.getRelationsByNodeId(nodeUri,relationshipDirection,type);
-		
-		for (final Map.Entry<String,Map<String,String>> entry : resultMap.entrySet()) {
-			final Map<String,String> dataMap = entry.getValue();
-			if(dataMap.get("start")==nodeUri && dataMap.get("end") == relationshipNodeUri && ((dataMap.get("type")).toLowerCase()).equals(type.toLowerCase())){
+		relationshipDirection = relationshipDirection == null ? RelationshipDirection.ALL : relationshipDirection;
+		final Map<String, Map<String, String>> resultMap = this.getRelationsByNodeId(nodeUri, relationshipDirection, type);
+
+		for (final Map.Entry<String, Map<String, String>> entry : resultMap.entrySet()) {
+			final Map<String, String> dataMap = entry.getValue();
+			if (dataMap.get("start") == nodeUri && dataMap.get("end") == relationshipNodeUri && ((dataMap.get("type")).toLowerCase()).equals(type.toLowerCase())) {
 				relationshipUri = entry.getKey();
 				break;
 			}
 		}
-		
-		if(StringUtils.isEmpty(relationshipUri)){
+
+		if (StringUtils.isEmpty(relationshipUri)) {
 			throw new NotFoundException("Relationship not found.");
 		}
-		
-		generalJsonRestClientAccessor.doProcess(relationshipUri, null, ClientResponse.Status.NO_CONTENT.getStatusCode(), new RestClientExecuteCallback() {
-			@Override
-			public ClientResponse execute(WebResource webResource) {
-				return webResource.accept(MediaType.APPLICATION_JSON)
-						.delete(ClientResponse.class);
-			}
-		});
+
+		this.deleteNodeByUri(relationshipUri);
 	}
 
 	public String createUniqueNode(final String objFieldsCreateStatement, final Object obj, final String label, final String key) throws Exception {
@@ -260,8 +254,8 @@ public class Neo4jRestAPIAccessor {
 		final String createStatement = neo4jRestGenericConverter.modelToCreateStatement(obj, label, returnPrefix);
 		return this.doCreateNode(createStatement);
 	}
-	
-	public String createNode(final String objFieldsCreateStatement,final String label) throws Exception {
+
+	public String createNode(final String objFieldsCreateStatement, final String label) throws Exception {
 		final String createStatement = neo4jRestGenericConverter.doCreateStatement(objFieldsCreateStatement, label, "p");
 		final Map<String, String> columnAndUriMap = neo4jRestGenericConverter.transCypherRestFormatResponseConvert(this.doCreateNode(createStatement));
 		if (!columnAndUriMap.isEmpty()) {

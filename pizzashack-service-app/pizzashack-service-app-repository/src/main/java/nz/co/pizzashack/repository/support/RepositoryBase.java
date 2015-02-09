@@ -8,14 +8,16 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nz.co.pizzashack.ConflictException;
 import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.model.AbstractNeo4jModel;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryResult;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -25,13 +27,12 @@ import com.google.common.collect.Sets;
 
 public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Serializable> {
 
-	// private static final Logger LOGGER =
-	// LoggerFactory.getLogger(RepositoryBase.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryBase.class);
 
 	protected final String label;
 
 	protected String uniqueKey;
-	
+
 	public RepositoryBase(final String label) {
 		super();
 		this.label = label;
@@ -42,8 +43,8 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 		this.label = label;
 		this.uniqueKey = uniqueKey;
 	}
-	
-	public String create(final T addModel, final Function<T, String> objectFieldsCreateStatementConverter)throws Exception {
+
+	public String create(final T addModel, final Function<T, String> objectFieldsCreateStatementConverter) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
 		checkArgument(addModel != null, "addModel can not be null");
 		checkState(objectFieldsCreateStatementConverter != null, "objectFieldsCreateStatementConverter can not be null");
@@ -52,7 +53,7 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 
 	public String createUnique(final T addModel) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
-		if(StringUtils.isEmpty(uniqueKey)){
+		if (StringUtils.isEmpty(uniqueKey)) {
 			return null;
 		}
 		checkArgument(addModel != null && getValueByField(addModel, uniqueKey) != null, "addModel and its unique value can not be null");
@@ -62,11 +63,12 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 	public String createUnique(final T addModel, final Function<T, String> objectFieldsCreateStatementConverter) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
 		checkArgument(addModel != null && getValueByField(addModel, uniqueKey) != null, "addModel and its unique value can not be null");
-		if(StringUtils.isEmpty(uniqueKey)){
+		if (StringUtils.isEmpty(uniqueKey)) {
 			return null;
 		}
 		if (objectFieldsCreateStatementConverter != null) {
 			final String createStatement = objectFieldsCreateStatementConverter.apply(addModel);
+			LOGGER.info("createStatement:{} ", createStatement);
 			return getNeo4jRestAPIAccessor().createUniqueNode(createStatement, addModel, label, uniqueKey);
 		}
 		return getNeo4jRestAPIAccessor().createUniqueNode(addModel, label, uniqueKey);
@@ -76,7 +78,7 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 	protected T getBasicById(PK id, Function<Map<String, String>, T> converter) throws NotFoundException {
 		checkArgument(converter != null, "converter can not be null");
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
-		if(StringUtils.isEmpty(uniqueKey)){
+		if (StringUtils.isEmpty(uniqueKey)) {
 			return null;
 		}
 		T returnModel = null;
@@ -135,7 +137,7 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 	protected void updateBasicById(final T updatedModel) throws Exception {
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
 		checkArgument(updatedModel != null && getValueByField(updatedModel, uniqueKey) != null, "updatedModel and its unique value can not be null");
-		if(!StringUtils.isEmpty(uniqueKey)){
+		if (!StringUtils.isEmpty(uniqueKey)) {
 			this.doUpdateBasicById(getValueByField(updatedModel, uniqueKey), updatedModel);
 		}
 	}
@@ -144,7 +146,7 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 		checkState(getNeo4jRestAPIAccessor() != null, "Neo4jRestAPIAccessor can not be null");
 		checkArgument(updatedModel != null && getValueByField(updatedModel, uniqueKey) != null, "updatedModel and its unique value can not be null");
 		checkArgument(toUpdateStatementConverter != null, "toUpdateStatementConverter can not be null");
-		if(!StringUtils.isEmpty(uniqueKey)){
+		if (!StringUtils.isEmpty(uniqueKey)) {
 			this.doUpdateBasicById(getValueByField(updatedModel, uniqueKey), toUpdateStatementConverter.apply(updatedModel));
 		}
 	}
@@ -163,7 +165,7 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 	}
 
 	public void deleteAllById(final PK id, final boolean forceDeleteIfHasRelationships) throws Exception {
-		if(!StringUtils.isEmpty(uniqueKey)){
+		if (!StringUtils.isEmpty(uniqueKey)) {
 			if (this.doGetBasicById(id) == null) {
 				throw new NotFoundException("Entity not found by id[" + id + "].");
 			}
@@ -191,7 +193,7 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 	}
 
 	protected Set<AbstractCypherQueryNode> getAllRelationshipsNodesById(final PK id) throws Exception {
-		if(StringUtils.isEmpty(uniqueKey)){
+		if (StringUtils.isEmpty(uniqueKey)) {
 			return null;
 		}
 		final String getAllRelationshipsJson = "MATCH (p:" + label + "{" + uniqueKey + ":{" + uniqueKey + "}})-[r]-(a) RETURN DISTINCT a, r";

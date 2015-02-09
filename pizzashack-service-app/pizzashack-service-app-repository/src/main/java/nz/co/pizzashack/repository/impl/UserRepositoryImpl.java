@@ -18,7 +18,8 @@ import com.google.inject.name.Named;
 
 public class UserRepositoryImpl extends RepositoryBase<User, String> implements UserRepository {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class);
+	// private static final Logger LOGGER =
+	// LoggerFactory.getLogger(UserRepositoryImpl.class);
 
 	@Inject
 	private Neo4jRestAPIAccessor neo4jRestAPIAccessor;
@@ -26,6 +27,14 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 	@Inject
 	@Named("userMetaMapToModelConverter")
 	private Function<Map<String, String>, User> userMetaMapToModelConverter;
+
+	@Inject
+	@Named("userModelToMapConverter")
+	private Function<User, Map<String, String>> userModelToMapConverter;
+
+	@Inject
+	@Named("userModelToCreateStatementConverter")
+	private Function<User, String> userModelToCreateStatementConverter;
 
 	public UserRepositoryImpl() {
 		super("User", "userName");
@@ -38,7 +47,7 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 
 	@Override
 	public String create(User addUser) throws Exception {
-		return this.createUnique(addUser);
+		return this.createUnique(addUser, userModelToCreateStatementConverter);
 	}
 
 	@Override
@@ -52,10 +61,8 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 	}
 
 	/**
-	 * { "query" :
-	 * "(u:User{userName:{userName},password:{password}}) RETURN u", 
-	 * "params" : { "password" : "{password}", "userName" : "{userName}" } 
-	 * } 
+	 * { "query" : "(u:User{userName:{userName},password:{password}}) RETURN u",
+	 * "params" : { "password" : "{password}", "userName" : "{userName}" } }
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
@@ -84,7 +91,7 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 
 	@Override
 	public void update(final User updateUser) throws Exception {
-		this.updateBasicById(updateUser);
+		this.updateBasicById(updateUser, userModelToMapConverter);
 	}
 
 	@Override
