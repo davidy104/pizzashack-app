@@ -17,6 +17,8 @@ angular
     'ngSanitize',
     'ngTouch',
     'ngAnimate',
+    'ui.bootstrap',
+    'ui.router',
     'pizzaAdmin'
   ])
   .config(function ($routeProvider) {
