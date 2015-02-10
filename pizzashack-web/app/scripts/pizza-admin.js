@@ -25,11 +25,11 @@ angular.module('pizzaAdmin',[])
             create: function(form){
                 var deferred = $q.defer();
                 var fd = new FormData();
-                fd.append('image',form.image);
-                fd.append('name',form.name);
-                fd.append('description',form.description);
-                var ps = $resource('http://localhost:8181/pizzashackApp/pizzashack/upload',fd,{headers: { 'Content-Type': undefined }});
-                 ps.$save(function(data){
+                fd.append('image',form.pizzashackImage);
+                fd.append('name',form.pizzashackName);
+                fd.append('description',form.pizzashackDescription);
+                var ps = $resource('http://localhost:8181/pizzashackApp/pizzashack/upload',fd,{transformRequest: angular.identity,headers: {'Content-Type': 'multipart/form-data'}});
+                ps.save(function(data){
                     deferred.resolve(data);
                 });
                 return deferred.promise;

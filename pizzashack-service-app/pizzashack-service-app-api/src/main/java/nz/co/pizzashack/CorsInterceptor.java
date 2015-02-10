@@ -19,8 +19,7 @@ import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
 @SuppressWarnings("deprecation")
 @Provider
 @ServerInterceptor
-public class CorsInterceptor implements PreProcessInterceptor,
-		MessageBodyWriterInterceptor {
+public class CorsInterceptor implements PreProcessInterceptor, MessageBodyWriterInterceptor {
 
 	/**
 	 * The Origin header set by the browser at each request.

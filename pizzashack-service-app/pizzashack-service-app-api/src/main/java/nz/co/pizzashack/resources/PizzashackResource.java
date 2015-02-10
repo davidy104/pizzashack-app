@@ -50,10 +50,11 @@ public class PizzashackResource {
 	}
 
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Path("/upload")
-	public Response create(@Context final UriInfo uriInfo, final MultipartFormDataInput input) throws Exception {
+	@Produces("application/json")
+	@Consumes("multipart/form-data")
+	public Response create(final MultipartFormDataInput input) throws Exception {
+		LOGGER.info("create start.");
 		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
 		for (Map.Entry<String, List<InputPart>> entry : uploadForm.entrySet()) {
 			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
