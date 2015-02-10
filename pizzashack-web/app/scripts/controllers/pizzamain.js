@@ -6,9 +6,7 @@ angular.module('pizzashackWebApp')
       var update = function(){
         pizzaAdminApi.get().then(function(data){
           angular.forEach(data, function(item){
-            // $log.log(item);
-            // $log.log(item.pizzashackId);
-            // $log.log(item.pizzaName);
+            $log.log(item.pizzaName);
             $scope.pizzas.push(item);
           });
         });

@@ -18,7 +18,6 @@ angular
     'ngTouch',
     'ngAnimate',
     'ui.bootstrap',
-    'ui.router',
     'pizzaAdmin'
   ])
   .config(function ($routeProvider) {
@@ -31,6 +30,10 @@ angular
         templateUrl: 'views/pizza-main.html',
         controller: 'PizzaCtrl'
       })
+      .when('/pizza/create', {
+        templateUrl: 'views/pizzaCreate.html',
+        controller: 'PizzaCreateCtrl'
+      })
       .when('/pizza/info/:id', {
         templateUrl: 'views/pizza-info.html',
         resolve: {
@@ -39,10 +42,6 @@ angular
                     }
                 },
         controller: 'PizzaDetailCtrl'
-      })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
       })
       .when('/about', {
         templateUrl: 'views/about.html',

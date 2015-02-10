@@ -2,6 +2,8 @@ package nz.co.pizzashack.resources;
 
 import static nz.co.pizzashack.GenericAPIUtils.buildResponseOnException;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,6 +23,8 @@ import javax.ws.rs.core.UriInfo;
 import nz.co.pizzashack.model.Pizzashack;
 import nz.co.pizzashack.repository.PizzashackRepository;
 
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +47,18 @@ public class PizzashackResource {
 	@GET
 	public Response doGet() {
 		return Response.ok("PizzashackResource API is available ...").type(MediaType.TEXT_PLAIN).build();
+	}
+
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Path("/upload")
+	public Response create(@Context final UriInfo uriInfo, final MultipartFormDataInput input) throws Exception {
+		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+		for (Map.Entry<String, List<InputPart>> entry : uploadForm.entrySet()) {
+			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+		}
+		return Response.ok("create completed").type(MediaType.APPLICATION_JSON).build();
 	}
 
 	@POST
