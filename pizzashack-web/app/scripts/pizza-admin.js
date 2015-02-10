@@ -21,6 +21,18 @@ angular.module('pizzaAdmin',[])
                     deferred.resolve(data);
                 });
                 return deferred.promise;
+            },
+            create: function(form){
+                var deferred = $q.defer();
+                var fd = new FormData();
+                fd.append('image',form.image);
+                fd.append('name',form.name);
+                fd.append('description',form.description);
+                var ps = $resource('http://localhost:8181/pizzashackApp/pizzashack/upload',fd,{headers: { 'Content-Type': undefined }});
+                 ps.$save(function(data){
+                    deferred.resolve(data);
+                });
+                return deferred.promise;
             }
         };
         return self;
