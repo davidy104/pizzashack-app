@@ -16,9 +16,10 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>pizzashack-service-app-repository</artifactId>
+			<artifactId>pizzashack-service-app-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

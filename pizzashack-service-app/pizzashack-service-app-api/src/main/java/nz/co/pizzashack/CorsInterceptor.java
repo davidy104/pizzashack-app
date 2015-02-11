@@ -33,9 +33,7 @@ public class CorsInterceptor implements PreProcessInterceptor, MessageBodyWriter
 	 */
 	private static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
 
-	//
 	private static final ThreadLocal<String> REQUEST_ORIGIN = new ThreadLocal<String>();
-	//
 	private final Set<String> allowedOrigins;
 
 	public CorsInterceptor() {
@@ -44,25 +42,23 @@ public class CorsInterceptor implements PreProcessInterceptor, MessageBodyWriter
 	}
 
 	@Override
-	public ServerResponse preProcess(HttpRequest request,
-			ResourceMethodInvoker method) throws Failure,
-			WebApplicationException {
+	public ServerResponse preProcess(HttpRequest request, ResourceMethodInvoker method) throws Failure, WebApplicationException {
 		if (!allowedOrigins.isEmpty()) {
-			REQUEST_ORIGIN.set(request.getHttpHeaders().getRequestHeaders()
-					.getFirst(ORIGIN));
+			REQUEST_ORIGIN.set(request.getHttpHeaders().getRequestHeaders().getFirst(ORIGIN));
 		}
 		return null;
 	}
 
 	@Override
-	public void write(MessageBodyWriterContext context) throws IOException,
-			WebApplicationException {
-		if (!allowedOrigins.isEmpty()
-				&& (allowedOrigins.contains(REQUEST_ORIGIN.get()) || allowedOrigins
-						.contains("*"))) {
-			context.getHeaders().add(ACCESS_CONTROL_ALLOW_ORIGIN,
-					REQUEST_ORIGIN.get());
+	public void write(MessageBodyWriterContext context) throws IOException, WebApplicationException {
+		try {
+			if (null != context) {
+				if (!allowedOrigins.isEmpty() && (allowedOrigins.contains(REQUEST_ORIGIN.get()) || allowedOrigins.contains("*"))) {
+					context.getHeaders().add(ACCESS_CONTROL_ALLOW_ORIGIN, REQUEST_ORIGIN.get());
+				}
+				context.proceed();
+			}
+		} catch (final Exception e) {
 		}
-		context.proceed();
 	}
 }

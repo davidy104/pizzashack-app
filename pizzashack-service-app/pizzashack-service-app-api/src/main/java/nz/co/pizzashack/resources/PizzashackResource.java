@@ -2,6 +2,7 @@ package nz.co.pizzashack.resources;
 
 import static nz.co.pizzashack.GenericAPIUtils.buildResponseOnException;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,10 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-@Path("/pizzashack")
+@Path("/admin/pizzashack")
 public class PizzashackResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackResource.class);
@@ -50,16 +52,31 @@ public class PizzashackResource {
 	}
 
 	@POST
-	@Path("/upload")
-	@Produces("application/json")
 	@Consumes("multipart/form-data")
-	public Response create(final MultipartFormDataInput input) throws Exception {
+	public Response create(@Context final UriInfo uriInfo, final MultipartFormDataInput input) throws Exception {
 		LOGGER.info("create start.");
+		Map<String, String> requestFormMap = Maps.<String, String> newHashMap();
 		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-		for (Map.Entry<String, List<InputPart>> entry : uploadForm.entrySet()) {
-			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+		InputStream imageStream = null;
+		try {
+			for (final Map.Entry<String, List<InputPart>> entry : uploadForm.entrySet()) {
+				final String key = entry.getKey();
+				final InputPart inputPart = entry.getValue().get(0);
+
+				if (key.equals("image")) {
+					imageStream = inputPart.getBody(InputStream.class, null);
+				} else {
+					requestFormMap.put(key, inputPart.getBody(String.class, null));
+				}
+			}
+		} catch (final Exception e) {
+			throw e;
+		} finally {
+			if (imageStream != null) {
+				imageStream.close();
+			}
 		}
-		return Response.ok("create completed").type(MediaType.APPLICATION_JSON).build();
+		return Response.ok("create completed").type(MediaType.TEXT_PLAIN).build();
 	}
 
 	@POST
