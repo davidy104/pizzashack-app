@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -49,20 +51,32 @@ public class PizzashackDSImpl implements PizzashackDS {
 		}
 		return id;
 	}
+	
+	@Override
+	public S3Object loadImageFromS3(final String imageName) throws Exception {
+		final String key = IMAGE_PATH + imageName;
+		return amazonS3.getObject(new GetObjectRequest(awsS3Bucket, key));
+	}
+
 
 	@Override
 	public void deleteById(final String pizzashackId) throws Exception {
-		pizzashackRepository.getById(pizzashackId);
+		final Pizzashack found = pizzashackRepository.getById(pizzashackId);
+		final String icon = found.getIcon();
+		if(!StringUtils.isEmpty(icon)){
+			String key = IMAGE_PATH +"/"+ icon;
+			amazonS3.deleteObject(awsS3Bucket, key);
+		}
+		pizzashackRepository.deleteById(pizzashackId);
 	}
 
 	@Override
 	public Pizzashack getPizzashackById(final String pizzashackId) throws NotFoundException {
-		return null;
+		return pizzashackRepository.getById(pizzashackId);
 	}
 
 	@Override
 	public void updatePizzashack(final String pizzashackId, Pizzashack updatePizzashack) throws Exception {
-
 	}
 
 	@Override
@@ -71,8 +85,14 @@ public class PizzashackDSImpl implements PizzashackDS {
 	}
 
 	@Override
-	public Page<Pizzashack> paginatePizzashack(int pageOffset, int pageSize) {
-		return null;
+	public Page<Pizzashack> paginatePizzashack(final int pageOffset,final int pageSize) {
+		Page<Pizzashack> page = null;
+		try {
+			page =  pizzashackRepository.paginateAll(pageOffset, pageSize);
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
+		return page;
 	}
 
 }

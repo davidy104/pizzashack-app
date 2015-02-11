@@ -3,6 +3,7 @@ package nz.co.pizzashack.repository.impl;
 import java.util.Map;
 import java.util.Set;
 
+import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
 import nz.co.pizzashack.repository.PizzashackRepository;
@@ -53,7 +54,7 @@ public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String>
 	}
 
 	@Override
-	public Pizzashack getById(final String pizzashackId) throws Exception {
+	public Pizzashack getById(final String pizzashackId) throws NotFoundException {
 		return this.getBasicById(pizzashackId, pizzashackMetaMapToModelConverter);
 	}
 

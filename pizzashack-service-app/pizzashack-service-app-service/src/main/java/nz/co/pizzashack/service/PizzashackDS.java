@@ -7,6 +7,8 @@ import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
 
+import com.amazonaws.services.s3.model.S3Object;
+
 public interface PizzashackDS {
 
 	String createPizzashack(Pizzashack addPizzashack, String imageName, InputStream imageStream) throws Exception;
@@ -21,4 +23,5 @@ public interface PizzashackDS {
 
 	Page<Pizzashack> paginatePizzashack(int pageOffset, int pageSize);
 
+	S3Object loadImageFromS3(String imageName)throws Exception;
 }
