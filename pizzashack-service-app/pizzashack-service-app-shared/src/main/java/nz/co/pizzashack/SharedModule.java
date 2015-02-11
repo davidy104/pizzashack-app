@@ -6,6 +6,8 @@ import groovy.json.JsonSlurper;
 import java.util.concurrent.Executors;
 
 import nz.co.pizzashack.config.ConfigurationService;
+import nz.co.pizzashack.ds.AwsS3GeneralService;
+import nz.co.pizzashack.ds.impl.AwsS3GeneralServiceImpl;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
@@ -40,6 +42,7 @@ public class SharedModule extends AbstractModule {
 		bind(AmazonS3.class).toProvider(AmazonS3Provider.class).asEagerSingleton();
 		bind(AmazonSQS.class).toProvider(AmazonSQSProvider.class).asEagerSingleton();
 		bind(AmazonSNSClient.class).toProvider(AmazonSNSClientProvider.class).asEagerSingleton();
+		bind(AwsS3GeneralService.class).to(AwsS3GeneralServiceImpl.class).asEagerSingleton();
 	}
 
 	public static class IntegrationEventBusProvider implements Provider<EventBus> {
@@ -81,7 +84,6 @@ public class SharedModule extends AbstractModule {
 			client.setConnectTimeout(10000);
 			client.setReadTimeout(10000);
 			client.addFilter(new LoggingFilter(System.out));
-			
 			return client;
 		}
 	}

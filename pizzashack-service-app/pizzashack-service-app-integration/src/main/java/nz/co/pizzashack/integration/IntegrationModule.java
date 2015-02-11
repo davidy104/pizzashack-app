@@ -1,8 +1,10 @@
 package nz.co.pizzashack.integration;
 
 import nz.co.pizzashack.integration.config.CamelContextConfiguration;
+import nz.co.pizzashack.integration.route.ImageToS3Route;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.guice.CamelModuleWithMatchingRoutes;
 import org.apache.camel.impl.ExplicitCamelContextNameStrategy;
 import org.apache.camel.impl.SimpleRegistry;
@@ -15,12 +17,14 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
+import com.google.inject.name.Names;
 
 public class IntegrationModule extends CamelModuleWithMatchingRoutes {
 	@Override
 	protected void configureCamelContext() {
 		bind(CamelContext.class).to(CamelContextConfiguration.class).asEagerSingleton();
 		bind(Registry.class).toProvider(RegistryProvider.class);
+		bind(RouteBuilder.class).annotatedWith(Names.named("imageToS3Route")).to(ImageToS3Route.class).asEagerSingleton();
 	}
 
 	public static class RegistryProvider implements Provider<Registry> {

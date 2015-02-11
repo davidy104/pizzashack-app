@@ -11,6 +11,8 @@ public class GenericUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GenericUtils.class);
 
+	public static final String FOLDER_SUFFIX = "/";
+
 	public static Object getValueByField(final Object instance, final String fieldName) {
 		try {
 			Field field = instance.getClass().getDeclaredField(fieldName);
@@ -42,5 +44,16 @@ public class GenericUtils {
 
 	public static <T extends Enum<T>> T getEnumFromString(Class<T> c, String string) {
 		return Enum.valueOf(c, string.trim().toUpperCase());
+	}
+
+	public static String formatPath(final String path) {
+		// remove root path: /
+		String formattedPath = null;
+		if (path.startsWith(FOLDER_SUFFIX)) {
+			formattedPath = path.substring(1);
+		} else {
+			formattedPath = path + FOLDER_SUFFIX;
+		}
+		return formattedPath;
 	}
 }

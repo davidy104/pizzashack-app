@@ -1,4 +1,4 @@
-package nz.co.pizzashack.service;
+package nz.co.pizzashack.ds;
 
 import java.io.InputStream;
 import java.util.Set;
@@ -23,5 +23,5 @@ public interface PizzashackDS {
 
 	Page<Pizzashack> paginatePizzashack(int pageOffset, int pageSize);
 
-	S3Object loadImageFromS3(String imageName)throws Exception;
+	S3Object loadImageFromS3(String imageName) throws Exception;
 }

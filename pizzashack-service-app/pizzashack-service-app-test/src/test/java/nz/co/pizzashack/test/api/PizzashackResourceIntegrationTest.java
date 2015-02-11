@@ -8,11 +8,12 @@ import java.net.URI;
 import javax.ws.rs.core.MediaType;
 
 import nz.co.pizzashack.NotFoundException;
+import nz.co.pizzashack.ServiceModule;
 import nz.co.pizzashack.SharedModule;
 import nz.co.pizzashack.config.ConfigurationServiceModule;
+import nz.co.pizzashack.integration.IntegrationModule;
 import nz.co.pizzashack.model.Pizzashack;
 import nz.co.pizzashack.repository.RepositoryModule;
-import nz.co.pizzashack.service.ServiceModule;
 import nz.co.pizzashack.test.GuiceJUnitRunner;
 import nz.co.pizzashack.test.GuiceJUnitRunner.GuiceModules;
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
@@ -36,7 +37,7 @@ import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
 
 @RunWith(GuiceJUnitRunner.class)
-@GuiceModules({ ConfigurationServiceModule.class, SharedModule.class, ServiceModule.class, RepositoryModule.class })
+@GuiceModules({ ConfigurationServiceModule.class, SharedModule.class, ServiceModule.class, RepositoryModule.class, IntegrationModule.class })
 public class PizzashackResourceIntegrationTest {
 
 	private final static String API_BASE_URI = "http://localhost:8181/pizzashackApp/pizzashack";

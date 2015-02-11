@@ -10,7 +10,6 @@ import nz.co.pizzashack.config.ConfigurationServiceModule;
 import nz.co.pizzashack.config.ResourceModule;
 import nz.co.pizzashack.integration.IntegrationModule;
 import nz.co.pizzashack.repository.RepositoryModule;
-import nz.co.pizzashack.service.ServiceModule;
 
 import org.apache.camel.CamelContext;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;

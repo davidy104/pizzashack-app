@@ -1,6 +1,7 @@
-package nz.co.pizzashack.service;
+package nz.co.pizzashack;
 
-import nz.co.pizzashack.service.impl.PizzashackDSImpl;
+import nz.co.pizzashack.ds.PizzashackDS;
+import nz.co.pizzashack.ds.impl.PizzashackDSImpl;
 
 import com.google.inject.AbstractModule;
 

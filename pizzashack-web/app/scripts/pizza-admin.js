@@ -25,7 +25,8 @@ angular.module('pizzaAdmin',[])
             create: function(form){
                 var deferred = $q.defer();
                 var fd = new FormData();
-                fd.append('image',form.pizzashackImage);
+                fd.append('imageName',form.files[0].name);
+                fd.append('image',form.files[0]);
                 fd.append('name',form.pizzashackName);
                 fd.append('description',form.pizzashackDescription);
                 fd.append('createDate',form.pizzashackCreateDate);
