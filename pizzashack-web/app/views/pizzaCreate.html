@@ -4,7 +4,7 @@
 				
 				<div class="alert alert-success" ng-if="createSuccess" class="animate-if">
 				    <a href="#/pizza" class="close" data-dismiss="alert">&times;</a>
-				    <strong>Success!</strong> {{successMessage}}
+				    <strong>Create Successfully! Its ID is: </strong> {{successMessage}}
 				</div>
 				<div class="panel panel-default panel-primary">
 					
@@ -78,7 +78,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 	</div>
 </div>
 
@@ -87,5 +87,5 @@
     $(".alert-success").fadeTo(500, 0).slideUp(500, function(){
         $(this).remove(); 
     });
-}, 5000);
+}, 3000);
 </script>

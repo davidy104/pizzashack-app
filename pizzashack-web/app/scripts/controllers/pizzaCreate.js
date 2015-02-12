@@ -37,9 +37,10 @@ angular.module('pizzashackWebApp')
       $log.log($scope.files[0].name);
 
       pizzaAdminApi.create($scope).then(function(data){
+        $log.log(data);
         $scope.createSuccess = true;
         $scope.successMessage = data;
-      	$log.log(data);
+      	
     	});
   	};
 });

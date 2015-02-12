@@ -32,7 +32,7 @@ angular.module('pizzaAdmin',[])
                 fd.append('createDate',form.pizzashackCreateDate);
                 fd.append('amount',form.pizzashackAmount);
 
-                $http.post('http://localhost:8181/pizzashackApp/admin/pizzashack/upload', fd, {
+                $http.post('http://localhost:8181/pizzashackApp/admin/pizzashack', fd, {
                      transformRequest: angular.identity,
                      headers: {'Content-Type': undefined}
                 }).success(function(data){

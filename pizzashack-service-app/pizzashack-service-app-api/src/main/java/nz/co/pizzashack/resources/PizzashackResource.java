@@ -68,13 +68,14 @@ public class PizzashackResource {
 			for (final Map.Entry<String, List<InputPart>> entry : uploadForm.entrySet()) {
 				final String key = entry.getKey();
 				final InputPart inputPart = entry.getValue().get(0);
-
 				if (key.equals("image")) {
 					imageStream = inputPart.getBody(InputStream.class, null);
 				} else if (key.equals("imageName")) {
 					imageName = inputPart.getBodyAsString();
 				} else {
-					requestFormMap.put(key, inputPart.getBodyAsString());
+					final String val = inputPart.getBodyAsString();
+					LOGGER.info("key-value:{} ", key + "-" + val);
+					requestFormMap.put(key, val);
 				}
 			}
 			if (!requestFormMap.isEmpty()) {
@@ -87,7 +88,7 @@ public class PizzashackResource {
 				imageStream.close();
 			}
 		}
-		return Response.created(uriInfo.getRequestUriBuilder().replacePath("/" + id).build()).entity(id).type(MediaType.APPLICATION_JSON).build();
+		return Response.status(Response.Status.CREATED).entity(id).type(MediaType.TEXT_PLAIN).build();
 	}
 
 	@GET
@@ -132,7 +133,7 @@ public class PizzashackResource {
 			LOGGER.info("s3Object:{}", s3Object);
 			LOGGER.info("getContentType:{}", s3Object.getObjectMetadata().getContentType());
 			LOGGER.info("available:{}", s3Object.getObjectContent().available());
-			
+
 			return Response.ok(new ProxyInputStream(s3Object.getObjectContent()) {
 				@Override
 				public void close() throws IOException {
@@ -178,8 +179,11 @@ public class PizzashackResource {
 		if (requestFormMap.get("amount") != null) {
 			pizzashack.setAmount(Integer.valueOf(requestFormMap.get("amount")));
 		}
+
 		if (requestFormMap.get("createDate") != null) {
-			pizzashack.setCreateTime(parseToDate(requestFormMap.get("createDate"), "yyyy-MM-dd hh:mm:ss"));
+			final String createDateStr = requestFormMap.get("createDate");
+			LOGGER.info("createDateStr:{} ", createDateStr);
+			pizzashack.setCreateTime(parseToDate("yyyy-MM-dd hh:mm:ss", createDateStr));
 		}
 
 		return pizzashack;
