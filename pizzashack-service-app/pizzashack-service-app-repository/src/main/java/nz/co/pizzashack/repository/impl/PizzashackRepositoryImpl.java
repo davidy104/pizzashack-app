@@ -10,6 +10,9 @@ import nz.co.pizzashack.repository.PizzashackRepository;
 import nz.co.pizzashack.repository.support.Neo4jRestAPIAccessor;
 import nz.co.pizzashack.repository.support.RepositoryBase;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Function;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -21,8 +24,7 @@ import com.google.inject.name.Named;
  */
 public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String> implements PizzashackRepository {
 
-	// private static final Logger LOGGER =
-	// LoggerFactory.getLogger(PizzashackRepositoryImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackRepositoryImpl.class);
 
 	@Inject
 	private Neo4jRestAPIAccessor neo4jRestAPIAccessor;
@@ -55,6 +57,7 @@ public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String>
 
 	@Override
 	public Pizzashack getById(final String pizzashackId) throws NotFoundException {
+		LOGGER.info("getById start:{} ", pizzashackId);
 		return this.getBasicById(pizzashackId, pizzashackMetaMapToModelConverter);
 	}
 

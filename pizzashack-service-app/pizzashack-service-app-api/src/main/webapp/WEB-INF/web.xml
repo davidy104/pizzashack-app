@@ -4,11 +4,7 @@
 
 <web-app>
 	<display-name>Pizzashack</display-name>
-	
-	<context-param>
-    <param-name>resteasy.providers</param-name>
-    <param-value>nz.co.pizzashack.CorsInterceptor</param-value>
-	</context-param>
+
 
 	<listener>
 		<listener-class>nz.co.pizzashack.BootStrap</listener-class>
@@ -24,6 +20,15 @@
 		<servlet-name>Camel</servlet-name>
 		<url-pattern>/camel/*</url-pattern>
 	</servlet-mapping>
+
+	<filter>
+		<filter-name>CORS Filter</filter-name>
+		<filter-class>nz.co.pizzashack.CorsFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CORS Filter</filter-name>
+		<servlet-name>Resteasy</servlet-name>
+	</filter-mapping>
 
 	<servlet>
 		<servlet-name>Resteasy</servlet-name>

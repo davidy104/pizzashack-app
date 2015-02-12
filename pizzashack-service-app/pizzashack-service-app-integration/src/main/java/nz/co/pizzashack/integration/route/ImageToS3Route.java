@@ -49,7 +49,7 @@ public class ImageToS3Route extends RouteBuilder {
 						exchange.getIn().setHeader("CamelAwsS3ContentLength", available);
 					}
 				})
-				.setHeader("CamelAwsS3ContentType", constant("image/jpeg"))
+				.setHeader("CamelAwsS3ContentType", constant("image/png"))
 				.setHeader("CamelAwsS3Key", simple("${property.outputPath}"))
 				.to("aws-s3://" + awsS3Bucket + "?amazonS3Client=#amazonS3");
 	}

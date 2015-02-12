@@ -3,6 +3,7 @@ package nz.co.pizzashack.resources;
 import static nz.co.pizzashack.GenericAPIUtils.buildResponseOnException;
 import static nz.co.pizzashack.util.GenericUtils.parseToDate;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,14 @@ import javax.ws.rs.core.UriInfo;
 import nz.co.pizzashack.ds.PizzashackDS;
 import nz.co.pizzashack.model.Pizzashack;
 
+import org.apache.commons.io.input.ProxyInputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.services.s3.model.S3Object;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -52,7 +56,7 @@ public class PizzashackResource {
 	}
 
 	@POST
-	@Consumes("multipart/form-data")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response create(@Context final UriInfo uriInfo, final MultipartFormDataInput input) throws Exception {
 		LOGGER.info("create start.");
 		String id = null;
@@ -101,15 +105,44 @@ public class PizzashackResource {
 	@Path("/{pizzashackId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getById(@PathParam("pizzashackId") String pizzashackId) throws Exception {
+	public Response getById(@Context final UriInfo uriInfo, @PathParam("pizzashackId") String pizzashackId) throws Exception {
 		Pizzashack found = null;
 		try {
 			found = pizzashackDS.getPizzashackById(pizzashackId);
+			final String icon = found.getIcon();
+			if (!StringUtils.isEmpty(icon)) {
+				final String imageSrc = uriInfo.getAbsolutePathBuilder().replacePath("/pizzashackApp/admin/pizzashack/image/" + icon).build().toString();
+				LOGGER.info("imageSrc:{} ", imageSrc);
+				found.setIcon(imageSrc);
+			}
 		} catch (final Exception e) {
 			return buildResponseOnException(e);
 		}
 		return Response.ok(jacksonObjectMapper.writeValueAsString(found)).type(MediaType.APPLICATION_JSON)
 				.build();
+	}
+
+	@GET
+	@Path("/image/{image}")
+	@Produces("image/png")
+	public Response showImage(@PathParam("image") String image) {
+		LOGGER.info("showImage start:{}", image);
+		try {
+			final S3Object s3Object = pizzashackDS.loadImageFromS3(image);
+			LOGGER.info("s3Object:{}", s3Object);
+			LOGGER.info("getContentType:{}", s3Object.getObjectMetadata().getContentType());
+			LOGGER.info("available:{}", s3Object.getObjectContent().available());
+			
+			return Response.ok(new ProxyInputStream(s3Object.getObjectContent()) {
+				@Override
+				public void close() throws IOException {
+					super.close();
+					s3Object.close();
+				}
+			}, s3Object.getObjectMetadata().getContentType()).build();
+		} catch (final Exception e) {
+			return buildResponseOnException(e);
+		}
 	}
 
 	@DELETE

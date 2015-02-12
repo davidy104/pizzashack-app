@@ -1,36 +1,49 @@
 <div class="container" style="padding:20px" ng-controller="PizzaDetailInfoCtrl">
 		<div class="row">
-			<!--we use push and pull, make our content as show on the top of page when it is mobile style. 
-			it is important for search engine which always check the top content-->
-			<!-- push:to right; pull:to left-->
-			<div class="col-md-12">
+
+		<div class="col-md-10 col-md-push-2">
 				<div class="panel panel-default">
-  				<div class="panel-body">
-				<div class="row">
-					<div class="col-md-12">
-						<img src="images/pizzashack-cover-01.jpeg" class="img-responsive img-thumbnail" >
-					</div>
-				</div>
-				<p class="h4 text-right">{{pizzaItem.pizzaName}}<br> <small>16 June 2014</small></p>
-				<p class="text-justify">
-					{{pizzaItem.description}}
-				</p>
-				<div class="table-responsive">
-					<dl class="dl-horizontal">
-						<dt>Id</dt>
-					  <dd>{{id}}</dd>
-					  <dt>Name</dt>
-					  <dd>{{pizzaItem.pizzaName}}</dd>
-					  <dt>Price</dt>
-					  <dd>$ {{pizzaItem.price}}</dd>
-					</dl>
-				</div>
-				
-				</div>
-				</div>
+		  			<div class="panel-body">
+		  				<div class="row">
+							<div class="col-md-12">
+								<img src="{{pizzaItem.icon}}" class="img-responsive img-thumbnail" >
+							</div>
+						</div>
 
-			</div>
+						<p class="h4 text-right">{{pizzaItem.pizzaName}}<br> <small>{{pizzaItem.createTime}}</small></p>
+						<p class="text-justify">
+							{{pizzaItem.description}}
+						</p>
 
+						<!--details start-->
+						<div class="table-responsive">
+							<dl class="dl-horizontal">
+							  <dt>Id</dt>
+							  <dd>{{id}}</dd>
+							  <dt>Name</dt>
+							  <dd>{{pizzaItem.pizzaName}}</dd>
+							  <dt>Price</dt>
+							  <dd>$ {{pizzaItem.price}}</dd>
+							  <dt>Amount</dt>
+							  <dd>{{pizzaItem.amount}}</dd>
+							</dl>
+						</div>
+						<!--details end-->
+		  			</div>
+		  		</div>
+		</div>
+
+
+		<div class="col-md-2 col-md-pull-10">
+			<div class="panel panel-default">
+	  			<div class="panel-body">
+					<ul class="nav nav-pills nav-stacked">
+						<li role="presentation" class="active"><a ng-href="#/pizza">Query</a></li>
+					  	<li role="presentation"><a ng-href="#/pizza/create">Create</a></li>
+					</ul>
+				</div>
 			</div>
 		</div>
+			
 	</div>
+</div>

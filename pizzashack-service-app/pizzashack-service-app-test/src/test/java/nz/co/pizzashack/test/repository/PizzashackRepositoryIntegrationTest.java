@@ -1,6 +1,6 @@
 package nz.co.pizzashack.test.repository;
 
-import static nz.co.pizzashack.PizzashackInitUtils.initPizzashackFromFile;
+import static nz.co.pizzashack.test.TestUtils.initPizzashackFromFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -51,7 +51,7 @@ public class PizzashackRepositoryIntegrationTest {
 	public static void setUp() throws Exception {
 		initialPizzashacks = initPizzashackFromFile();
 		assertNotNull(initialPizzashacks);
-		assertEquals(initialPizzashacks.size(), 10);
+		assertEquals(initialPizzashacks.size(), 2);
 	}
 
 	@Before
@@ -94,7 +94,7 @@ public class PizzashackRepositoryIntegrationTest {
 
 	@Test(expected = ConflictException.class)
 	public void testCreateConflict() throws Exception {
-		final String duplicatedId = "P-fea77b62-2e9c-43b5-9345-6b5922e37412";
+		final String duplicatedId = "PIZZA-8e1d96e7-fc83-4327-8038-631b2e1ac8d3";
 		pizzashackRepository.create(new Pizzashack.Builder().pizzaName("testConflictPizzaname").pizzashackId(duplicatedId).description("testConflictPizzadesc").build());
 	}
 
@@ -123,7 +123,7 @@ public class PizzashackRepositoryIntegrationTest {
 
 	@Test
 	public void testPagination() throws Exception {
-		Page<Pizzashack> page = pizzashackRepository.paginateAll(0, 3);
+		Page<Pizzashack> page = pizzashackRepository.paginateAll(0, 2);
 		LOGGER.info("---------page:{} ", page);
 
 		for (final Pizzashack pizzashack : page.getContent()) {

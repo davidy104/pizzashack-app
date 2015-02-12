@@ -25,6 +25,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+/**
+ * 
+ * @author Davidy
+ *
+ * @param <T>
+ * @param <PK>
+ */
 public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Serializable> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryBase.class);

@@ -16,6 +16,8 @@ import nz.co.pizzashack.repository.PizzashackRepository;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GetObjectRequest;
@@ -25,8 +27,7 @@ import com.google.inject.name.Named;
 
 public class PizzashackDSImpl implements PizzashackDS {
 
-	// private static final Logger LOGGER =
-	// LoggerFactory.getLogger(PizzashackDSImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackDSImpl.class);
 
 	@Produce(uri = "direct:ImageToS3")
 	private ProducerTemplate producerTemplate;
@@ -46,7 +47,8 @@ public class PizzashackDSImpl implements PizzashackDS {
 	@Override
 	public String createPizzashack(Pizzashack addPizzashack, final String imageName, final InputStream imageStream) throws Exception {
 		checkArgument(addPizzashack != null, "addPizzashack can not be null");
-		final String id = "PIZZA-" + UUID.randomUUID().toString();
+		String id = addPizzashack.getPizzashackId();
+		id = id == null ? "PIZZA-" + UUID.randomUUID().toString() : id;
 		addPizzashack.setPizzashackId(id);
 		pizzashackRepository.create(addPizzashack);
 		if (!StringUtils.isEmpty(imageName) && imageStream != null) {
@@ -67,8 +69,9 @@ public class PizzashackDSImpl implements PizzashackDS {
 		checkArgument(pizzashackId != null, "pizzashackId can not be null");
 		final Pizzashack found = pizzashackRepository.getById(pizzashackId);
 		final String icon = found.getIcon();
+		LOGGER.info("found icone:{}", icon);
 		if (!StringUtils.isEmpty(icon)) {
-			String key = IMAGE_PATH + "/" + icon;
+			final String key = IMAGE_PATH + icon;
 			amazonS3.deleteObject(awsS3Bucket, key);
 		}
 		pizzashackRepository.deleteById(pizzashackId);
