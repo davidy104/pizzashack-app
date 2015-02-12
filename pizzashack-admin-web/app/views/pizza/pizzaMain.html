@@ -1,0 +1,74 @@
+<div class="container" style="padding:20px" ng-controller="PizzaCtrl">
+	<div class="row">
+			<div class="col-md-10 col-md-push-2">
+				<div class="panel panel-default panel-primary">
+					<div class="panel-heading">
+							<p class="panel-title "><strong>Search</strong></p>
+					</div>
+		  			<div class="panel-body">
+						<form class="form-inline">
+							<div class="form-group">
+								<label for="exampleInputName2">Name</label>
+								    <input type="text" class="form-control" id="pizzashackSearchName" placeholder="Enter Pizzashack Name">
+								  </div>
+								<button type="button" class="btn btn-primary">Go</button>
+						</form>
+					</div>
+				</div>
+
+				<div class="panel panel-default panel-info">
+						<div class="panel-heading">
+							<p class="panel-title "><strong>Results</strong></p>
+						</div>
+						<div class="panel-body">
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered table-hover">
+									<tbody>
+										<tr>
+											<th>Name</th>
+											<th>Price</th>
+											<th>createTime</th>
+											<th>Operation</th>
+										</tr>
+										<tr ng-repeat="pitem in pizzas" >
+											<th style="font-weight:normal;">{{pitem.pizzaName}}</th>
+											<th style="font-weight:normal;">$ {{pitem.price}}</th>
+											<th style="font-weight:normal;">$ {{pitem.createTime}}</th>
+											<th><a href="#/pizza/info/{{pitem.pizzashackId}}" class="btn btn-info" role="button">Info</a> 
+											<button type="button" class="btn btn-primary">Edit</button>
+											<button type="button" class="btn btn-warning">Delete</button>
+											</th>	
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<nav>
+							  <ul class="pager">
+							    <li><a href="#">Previous</a></li>
+							    <li><a href="#">Next</a></li>
+							  </ul>
+							</nav>
+						</div>
+					</div>
+			</div>
+
+
+			<div class="col-md-2 col-md-pull-10">
+				<div class="panel panel-default">
+	  				<div class="panel-body">
+	  				<!--
+					<h4>Operations</h4>
+					-->
+					<ul class="nav nav-pills nav-stacked">
+						<li role="presentation" class="active"><a ng-href="#/pizza">Query</a></li>
+					  	<li role="presentation"><a ng-href="#/pizza/create">Create</a></li>
+					  <!--
+					  <li role="presentation" class="disabled"><a href="#">Disabled link</a></li>
+					  -->
+					</ul>
+					</div>
+				</div>
+			</div>
+			
+	</div>
+</div>

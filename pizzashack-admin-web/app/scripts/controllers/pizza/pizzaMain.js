@@ -1,12 +1,11 @@
 'use strict';
 
-angular.module('pizzashackWebApp')
-  .controller('PizzaCtrl', function ($scope, $resource, $log, pizzaAdminApi) {
+angular.module('pizzashackAdminWebApp')
+  .controller('PizzaCtrl', function ($scope, $resource, pizzaAdminApi) {
       $scope.pizzas = [];
       var update = function(){
         pizzaAdminApi.get().then(function(data){
           angular.forEach(data, function(item){
-            // $log.log(item.pizzaName);
             $scope.pizzas.push(item);
           });
         });

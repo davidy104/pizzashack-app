@@ -5,6 +5,7 @@ import static nz.co.pizzashack.util.GenericUtils.parseToDate;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,6 +56,7 @@ public class PizzashackResource {
 		return Response.ok("PizzashackResource API is available ...").type(MediaType.TEXT_PLAIN).build();
 	}
 
+	@SuppressWarnings("unchecked")
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response create(@Context final UriInfo uriInfo, final MultipartFormDataInput input) throws Exception {
@@ -68,18 +70,16 @@ public class PizzashackResource {
 			for (final Map.Entry<String, List<InputPart>> entry : uploadForm.entrySet()) {
 				final String key = entry.getKey();
 				final InputPart inputPart = entry.getValue().get(0);
+
 				if (key.equals("image")) {
 					imageStream = inputPart.getBody(InputStream.class, null);
-				} else if (key.equals("imageName")) {
-					imageName = inputPart.getBodyAsString();
-				} else {
-					final String val = inputPart.getBodyAsString();
-					LOGGER.info("key-value:{} ", key + "-" + val);
-					requestFormMap.put(key, val);
+					LOGGER.info("available:{} ",imageStream.available());
+				} else if (key.equals("model")) {
+					requestFormMap = jacksonObjectMapper.readValue(inputPart.getBodyAsString(), Map.class);
 				}
 			}
 			if (!requestFormMap.isEmpty()) {
-				id = pizzashackDS.createPizzashack(this.buildPizzashackFromRequestMap(requestFormMap), imageName, imageStream);
+				id = pizzashackDS.createPizzashack(this.buildPizzashackFromRequestMap(requestFormMap), requestFormMap.get("icon"), imageStream);
 			}
 		} catch (final Exception e) {
 			return buildResponseOnException(e);
@@ -171,22 +171,30 @@ public class PizzashackResource {
 	}
 
 	private Pizzashack buildPizzashackFromRequestMap(final Map<String, String> requestFormMap) {
-		Pizzashack pizzashack = new Pizzashack.Builder()
-				.pizzaName(requestFormMap.get("name"))
-				.description(requestFormMap.get("description"))
-				.build();
+		try {
+			Pizzashack pizzashack = new Pizzashack.Builder()
+					.pizzaName(requestFormMap.get("pizzaName"))
+					.description(requestFormMap.get("description"))
+					.icon(requestFormMap.get("icon"))
+					.build();
 
-		if (requestFormMap.get("amount") != null) {
-			pizzashack.setAmount(Integer.valueOf(requestFormMap.get("amount")));
+			if (requestFormMap.get("amount") != null) {
+				pizzashack.setAmount(Integer.valueOf(requestFormMap.get("amount")));
+			}
+
+			if (requestFormMap.get("price") != null) {
+				pizzashack.setPrice(new BigDecimal(requestFormMap.get("price")));
+			}
+
+			if (requestFormMap.get("createTime") != null) {
+				final String createDateStr = requestFormMap.get("createTime");
+				LOGGER.info("createDateStr:{} ", createDateStr);
+				pizzashack.setCreateTime(parseToDate("yyyy-MM-dd hh:mm:ss", createDateStr));
+			}
+			return pizzashack;
+		} catch (final Exception e) {
+			throw new IllegalArgumentException(e);
 		}
-
-		if (requestFormMap.get("createDate") != null) {
-			final String createDateStr = requestFormMap.get("createDate");
-			LOGGER.info("createDateStr:{} ", createDateStr);
-			pizzashack.setCreateTime(parseToDate("yyyy-MM-dd hh:mm:ss", createDateStr));
-		}
-
-		return pizzashack;
 	}
 
 	// @POST

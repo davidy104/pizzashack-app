@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title></title>
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
@@ -12,6 +12,8 @@
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
+     <link href="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js" rel="stylesheet">
+    <link href="styles/style.css" rel="stylesheet">
     <!-- endbuild -->
   </head>
   <body ng-app="pizzashackAdminWebApp">
@@ -20,42 +22,69 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div class="header">
-      <div class="navbar navbar-default" role="navigation">
-        <div class="container">
-          <div class="navbar-header">
-
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#js-navbar-collapse">
+     <nav class="navbar navbar-inverse  navbar-static-top no-margin" role="navigation" >
+      <div class="container-fluid">
+      <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-WDM-navbar-collapse-1">
               <span class="sr-only">Toggle navigation</span>
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
             </button>
+        <a class="navbar-brand no-margin no-padding" href="#"><img src="images/shack-logo.png" height="40px" ></a>
+      </div>
 
-            <a class="navbar-brand" href="#/">pizzashackAdminWeb</a>
-          </div>
+      <div class="collapse navbar-collapse navbar-right" id="bs-WDM-navbar-collapse-1">
+        <ul class="nav navbar-nav" ng-init="selectedTab = 'home'">
+          <li ng-class="{'active':selectedTab === 'home'}" ng-click="selectedTab = 'home'"><a href="#/">Home</a></li>
+          <li ng-class="{'active':selectedTab === 'pizza'}" ng-click="selectedTab = 'pizza'"><a href="#/pizza">Pizza</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">WDM Dropdown <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#">Link1</a></li>
+                  <li><a href="#">Link2</a></li>
+                  <li><a href="#">Link3</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#">Separated link</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#">One more separated link</a></li>
+                </ul>
+              </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-          <div class="collapse navbar-collapse" id="js-navbar-collapse">
+      <div ng-view="">
+      </div>
 
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="#/">Home</a></li>
-              <li><a ng-href="#/about">About</a></li>
-              <li><a ng-href="#/">Contact</a></li>
-            </ul>
-          </div>
+       <!-- start of footer -->
+  <footer class="site-footer" >
+    <div class="container">
+      <div class="row">
+        <div class="col-md-5">
+          <h4>Contact Address</h4>
+          <address>
+            #25, Opal Ave, <br>
+            Pakuaranga, <br>
+            Auckland <br>
+          </address>
+        </div>
+      </div>
+      <div class="bottom-footer">
+        <div class="col-md-5">© Copyright Pizzashack 2015.</div>
+        <div class="col-md-7">
+          <ul class="footer-nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contacts</a></li>
+            <li><a href="Link.html">Link</a></li>
+          </ul>
         </div>
       </div>
     </div>
-
-    <div class="container">
-    <div ng-view=""></div>
-    </div>
-
-    <div class="footer">
-      <div class="container">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
-      </div>
-    </div>
+  </footer>
+  <!-- end of footer -->
 
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
@@ -73,7 +102,6 @@
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
@@ -86,8 +114,15 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
+        <script src="scripts/pizzaAdmin.js"></script>
+        <!--
+        <script src="scripts/pizzaAppUI.js"></script>
+        -->
         <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/about.js"></script>
+        <script src="scripts/controllers/pizza/pizzaMain.js"></script>
+        <script src="scripts/controllers/pizza/pizzaInfo.js"></script>
+        <script src="scripts/controllers/pizza/pizzaCreate.js"></script>
+
         <!-- endbuild -->
 </body>
 </html>

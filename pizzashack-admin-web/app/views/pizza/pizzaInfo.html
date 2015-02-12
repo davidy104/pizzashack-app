@@ -1,0 +1,48 @@
+<div class="container" style="padding:20px" ng-controller="PizzaDetailInfoCtrl">
+		<div class="row">
+		<div class="col-md-10 col-md-push-2">
+				<div class="panel panel-default">
+		  			<div class="panel-body">
+		  				<div class="row">
+							<div class="col-md-3">
+								<img src="{{pizzaItem.icon}}" class="img-responsive img-thumbnail" >
+							</div>
+							<div class="col-md-9">
+								<p class="text-justify">
+									{{pizzaItem.description}}
+								</p>
+							</div>
+						</div>
+
+						<p class="h5 text-left">{{pizzaItem.pizzaName}}<br> <small>{{pizzaItem.createTime}}</small></p>
+						
+						<!--details start-->
+						<div class="table-responsive">
+							<dl class="dl-horizontal">
+							  <dt>Id</dt>
+							  <dd>{{id}}</dd>
+							  <dt>Name</dt>
+							  <dd>{{pizzaItem.pizzaName}}</dd>
+							  <dt>Price</dt>
+							  <dd>$ {{pizzaItem.price}}</dd>
+							  <dt>Amount</dt>
+							  <dd>{{pizzaItem.amount}}</dd>
+							</dl>
+						</div>
+						<!--details end-->
+		  			</div>
+		  		</div>
+		</div>
+
+		<div class="col-md-2 col-md-pull-10">
+			<div class="panel panel-default">
+	  			<div class="panel-body">
+					<ul class="nav nav-pills nav-stacked">
+						<li role="presentation" class="active"><a ng-href="#/pizza">Query</a></li>
+					  	<li role="presentation"><a ng-href="#/pizza/create">Create</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

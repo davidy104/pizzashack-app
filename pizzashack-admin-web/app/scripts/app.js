@@ -15,7 +15,10 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'ngAnimate',
+    'ui.bootstrap',
+    'pizzaAdmin'
   ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -23,9 +26,22 @@ angular
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
+      .when('/pizza', {
+        templateUrl: 'views/pizza/pizzaMain.html',
+        controller: 'PizzaCtrl'
+      })
+      .when('/pizza/create', {
+        templateUrl: 'views/pizza/pizzaCreate.html',
+        controller: 'PizzaCreateCtrl'
+      })
+      .when('/pizza/info/:id', {
+        templateUrl: 'views/pizza/pizzaInfo.html',
+        resolve: {
+                    id: function ($q, $route, pizzaAdminApi) {
+                    return pizzaAdminApi.getOne($route.current.params.id);
+                    }
+                },
+        controller: 'PizzaDetailCtrl'
       })
       .otherwise({
         redirectTo: '/'
