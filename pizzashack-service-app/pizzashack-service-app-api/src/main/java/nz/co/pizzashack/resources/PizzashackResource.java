@@ -18,12 +18,14 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import nz.co.pizzashack.ds.PizzashackDS;
+import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
 
 import org.apache.commons.io.input.ProxyInputStream;
@@ -62,7 +64,6 @@ public class PizzashackResource {
 	public Response create(@Context final UriInfo uriInfo, final MultipartFormDataInput input) throws Exception {
 		LOGGER.info("create start.");
 		String id = null;
-		String imageName = null;
 		Map<String, String> requestFormMap = Maps.<String, String> newHashMap();
 		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
 		InputStream imageStream = null;
@@ -70,10 +71,9 @@ public class PizzashackResource {
 			for (final Map.Entry<String, List<InputPart>> entry : uploadForm.entrySet()) {
 				final String key = entry.getKey();
 				final InputPart inputPart = entry.getValue().get(0);
-
 				if (key.equals("image")) {
 					imageStream = inputPart.getBody(InputStream.class, null);
-					LOGGER.info("available:{} ",imageStream.available());
+					LOGGER.info("available:{} ", imageStream.available());
 				} else if (key.equals("model")) {
 					requestFormMap = jacksonObjectMapper.readValue(inputPart.getBodyAsString(), Map.class);
 				}
@@ -99,6 +99,20 @@ public class PizzashackResource {
 		LOGGER.info("list start..");
 		final Set<Pizzashack> pizzashacks = pizzashackDS.getAllPizzashack();
 		return Response.ok(jacksonObjectMapper.writeValueAsString(pizzashacks)).type(MediaType.APPLICATION_JSON)
+				.build();
+	}
+
+	@GET
+	@Path("/page")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response paginate(@QueryParam("pageOffset") int pageOffset, @QueryParam("pageSize") int pageSize, @QueryParam("pizzashackName") String pizzashackName) throws Exception {
+		LOGGER.info("paginate start..");
+		LOGGER.info("pageOffset:{} ", pageOffset);
+		LOGGER.info("pageSize:{} ", pageSize);
+		LOGGER.info("pizzashackName:{} ", pizzashackName);
+		Page<Pizzashack> page = pizzashackDS.paginatePizzashackByName(pageOffset, pageSize, pizzashackName);
+		return Response.ok(jacksonObjectMapper.writeValueAsString(page)).type(MediaType.APPLICATION_JSON)
 				.build();
 	}
 

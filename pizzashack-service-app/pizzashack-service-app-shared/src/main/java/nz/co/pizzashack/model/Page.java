@@ -5,50 +5,62 @@ import java.util.Set;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.common.collect.Sets;
 
+@JsonInclude(Include.NON_EMPTY)
 public class Page<T> {
 	private int totalCount = 0;
 	private int totalPages = 0;
 	private int pageOffset = 0;
 	private int pageSize = 5;
-	Set<T> content = Sets.<T>newHashSet();
-	
+	Set<T> content = Sets.<T> newHashSet();
+
 	public int getTotalCount() {
 		return totalCount;
 	}
+
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
 	}
+
 	public int getTotalPages() {
 		return totalPages;
 	}
+
 	public void setTotalPages(int totalPages) {
 		this.totalPages = totalPages;
 	}
+
 	public int getPageOffset() {
 		return pageOffset;
 	}
+
 	public void setPageOffset(int pageOffset) {
 		this.pageOffset = pageOffset;
 	}
+
 	public int getPageSize() {
 		return pageSize;
 	}
+
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
+
 	public Set<T> getContent() {
 		return content;
 	}
+
 	public void setContent(Set<T> content) {
 		this.content = content;
 	}
-	
-	public void addContent(final T object){
+
+	public void addContent(final T object) {
 		content.add(object);
 	}
-	
+
 	public static class Builder<T> {
 		private int totalCount = 0;
 		private int totalPages = 0;
@@ -84,7 +96,7 @@ public class Page<T> {
 			return page;
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)

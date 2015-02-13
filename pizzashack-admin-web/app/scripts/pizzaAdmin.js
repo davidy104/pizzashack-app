@@ -21,6 +21,18 @@ angular.module('pizzaAdmin',[])
                 });
                 return deferred.promise;
             },
+            paginate: function(pageoffset, pagesize, pizzaname) {
+                console.log('bef send pageoffset:', pageoffset);
+                console.log('bef send pagesize:', pagesize);
+                console.log('bef send pizzaname:', pizzaname);
+
+                var ps = $resource('http://localhost:8181/pizzashackApp/admin/pizzashack/page');
+                var deferred = $q.defer();
+                ps.get({pageOffset:pageoffset,pageSize:pagesize,pizzashackName:pizzaname},function(data){
+                    deferred.resolve(data);
+                });
+                return deferred.promise;
+            },
             create: function(form){
                 var deferred = $q.defer();
                 var pizzamodelJson = angular.toJson(form.pizzaModel);
@@ -28,6 +40,7 @@ angular.module('pizzaAdmin',[])
                 var fd = new FormData();
                 fd.append('model', pizzamodelJson);
                 fd.append('image',form.file);
+
 
                 // fd.append('imageName',form.file.name);
                 // var blob = new Blob([form.file], {type : "image/png"});

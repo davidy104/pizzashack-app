@@ -21,7 +21,9 @@ public interface PizzashackDS {
 
 	Set<Pizzashack> getAllPizzashack();
 
-	Page<Pizzashack> paginatePizzashack(int pageOffset, int pageSize);
+	Page<Pizzashack> paginatePizzashack(Integer pageOffset, Integer pageSize);
+
+	Page<Pizzashack> paginatePizzashackByName(Integer pageOffset, Integer pageSize, String pizzashackName);
 
 	S3Object loadImageFromS3(String imageName) throws Exception;
 }

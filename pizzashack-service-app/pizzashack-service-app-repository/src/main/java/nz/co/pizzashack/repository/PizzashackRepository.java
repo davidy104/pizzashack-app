@@ -6,7 +6,6 @@ import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
 
-
 public interface PizzashackRepository {
 
 	String create(Pizzashack addPizzashack) throws Exception;
@@ -20,4 +19,6 @@ public interface PizzashackRepository {
 	Set<Pizzashack> getAll() throws Exception;
 
 	Page<Pizzashack> paginateAll(int pageOffset, int pageSize) throws Exception;
+
+	Page<Pizzashack> paginateByName(int pageOffset, int pageSize, String pizzashackName) throws Exception;
 }

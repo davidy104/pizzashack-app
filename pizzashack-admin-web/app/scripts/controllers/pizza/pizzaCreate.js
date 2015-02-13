@@ -32,6 +32,11 @@ angular.module('pizzashackAdminWebApp')
         console.log('files:', element.files);
         for (var i = 0; i < element.files.length; i++) {
           $scope.file = element.files[i];
+          // var r = new FileReader();
+          // r.onloadend = function(e){
+          //   $scope.imageBytes = e.target.result;
+          // }
+          // $scope.imageBytes = r.readAsArrayBuffer(element.files[i]);
         }
       });
     };
@@ -40,6 +45,7 @@ angular.module('pizzashackAdminWebApp')
       $scope.pizzaModel.createTime =$filter('date')($scope.pizzaModel.createTime, 'yyyy-MM-dd hh:mm:ss');
       $log.log($scope.pizzaModel.createTime);
       $log.log($scope.file);
+
       $scope.pizzaModel.icon = $scope.file.name;
        $log.log($scope.pizzaModel);
 

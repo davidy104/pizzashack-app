@@ -104,10 +104,29 @@ public class PizzashackDSImpl implements PizzashackDS {
 	}
 
 	@Override
-	public Page<Pizzashack> paginatePizzashack(final int pageOffset, final int pageSize) {
+	public Page<Pizzashack> paginatePizzashack(Integer pageOffset, Integer pageSize) {
+		pageOffset = pageOffset == null ? 0 : pageOffset;
+		pageSize = pageSize == null ? 3 : pageSize;
 		Page<Pizzashack> page = null;
 		try {
 			page = pizzashackRepository.paginateAll(pageOffset, pageSize);
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
+		return page;
+	}
+
+	@Override
+	public Page<Pizzashack> paginatePizzashackByName(Integer pageOffset, Integer pageSize, final String pizzashackName) {
+		Page<Pizzashack> page = null;
+		pageOffset = pageOffset == null ? 0 : pageOffset;
+		pageSize = pageSize == null ? 3 : pageSize;
+		try {
+			if (StringUtils.isEmpty(pizzashackName)) {
+				page = pizzashackRepository.paginateAll(pageOffset, pageSize);
+			} else {
+				page = pizzashackRepository.paginateByName(pageOffset, pageSize, pizzashackName);
+			}
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
 		}

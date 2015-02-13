@@ -81,4 +81,10 @@ public class PizzashackRepositoryImpl extends RepositoryBase<Pizzashack, String>
 		return this.paginationBasic(pageOffset, pageSize, pizzashackMetaMapToModelConverter);
 	}
 
+	@Override
+	public Page<Pizzashack> paginateByName(final int pageOffset, final int pageSize, final String pizzashackName) throws Exception {
+		final String queryStatement = "MATCH (p:" + label + ") WHERE p.pizzaName = '" + pizzashackName + "' RETURN p";
+		return this.doPagination(queryStatement, pageOffset, pageSize, pizzashackMetaMapToModelConverter);
+	}
+
 }

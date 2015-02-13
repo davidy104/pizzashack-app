@@ -216,10 +216,14 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 
 	protected Page<T> paginationBasic(final int pageOffset, final int pageSize, final Function<Map<String, String>, T> modelConverter) throws Exception {
 		final String queryStatement = "MATCH (p:" + label + ") RETURN p";
+		return this.doPagination(queryStatement, pageOffset, pageSize, modelConverter);
+	}
+
+	protected Page<T> doPagination(final String queryStatement, final int pageOffset, final int pageSize, final Function<Map<String, String>, T> modelConverter) throws Exception {
 		final Integer totalCount = this.getNeo4jRestAPIAccessor().getCountFromQueryStatement(queryStatement);
 		final AbstractCypherQueryResult result = this.getNeo4jRestAPIAccessor().paginationThruQueryStatement(queryStatement, pageOffset, pageSize);
-		Page<T> page = new Page.Builder<T>().pageOffset(pageOffset).pageSize(pageSize).totalCount(totalCount).build();
-
+		Page<T> page = new Page.Builder<T>().pageSize(pageSize).totalCount(totalCount).build();
+		
 		Map<String, Map<String, String>> metaMap = result.getNodeColumnMap().get("p");
 		if (metaMap != null) {
 			for (final Map.Entry<String, Map<String, String>> entry : metaMap.entrySet()) {
