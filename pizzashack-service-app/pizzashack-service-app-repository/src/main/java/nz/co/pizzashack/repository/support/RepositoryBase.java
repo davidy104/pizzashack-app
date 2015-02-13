@@ -221,6 +221,9 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 
 	protected Page<T> doPagination(final String queryStatement, final int pageOffset, final int pageSize, final Function<Map<String, String>, T> modelConverter) throws Exception {
 		final Integer totalCount = this.getNeo4jRestAPIAccessor().getCountFromQueryStatement(queryStatement);
+		
+		
+		
 		final AbstractCypherQueryResult result = this.getNeo4jRestAPIAccessor().paginationThruQueryStatement(queryStatement, pageOffset, pageSize);
 		Page<T> page = new Page.Builder<T>().pageSize(pageSize).totalCount(totalCount).build();
 		
