@@ -14,8 +14,17 @@ public class Page<T> {
 	private int totalCount = 0;
 	private int totalPages = 0;
 	private int pageOffset = 0;
+	private int currentPage = 1;
 	private int pageSize = 5;
 	Set<T> content = Sets.<T> newHashSet();
+
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
+	}
 
 	public int getTotalCount() {
 		return totalCount;
@@ -65,6 +74,7 @@ public class Page<T> {
 		private int totalCount = 0;
 		private int totalPages = 0;
 		private int pageOffset = 0;
+		private int currentPage = 1;
 		private int pageSize = 5;
 
 		public Builder<T> totalCount(int totalCount) {
@@ -86,6 +96,10 @@ public class Page<T> {
 			this.pageSize = pageSize;
 			return this;
 		}
+		public Builder<T> currentPage(int currentPage) {
+			this.currentPage = currentPage;
+			return this;
+		}
 
 		public Page<T> build() {
 			Page<T> page = new Page<T>();
@@ -93,6 +107,7 @@ public class Page<T> {
 			page.setPageSize(pageSize);
 			page.setTotalCount(totalCount);
 			page.setTotalPages(totalPages);
+			page.setCurrentPage(currentPage);
 			return page;
 		}
 	}
@@ -104,6 +119,7 @@ public class Page<T> {
 				.append("totalPages", totalPages)
 				.append("pageOffset", pageOffset)
 				.append("pageSize", pageSize)
+				.append("currentPage", currentPage)
 				.toString();
 	}
 }

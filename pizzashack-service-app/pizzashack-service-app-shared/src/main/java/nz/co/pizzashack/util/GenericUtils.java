@@ -12,6 +12,16 @@ public class GenericUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GenericUtils.class);
 
 	public static final String FOLDER_SUFFIX = "/";
+	
+	public static int calculateNextPageOffset(int currentPageOffset,int pageSize,int totalCount){
+		int result = 0;
+		if(currentPageOffset >= totalCount || (currentPageOffset * pageSize) >= totalCount){
+			
+		} else {
+			result = currentPageOffset + 1;
+		}
+		return result;
+	}
 
 	public static Object getValueByField(final Object instance, final String fieldName) {
 		try {

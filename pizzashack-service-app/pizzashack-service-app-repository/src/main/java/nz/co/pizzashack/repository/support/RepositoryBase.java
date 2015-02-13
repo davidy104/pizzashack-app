@@ -221,11 +221,17 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 
 	protected Page<T> doPagination(final String queryStatement, final int pageOffset, final int pageSize, final Function<Map<String, String>, T> modelConverter) throws Exception {
 		final Integer totalCount = this.getNeo4jRestAPIAccessor().getCountFromQueryStatement(queryStatement);
+		int totalPage = (totalCount % pageSize == 0) ? totalCount/pageSize : (totalCount/pageSize+1);
+		int currentPage = pageOffset + 1;
+		int begin = pageOffset * pageSize;
 		
+		if(pageOffset > totalCount || pageOffset * pageSize > totalCount){
+			currentPage = totalPage;
+			begin = totalCount - pageSize;
+		} 
 		
-		
-		final AbstractCypherQueryResult result = this.getNeo4jRestAPIAccessor().paginationThruQueryStatement(queryStatement, pageOffset, pageSize);
-		Page<T> page = new Page.Builder<T>().pageSize(pageSize).totalCount(totalCount).build();
+		final AbstractCypherQueryResult result = this.getNeo4jRestAPIAccessor().paginationThruQueryStatement(queryStatement, begin, pageSize);
+		Page<T> page = new Page.Builder<T>().pageSize(pageSize).currentPage(currentPage).totalPages(totalPage).totalCount(totalCount).build();
 		
 		Map<String, Map<String, String>> metaMap = result.getNodeColumnMap().get("p");
 		if (metaMap != null) {
@@ -237,7 +243,7 @@ public abstract class RepositoryBase<T extends AbstractNeo4jModel, PK extends Se
 		}
 		return page;
 	}
-
+	
 	protected abstract Neo4jRestAPIAccessor getNeo4jRestAPIAccessor();
 
 }

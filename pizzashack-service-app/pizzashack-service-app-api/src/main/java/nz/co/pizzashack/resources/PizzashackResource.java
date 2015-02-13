@@ -112,6 +112,7 @@ public class PizzashackResource {
 		LOGGER.info("pageSize:{} ", pageSize);
 		LOGGER.info("pizzashackName:{} ", pizzashackName);
 		Page<Pizzashack> page = pizzashackDS.paginatePizzashackByName(pageOffset, pageSize, pizzashackName);
+		LOGGER.info("page:{} ",page);
 		return Response.ok(jacksonObjectMapper.writeValueAsString(page)).type(MediaType.APPLICATION_JSON)
 				.build();
 	}

@@ -338,8 +338,8 @@ public class Neo4jRestAPIAccessor {
 		return count;
 	}
 
-	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement, final int pageOffset, final int pageSize) throws Exception {
-		return this.paginationThruQueryStatement(cypherQueryStatement, pageOffset, pageSize, null);
+	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement, final int begin, final int pageSize) throws Exception {
+		return this.paginationThruQueryStatement(cypherQueryStatement, begin, pageSize, null);
 	}
 
 	/**
@@ -351,8 +351,8 @@ public class Neo4jRestAPIAccessor {
 	 * @return
 	 * @throws Exception
 	 */
-	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement, final int pageOffset, final int pageSize, final Map<String, Object> queryParameters) throws Exception {
-		final String paginationQueryStatement = cypherQueryStatement + " SKIP " + pageOffset + " LIMIT " + pageSize;
+	public AbstractCypherQueryResult paginationThruQueryStatement(final String cypherQueryStatement, final int begin, final int pageSize, final Map<String, Object> queryParameters) throws Exception {
+		final String paginationQueryStatement = cypherQueryStatement + " SKIP " + begin + " LIMIT " + pageSize;
 		return this.cypherQuery(paginationQueryStatement, queryParameters);
 	}
 
