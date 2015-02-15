@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 public class PizzashackDSIntegrationTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackDSIntegrationTest.class);
+	
 	@Inject
 	private CamelContext camelContext;
 
@@ -48,7 +49,7 @@ public class PizzashackDSIntegrationTest {
 	public static void setUp() throws Exception {
 		initialPizzashacks = initPizzashackFromFile();
 		assertNotNull(initialPizzashacks);
-		assertEquals(initialPizzashacks.size(), 2);
+		assertEquals(initialPizzashacks.size(), 3);
 	}
 
 	@Before

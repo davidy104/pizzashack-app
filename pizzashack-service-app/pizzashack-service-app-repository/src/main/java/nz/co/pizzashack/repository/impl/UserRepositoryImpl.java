@@ -3,6 +3,7 @@ package nz.co.pizzashack.repository.impl;
 import java.util.Map;
 import java.util.Set;
 
+import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.User;
 import nz.co.pizzashack.repository.UserRepository;
@@ -56,7 +57,7 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 	}
 
 	@Override
-	public User getByName(final String userName) throws Exception {
+	public User getByName(final String userName) throws NotFoundException {
 		return this.getBasicById(userName, userMetaMapToModelConverter);
 	}
 
@@ -67,24 +68,30 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public User getByNameAndPwd(final String userName, final String password) throws Exception {
+	public User getByNameAndPwd(final String userName, final String password) throws NotFoundException {
 		User found = null;
 		final String queryJson = "MATCH (u:User{userName:{userName},password:{password}}) RETURN u";
+		AbstractCypherQueryResult result;
+		try {
+			result = this.getNeo4jRestAPIAccessor().cypherQuery(queryJson,
+					Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
+							.put("password", password)
+							.put("userName", userName)
+							.build()));
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		if(result == null){
+			throw new NotFoundException("User not found by userName and password");
+		}
 
-		final AbstractCypherQueryResult result = this.getNeo4jRestAPIAccessor().cypherQuery(queryJson,
-				Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
-						.put("password", password)
-						.put("userName", userName)
-						.build()));
-
-		if (result != null) {
-			Map<String, Map<String, String>> metaMap = result.getNodeColumnMap().get("u");
-			if (metaMap != null && !metaMap.isEmpty()) {
-				final String nodeUri = (String) metaMap.keySet().toArray()[0];
-				final Map<String, String> fieldValueMap = (Map<String, String>) metaMap.values().toArray()[0];
-				found = userMetaMapToModelConverter.apply(fieldValueMap);
-				found.setNodeUri(nodeUri);
-			}
+		Map<String, Map<String, String>> metaMap = result.getNodeColumnMap().get("u");
+		if (metaMap != null && !metaMap.isEmpty()) {
+			final String nodeUri = (String) metaMap.keySet().toArray()[0];
+			final Map<String, String> fieldValueMap = (Map<String, String>) metaMap.values().toArray()[0];
+			found = userMetaMapToModelConverter.apply(fieldValueMap);
+			found.setNodeUri(nodeUri);
 		}
 		return found;
 	}

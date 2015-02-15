@@ -1,4 +1,4 @@
-package nz.co.pizzashack.test;
+package nz.co.pizzashack;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,50 +16,39 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
-public class TestUtils {
+public class PizzashackDataInitSupport {
 	private static final String delimiter = "||";
 	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-	private static final String TEST_PIZZA_DATA_FILE = "pizzashack-testdata.txt";
-	private static final String TEST_USER_DATA_FILE = "user-testdata.txt";
 
-	public static Set<Pizzashack> initPizzashackFromFile() throws Exception {
-		Set<Pizzashack> pizzashackSet = Sets.<Pizzashack> newHashSet();
-		File initPizzashackFile = new File(Resources.getResource(TEST_PIZZA_DATA_FILE).getFile());
+	private final static String PIZZASHACK_INIT_FILE = "init/pizzashack-init.txt";
+	private final static String USER_INIT_FILE = "init/user-init.txt";
+	
+	private Set<Pizzashack> pizzashackSet = Sets.<Pizzashack>newHashSet();
+	private Set<User> userSet = Sets.<User>newHashSet();
+	
+	public PizzashackDataInitSupport() throws Exception {
+		super();
+		initPizzashacks();
+	}
+
+	private void initPizzashacks()throws Exception {
+		File initPizzashackFile = new File(Resources.getResource(PIZZASHACK_INIT_FILE).getFile());
 		try (BufferedReader reader = Files.newReader(initPizzashackFile, Charsets.UTF_8)) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				Iterable<String> values = Splitter.on(delimiter).split(line);
-
 				final Pizzashack pizzashack = new Pizzashack.Builder().pizzashackId(Iterables.get(values, 0)).pizzaName(Iterables.get(values, 1))
 						.description(Iterables.get(values, 2)).price(new BigDecimal(Iterables.get(values, 3))).icon(Iterables.get(values, 4))
 						.amount(Integer.valueOf(Iterables.get(values, 5)))
 						.createTime(FORMAT.parse(Iterables.get(values, 6)))
 						.viewed(Long.valueOf(Iterables.get(values, 7)))
 						.build();
-				System.out.println("pizzashack:{} " + pizzashack);
+				
 				pizzashackSet.add(pizzashack);
 			}
 		}
-		return pizzashackSet;
 	}
 	
-	public static Set<User> initUserFromFile()throws Exception {
-		Set<User> userSet = Sets.<User> newHashSet();
-		File initPizzashackFile = new File(Resources.getResource(TEST_USER_DATA_FILE).getFile());
-		try (BufferedReader reader = Files.newReader(initPizzashackFile, Charsets.UTF_8)) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				Iterable<String> values = Splitter.on(delimiter).split(line);
-				final User user = new User.Builder()
-						.userName(Iterables.get(values, 0))
-						.password(Iterables.get(values, 1))
-						.createTime(FORMAT.parse(Iterables.get(values, 2)))
-						.build();
-				userSet.add(user);
-			}
-		}
-		return userSet;
-	}
 	
 	
 }

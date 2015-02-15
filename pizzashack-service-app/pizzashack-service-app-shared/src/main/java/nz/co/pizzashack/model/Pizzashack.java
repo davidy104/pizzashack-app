@@ -33,6 +33,9 @@ public class Pizzashack extends AbstractNeo4jModel {
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createTime;
 	@JsonProperty
+	private Long viewed = new Long(0);
+	
+	@JsonProperty
 	private Set<PizzashackComment> comments = Collections.<PizzashackComment>emptySet();
 
 	public Pizzashack() {
@@ -121,6 +124,14 @@ public class Pizzashack extends AbstractNeo4jModel {
 	public void setComments(Set<PizzashackComment> comments) {
 		this.comments = comments;
 	}
+	
+	public Long getViewed() {
+		return viewed;
+	}
+
+	public void setViewed(Long viewed) {
+		this.viewed = viewed;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -147,6 +158,7 @@ public class Pizzashack extends AbstractNeo4jModel {
 				.append("nodeUri", nodeUri)
 				.append("amount", amount)
 				.append("createTime", createTime)
+				.append("viewed", viewed)
 				.toString();
 	}
 
@@ -159,6 +171,7 @@ public class Pizzashack extends AbstractNeo4jModel {
 		private String nodeUri;
 		private Integer amount;
 		private Date createTime;
+		private Long viewed = new Long(0);
 		private Set<PizzashackComment> comments = Collections.<PizzashackComment>emptySet();
 
 		public Builder(String pizzashackId, String pizzaName, String description, BigDecimal price, String icon, String nodeUri,Integer amount,Date creatTime) {
@@ -216,9 +229,15 @@ public class Pizzashack extends AbstractNeo4jModel {
 			this.comments = comments;
 			return this;
 		}
+		public Builder viewed(Long viewed) {
+			this.viewed = viewed;
+			return this;
+		}
 		
 		public Pizzashack build() {
-			return new Pizzashack(pizzashackId, pizzaName, description, price, icon, nodeUri,amount,createTime,comments);
+			Pizzashack pizzashack = new Pizzashack(pizzashackId, pizzaName, description, price, icon, nodeUri,amount,createTime,comments);
+			pizzashack.setViewed(viewed);
+			return pizzashack;
 		}
 	}
 }

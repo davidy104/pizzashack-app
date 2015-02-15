@@ -38,6 +38,10 @@ public class PizzashackMetaMapToModel implements Function<Map<String, String>, P
 			if(!StringUtils.isEmpty(createTimeStr)){
 				result.setCreateTime(parseToDate("yyyy-MM-dd hh:mm:ss", createTimeStr));
 			}
+			final String viewedStr = metaMap.get("viewed");
+			if(!StringUtils.isEmpty(viewedStr)){
+				result.setViewed(Long.valueOf(viewedStr));
+			}
 		}
 		return result;
 	}

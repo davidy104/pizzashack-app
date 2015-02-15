@@ -20,6 +20,7 @@ public class PizzashackModelToCreateStatement implements Function<Pizzashack, St
 			fieldValueList.add("pizzaName:'" + pizzashack.getPizzaName() + "'");
 			fieldValueList.add("description:'" + pizzashack.getDescription() + "'");
 			fieldValueList.add("icon:'" + pizzashack.getIcon() + "'");
+			fieldValueList.add("viewed:'" + pizzashack.getViewed() + "'");
 			if (pizzashack.getPrice() != null) {
 				fieldValueList.add("price:'" + pizzashack.getPrice() + "'");
 			}

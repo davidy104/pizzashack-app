@@ -19,6 +19,7 @@ public class PizzashackModelToMap implements Function<Pizzashack, Map<String, St
 			resultMap.put("icon", pizzashack.getIcon());
 			resultMap.put("description", pizzashack.getDescription());
 			resultMap.put("pizzashackId", pizzashack.getPizzashackId());
+			resultMap.put("viewed", String.valueOf(pizzashack.getViewed()));
 			if (pizzashack.getPrice() != null) {
 				resultMap.put("price", String.valueOf(pizzashack.getPrice()));
 			}
