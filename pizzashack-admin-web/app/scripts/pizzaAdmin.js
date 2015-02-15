@@ -13,6 +13,14 @@ angular.module('pizzaAdmin',[])
                 });
                 return deferred.promise;
             },
+            delete: function( id ) {
+                console.log('bef send delete:', id);
+                var ps = $resource('http://localhost:8181/pizzashackApp/admin/pizzashack/:pizzashackId');
+                var deferred = $q.defer();
+                ps.delete({pizzashackId:id},function(){
+                });
+                return deferred.promise;
+            },
             get: function() {
                 var ps = $resource('http://localhost:8181/pizzashackApp/admin/pizzashack/list');
                 var deferred = $q.defer();
@@ -22,10 +30,7 @@ angular.module('pizzaAdmin',[])
                 return deferred.promise;
             },
             paginate: function(pageoffset, pagesize, pizzaname) {
-                console.log('bef send pageoffset:', pageoffset);
-                console.log('bef send pagesize:', pagesize);
-                console.log('bef send pizzaname:', pizzaname);
-
+            
                 var ps = $resource('http://localhost:8181/pizzashackApp/admin/pizzashack/page');
                 var deferred = $q.defer();
                 ps.get({pageOffset:pageoffset,pageSize:pagesize,pizzashackName:pizzaname},function(data){
@@ -40,16 +45,6 @@ angular.module('pizzaAdmin',[])
                 var fd = new FormData();
                 fd.append('model', pizzamodelJson);
                 fd.append('image',form.file);
-
-
-                // fd.append('imageName',form.file.name);
-                // var blob = new Blob([form.file], {type : "image/png"});
-                // fd.append('image',blob);
-                // fd.append('name',form.pizzashackName);
-                // fd.append('description',form.pizzashackDescription);
-                // fd.append('createDate',form.pizzashackCreateDate);
-                // fd.append('amount',form.pizzashackAmount);
-                // fd.append('price',form.pizzashackPrice);
 
                 $http.post('http://localhost:8181/pizzashackApp/admin/pizzashack', fd, {
                      transformRequest: angular.identity,

@@ -1,8 +1,9 @@
 'use strict';
+'use strict';
 
 angular.module('pizzashackAdminWebApp')
-  .controller('PizzaCtrl', function ($scope, $resource, pizzaAdminApi) {
-      $scope.pizzas = [];
+  .controller('PizzaCtrl', function ($scope, $resource, pizzaAdminApi, $templateCache) {
+      $scope.pizzas;
       $scope.pageoffset = 0;
       $scope.totalCount = 0;
       $scope.currentPage = 1;
@@ -14,6 +15,8 @@ angular.module('pizzashackAdminWebApp')
 
 
       var update = function(){
+        $scope.pizzas = [];
+        
         pizzaAdminApi.paginate($scope.pageoffset,$scope.pagesize,$scope.querypizzaname).then(function(data){
           console.log('aft totalCount:',data.totalCount);
           console.log('aft currentPage:',data.currentPage);
@@ -26,14 +29,19 @@ angular.module('pizzashackAdminWebApp')
 
           if(data.totalPages == data.currentPage){
             $scope.nextclass = 'disabled';
-          } else if(data.totalPages > data.currentPage && $scope.pageoffset > 0){
+          } else {
+            $scope.nextclass = '';
+          }
+
+          if(data.totalPages > data.currentPage ){
             $scope.previousclass = '';
-          } else if ($scope.pageoffset == 0){
+          }  
+
+          if(data.currentPage == 1){
             $scope.previousclass = 'disabled';
           }
-          $scope.pageoffset = data.currentPage -1;
-          
-         
+          // $scope.pageoffset = data.currentPage -1;
+           
           angular.forEach(pizzaList, function(item){
             $scope.pizzas.push(item);
           });
@@ -42,16 +50,23 @@ angular.module('pizzashackAdminWebApp')
 
       update();
 
+      $scope.deleteOne = function($event, deleteItem) {
+        console.log('deleteId:',deleteItem.pizzashackId);
+        $event.preventDefault();
+        $event.stopPropagation();
+        pizzaAdminApi.delete(deleteItem.pizzashackId).then(function(data){
+        });
+        $templateCache.removeAll();
+        update();
+      };
+
       $scope.previous = function($event) {
         if($scope.previousclass != 'disabled'){
           $event.preventDefault();
           $event.stopPropagation();
           $scope.pageoffset = $scope.pageoffset - 1;
-          $scope.pizzas = [];
           update();
-        } else {
-          $scope.nextclass = '';
-        }
+        } 
       };
 
       $scope.next = function($event) {
@@ -59,15 +74,10 @@ angular.module('pizzashackAdminWebApp')
           console.log('next start:');
           $event.preventDefault();
           $event.stopPropagation();
-          console.log('cur pageoffset:',$scope.pageoffset);
-          $scope.pageoffset = $scope.pageoffset+1;
+          $scope.pageoffset = $scope.pageoffset + 1;
           console.log('next pageoffset:',$scope.pageoffset);
-          $scope.pizzas = [];
           update();
-        } else {
-          $scope.previousclass = '';
-        }
-        
+        }         
       };
 
       // $scope.$on('update', update);

@@ -34,9 +34,15 @@
 											<th style="font-weight:normal;">{{pitem.pizzaName}}</th>
 											<th style="font-weight:normal;">$ {{pitem.price}}</th>
 											<th style="font-weight:normal;">$ {{pitem.createTime}}</th>
-											<th><a href="#/pizza/info/{{pitem.pizzashackId}}" class="btn btn-info" role="button">Info</a> 
-											<button type="button" class="btn btn-primary">Edit</button>
-											<button type="button" class="btn btn-warning">Delete</button>
+											<th><a href="#/pizza/info/{{pitem.pizzashackId}}" class="btn btn-info" role="button">
+												<span class="glyphicon glyphicon-info-sign"></span>
+												Info</a> 
+											<button type="button" class="btn btn-primary">
+												<span class="glyphicon glyphicon-edit"></span>
+												Edit</button>
+											<button type="button" class="btn btn-warning" ng-click="deleteOne($event,pitem)">
+												<span class="glyphicon glyphicon-trash"></span>
+												Delete</button>
 											</th>	
 										</tr>
 									</tbody>

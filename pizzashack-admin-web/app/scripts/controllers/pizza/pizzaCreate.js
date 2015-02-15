@@ -42,12 +42,18 @@ angular.module('pizzashackAdminWebApp')
     };
     
   	$scope.create = function () {
-      $scope.pizzaModel.createTime =$filter('date')($scope.pizzaModel.createTime, 'yyyy-MM-dd hh:mm:ss');
+      if($scope.pizzaModel.createTime != null){
+        $scope.pizzaModel.createTime =$filter('date')($scope.pizzaModel.createTime, 'yyyy-MM-dd hh:mm:ss');
+      }
+      
       $log.log($scope.pizzaModel.createTime);
       $log.log($scope.file);
 
-      $scope.pizzaModel.icon = $scope.file.name;
-       $log.log($scope.pizzaModel);
+      if($scope.file != null){
+        $scope.pizzaModel.icon = $scope.file.name;
+      }
+
+      $log.log($scope.pizzaModel);
 
       pizzaAdminApi.create($scope).then(function(data){
         $log.log(data);
@@ -55,4 +61,8 @@ angular.module('pizzashackAdminWebApp')
         $scope.successMessage = data;
     	});
   	};
+
+    
+
+
 });

@@ -1,6 +1,6 @@
 package nz.co.pizzashack.test.repository;
 
-import static nz.co.pizzashack.PizzashackInitUtils.initUserFromFile;
+import static nz.co.pizzashack.test.TestUtils.initUserFromFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -48,7 +48,7 @@ public class UserRepositoryIntegrationTest {
 	public static void setUp() throws Exception {
 		initialUsers = initUserFromFile();
 		assertNotNull(initialUsers);
-		assertEquals(initialUsers.size(), 3);
+		assertEquals(initialUsers.size(), 2);
 	}
 
 	@Before
@@ -94,7 +94,7 @@ public class UserRepositoryIntegrationTest {
 	 */
 	@Test(expected = ConflictException.class)
 	public void testCreateConflictUser() throws Exception {
-		User testDuplicated = new User.Builder().userName("david").build();
+		User testDuplicated = new User.Builder().userName("james").build();
 		userRepository.create(testDuplicated);
 	}
 
@@ -107,6 +107,6 @@ public class UserRepositoryIntegrationTest {
 	public void testGetAll() throws Exception {
 		Set<User> userList = userRepository.getAll();
 		assertNotNull(userList);
-		assertEquals(3, userList.size());
+		assertEquals(2, userList.size());
 	}
 }

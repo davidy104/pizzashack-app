@@ -51,7 +51,7 @@ public class PizzashackRepositoryIntegrationTest {
 	public static void setUp() throws Exception {
 		initialPizzashacks = initPizzashackFromFile();
 		assertNotNull(initialPizzashacks);
-		assertEquals(initialPizzashacks.size(), 2);
+		assertEquals(initialPizzashacks.size(), 3);
 	}
 
 	@Before

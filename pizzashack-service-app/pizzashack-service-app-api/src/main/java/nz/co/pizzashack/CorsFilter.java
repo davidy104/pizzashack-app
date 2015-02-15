@@ -27,7 +27,7 @@ public class CorsFilter implements Filter {
 		}
 
 		if ("OPTIONS".equals(req.getMethod())) {
-			res.addHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
+			res.addHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST, DELETE, PUT");
 			res.addHeader("Access-Control-Allow-Headers", "Origin, Content-Type, X-Atmosphere-Framework,  X-Cache-Date, X-Atmosphere-tracking-id, X-Atmosphere-Transport");
 			res.addHeader("Access-Control-Max-Age", "-1");
 		}

@@ -2,10 +2,14 @@
 	<div class="row">
 			<div class="col-md-10 col-md-push-2">
 				
-				<div class="alert alert-success" id="successMsg" ng-if="createSuccess" class="animate-if">
-				    <a href="#/pizza" class="close" data-dismiss="alert">&times;</a>
+				<div class="alert alert-success"  ng-if="createSuccess" class="animate-if">
+					<div id="successMsg">
+					<a href="#" class="close" data-dismiss="alert">&times;</a>
 				    <strong>Create Successfully! ID is </strong> {{successMessage}}
+					</div>
+				    
 				</div>
+
 				<div class="panel panel-default panel-primary">
 					
 					<div class="panel-heading">
@@ -99,5 +103,6 @@
     $("#successMsg").fadeTo(500, 0).slideUp(500, function(){
         $(this).remove(); 
     });
-}, 5000);
+	}, 5000);
+
 </script>

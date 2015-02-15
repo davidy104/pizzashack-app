@@ -5,4 +5,3 @@ PIZZA-de38b7f8-6919-46f9-98a6-ef19ffb60285||Tuscan Six Cheese||Six cheese blend 
 PIZZA-3e761f87-d9a5-4494-af96-e1b279c7adcf||Spinach Alfredo||Rich and creamy blend of spinach and garlic Parmesan with Alfredo saucePepperoni and a double portion of spicy Italian sausage||18.00||5.png||100||2014-12-16 12:24:23
 PIZZA-0f4b1e88-a3a9-419a-b42b-0312059fc0b3||BBQ Chicken Bacon||Grilled white chicken, hickory-smoked bacon and fresh sliced onions in barbeque sauce||45.00||6.png||90||2014-11-13 12:27:23
 PIZZA-b99d8ee1-e6b7-4e7d-9c2f-e9d5e67d7614||Hawaiian BBQ Chicken||Grilled white chicken, hickory-smoked bacon, barbeque sauce topped with sweet pine-apple||37.50||7.png||100||2014-12-17 12:24:23
-PIZZA-af325cca-0492-4f28-9447-3865fb81a391||Grilled Chicken Club||Grilled white chicken, hickory-smoked bacon and fresh sliced onions topped with Roma tomatoes||29.99||8.png||123||2014-09-13 12:24:23

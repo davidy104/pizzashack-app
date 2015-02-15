@@ -165,6 +165,7 @@ public class PizzashackResource {
 	@Path("/{pizzashackId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response deleteById(@PathParam("pizzashackId") String pizzashackId) throws Exception {
+		LOGGER.info("deleteById start:{} ", pizzashackId);
 		try {
 			pizzashackDS.deleteById(pizzashackId);
 		} catch (Exception e) {
@@ -212,21 +213,5 @@ public class PizzashackResource {
 		}
 	}
 
-	// @POST
-	// @Consumes(MediaType.APPLICATION_JSON)
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public Response create(@Context final UriInfo uriInfo, Pizzashack
-	// addPizzashack) throws Exception {
-	// LOGGER.info("addPizzashack:{} ", addPizzashack);
-	// final String id = "P-" + UUID.randomUUID().toString();
-	// addPizzashack.setPizzashackId(id);
-	// try {
-	// pizzashackRepository.create(addPizzashack);
-	// } catch (final Exception e) {
-	// return buildResponseOnException(e);
-	// }
-	// return Response.created(uriInfo.getRequestUriBuilder().replacePath("/" +
-	// id).build()).entity(id).type(MediaType.APPLICATION_JSON).build();
-	// }
 
 }

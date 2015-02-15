@@ -9,6 +9,7 @@ import java.util.Set;
 
 import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.model.PizzashackComment;
+import nz.co.pizzashack.model.PizzashackCommentType;
 import nz.co.pizzashack.model.RelationshipsLabel;
 import nz.co.pizzashack.repository.PizzashackCommentRepository;
 import nz.co.pizzashack.repository.convert.template.AbstractCypherQueryNode;
@@ -148,6 +149,26 @@ public class PizzashackCommentRepositoryImpl extends RepositoryBase<PizzashackCo
 				Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
 						.put("userName", userName)
 						.build()));
+	}
+	
+	@Override
+	public Long countCommentsByPizzashackId(final String pizzashackId, final PizzashackCommentType commentType) throws Exception {
+		Long count = new Long(0);
+		String queryJson = "MATCH (p:Pizzashack{pizzashackId:{pizzashackId}})-[r:" + RelationshipsLabel.HasComment.name() + "]->(pc:PizzashackComment{commentType:{commentType}}) RETURN COUNT(r) as count";
+		
+		final AbstractCypherQueryResult result = neo4jRestAPIAccessor.cypherQuery(queryJson,
+				Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
+						.put("pizzashackId", pizzashackId)
+						.put("commentType", commentType)
+						.build()));
+		if(result != null){
+			Set<String> resultSet = result.getDataColumnMap().get("count");
+			if(!resultSet.isEmpty()){
+				String resultCount = (String)resultSet.toArray()[0];
+				count = Long.valueOf(resultCount);
+			}
+		}
+		return count;
 	}
 
 	@Override

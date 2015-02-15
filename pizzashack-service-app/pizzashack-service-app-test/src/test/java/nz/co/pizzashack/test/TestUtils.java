@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Set;
 
 import nz.co.pizzashack.model.Pizzashack;
+import nz.co.pizzashack.model.User;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
@@ -19,6 +20,7 @@ public class TestUtils {
 	private static final String delimiter = "||";
 	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	private static final String TEST_PIZZA_DATA_FILE = "pizzashack-testdata.txt";
+	private static final String TEST_USER_DATA_FILE = "user-testdata.txt";
 
 	public static Set<Pizzashack> initPizzashackFromFile() throws Exception {
 		Set<Pizzashack> pizzashackSet = Sets.<Pizzashack> newHashSet();
@@ -39,4 +41,24 @@ public class TestUtils {
 		}
 		return pizzashackSet;
 	}
+	
+	public static Set<User> initUserFromFile()throws Exception {
+		Set<User> userSet = Sets.<User> newHashSet();
+		File initPizzashackFile = new File(Resources.getResource(TEST_USER_DATA_FILE).getFile());
+		try (BufferedReader reader = Files.newReader(initPizzashackFile, Charsets.UTF_8)) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				Iterable<String> values = Splitter.on(delimiter).split(line);
+				final User user = new User.Builder()
+						.userName(Iterables.get(values, 0))
+						.password(Iterables.get(values, 1))
+						.createTime(FORMAT.parse(Iterables.get(values, 2)))
+						.build();
+				userSet.add(user);
+			}
+		}
+		return userSet;
+	}
+	
+	
 }

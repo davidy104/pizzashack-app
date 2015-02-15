@@ -1,7 +1,7 @@
 package nz.co.pizzashack.test.repository;
 
-import static nz.co.pizzashack.PizzashackInitUtils.initPizzashackFromFile;
-import static nz.co.pizzashack.PizzashackInitUtils.initUserFromFile;
+import static nz.co.pizzashack.test.TestUtils.initPizzashackFromFile;
+import static nz.co.pizzashack.test.TestUtils.initUserFromFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -25,6 +25,7 @@ import nz.co.pizzashack.test.GuiceJUnitRunner.GuiceModules;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -68,11 +69,11 @@ public class PizzashackCommentRepositoryIntegrationTest {
 	public static void setUp() throws Exception {
 		initialPizzashacks = initPizzashackFromFile();
 		assertNotNull(initialPizzashacks);
-		assertEquals(initialPizzashacks.size(), 10);
+		assertEquals(initialPizzashacks.size(), 3);
 
 		initialUsers = initUserFromFile();
 		assertNotNull(initialUsers);
-		assertEquals(initialUsers.size(), 3);
+		assertEquals(initialUsers.size(), 2);
 	}
 
 	@Before
@@ -131,9 +132,24 @@ public class PizzashackCommentRepositoryIntegrationTest {
 			pizzashackCommentRepository.deleteCommentByPizzashackId(pizzashack.getPizzashackId());
 			pizzashackRepository.deleteById(pizzashack.getPizzashackId());
 		}
+		if(withoutCommentPizzashackId != null){
+			pizzashackRepository.deleteById(withoutCommentPizzashackId);
+		}
+		
 		for (final User user : initialedTestUser) {
 			userRepository.deleteByName(user.getUserName());
 		}
+	}
+	
+	@Test
+	public void testCountByPizzashackId()throws Exception {
+		Long count = pizzashackCommentRepository.countCommentsByPizzashackId(testPizzashackId, PizzashackCommentType.DISLIKE);
+		LOGGER.info("dislike count:{} ", count);
+		assertEquals(count.longValue(), 1);
+		
+		count = pizzashackCommentRepository.countCommentsByPizzashackId(testPizzashackId, PizzashackCommentType.LIKE);
+		LOGGER.info("like count:{} ", count);
+		assertEquals(count.longValue(), 1);
 	}
 
 	@Test
@@ -170,6 +186,7 @@ public class PizzashackCommentRepositoryIntegrationTest {
 	}
 
 	@Test
+	@Ignore
 	public void testCRUD() throws Exception {
 
 	}
