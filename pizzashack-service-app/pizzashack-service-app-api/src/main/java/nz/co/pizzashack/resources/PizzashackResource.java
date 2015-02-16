@@ -27,6 +27,8 @@ import javax.ws.rs.core.UriInfo;
 import nz.co.pizzashack.ds.PizzashackDS;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
+import nz.co.pizzashack.model.PizzashackCommentType;
+import nz.co.pizzashack.model.PizzashackResp;
 
 import org.apache.commons.io.input.ProxyInputStream;
 import org.apache.commons.lang3.StringUtils;
@@ -112,7 +114,7 @@ public class PizzashackResource {
 		LOGGER.info("pageSize:{} ", pageSize);
 		LOGGER.info("pizzashackName:{} ", pizzashackName);
 		Page<Pizzashack> page = pizzashackDS.paginatePizzashackByName(pageOffset, pageSize, pizzashackName);
-		LOGGER.info("page:{} ",page);
+		LOGGER.info("page:{} ", page);
 		return Response.ok(jacksonObjectMapper.writeValueAsString(page)).type(MediaType.APPLICATION_JSON)
 				.build();
 	}
@@ -122,19 +124,25 @@ public class PizzashackResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getById(@Context final UriInfo uriInfo, @PathParam("pizzashackId") String pizzashackId) throws Exception {
-		Pizzashack found = null;
+		PizzashackResp pizzashackResp = null;
 		try {
-			found = pizzashackDS.getPizzashackById(pizzashackId);
+			Pizzashack found = pizzashackDS.getPizzashackById(pizzashackId);
 			final String icon = found.getIcon();
 			if (!StringUtils.isEmpty(icon)) {
 				final String imageSrc = uriInfo.getAbsolutePathBuilder().replacePath("/pizzashackApp/admin/pizzashack/image/" + icon).build().toString();
 				LOGGER.info("imageSrc:{} ", imageSrc);
 				found.setIcon(imageSrc);
 			}
+
+			final Long like = pizzashackDS.countCommentsByPizzashackId(pizzashackId, PizzashackCommentType.LIKE);
+			final Long dislike = pizzashackDS.countCommentsByPizzashackId(pizzashackId, PizzashackCommentType.DISLIKE);
+			final String uri = uriInfo.getAbsolutePathBuilder().replacePath("/pizzashackApp/admin/pizzashack/" + pizzashackId).build().toString();
+			pizzashackResp = new PizzashackResp.Builder().like(like).dislike(dislike).uri(uri).pizzashack(found).build();
+
 		} catch (final Exception e) {
 			return buildResponseOnException(e);
 		}
-		return Response.ok(jacksonObjectMapper.writeValueAsString(found)).type(MediaType.APPLICATION_JSON)
+		return Response.ok(jacksonObjectMapper.writeValueAsString(pizzashackResp)).type(MediaType.APPLICATION_JSON)
 				.build();
 	}
 
@@ -212,6 +220,5 @@ public class PizzashackResource {
 			throw new IllegalArgumentException(e);
 		}
 	}
-
 
 }
