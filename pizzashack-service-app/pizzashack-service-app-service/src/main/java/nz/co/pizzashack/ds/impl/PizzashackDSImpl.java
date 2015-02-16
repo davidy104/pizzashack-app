@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
+import nz.co.pizzashack.ConflictException;
 import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.ds.PizzashackDS;
 import nz.co.pizzashack.model.Page;
@@ -160,6 +161,16 @@ public class PizzashackDSImpl implements PizzashackDS {
 		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
 		checkArgument(!StringUtils.isEmpty(userName), "userName can not be null");
 		checkArgument(comment != null, "comment can not be null");
+		boolean commentExist = true;
+		try {
+			pizzashackCommentRepository.getByPizzashackIdAndUserName(pizzashackId, userName);
+		} catch (final NotFoundException e) {
+			commentExist = false;
+		}
+		if(commentExist){
+			throw new ConflictException("User["+userName+"] already has comment on this Pizzashack["+pizzashackId+"].");
+		}
+		
 		final Pizzashack foundPizzashack = pizzashackRepository.getById(pizzashackId);
 		final User foundUser = userRepository.getByName(userName);
 		return pizzashackCommentRepository.createPizzashackComment(foundPizzashack.getNodeUri(), foundUser.getNodeUri(), comment);

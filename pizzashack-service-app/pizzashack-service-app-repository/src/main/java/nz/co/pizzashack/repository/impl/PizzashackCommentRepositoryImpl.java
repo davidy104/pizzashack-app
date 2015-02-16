@@ -77,17 +77,22 @@ public class PizzashackCommentRepositoryImpl extends RepositoryBase<PizzashackCo
 	}
 
 	@Override
-	public PizzashackComment getByPizzashackIdAndUserName(final String pizzashackId, final String userName) throws Exception {
+	public PizzashackComment getByPizzashackIdAndUserName(final String pizzashackId, final String userName) throws NotFoundException {
 		final String query = "MATCH (p:Pizzashack{pizzashackId:{pizzashackId}}) "
 				+ " OPTIONAL MATCH (p)-[:" + RelationshipsLabel.HasComment.name() + "]->(pc:PizzashackComment)"
 				+ "-[:" + RelationshipsLabel.CommentBy.name() + "]->(u:User{userName:{userName}}) RETURN DISTINCT pc";
 		LOGGER.info("getByPizzashackIdAndUserName:{} ", query);
 
-		final AbstractCypherQueryResult result = neo4jRestAPIAccessor.cypherQuery(query,
-				Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
-						.put("pizzashackId", pizzashackId)
-						.put("userName", userName)
-						.build()));
+		AbstractCypherQueryResult result = null;
+		try {
+			result = neo4jRestAPIAccessor.cypherQuery(query,
+					Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
+							.put("pizzashackId", pizzashackId)
+							.put("userName", userName)
+							.build()));
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
 		if (result == null) {
 			throw new NotFoundException("Comments not found by id[" + pizzashackId + "] and userName[" + userName + "]");
 		}

@@ -7,7 +7,9 @@ import java.util.Set;
 import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.ds.UserDS;
 import nz.co.pizzashack.model.Page;
+import nz.co.pizzashack.model.PizzashackComment;
 import nz.co.pizzashack.model.User;
+import nz.co.pizzashack.repository.PizzashackCommentRepository;
 import nz.co.pizzashack.repository.UserRepository;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +24,9 @@ public class UserDSImpl implements UserDS{
 	
 	@Inject
 	private UserRepository userRepository;
+	
+	@Inject
+	private PizzashackCommentRepository pizzashackCommentRepository;
 	
 	@Override
 	public String createUser(final User addUser) throws Exception {
@@ -70,5 +75,19 @@ public class UserDSImpl implements UserDS{
 	public Page<User> paginateAllUsers(final int pageOffset,final int pageSize) throws Exception {
 		return userRepository.paginateAll(pageOffset, pageSize);
 	}
+
+	@Override
+	public void deleteCommentByUserName(final String userName) throws Exception {
+		checkArgument(!StringUtils.isEmpty(userName), "userName can not be null");
+		pizzashackCommentRepository.deleteCommentByUserName(userName);
+	}
+
+	@Override
+	public Set<PizzashackComment> getAllByUserName(final String userName) throws Exception {
+		checkArgument(!StringUtils.isEmpty(userName), "userName can not be null");
+		return null;
+	}
+	
+	
 
 }
