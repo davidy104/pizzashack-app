@@ -6,6 +6,8 @@ import java.util.Set;
 import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
+import nz.co.pizzashack.model.PizzashackComment;
+import nz.co.pizzashack.model.PizzashackCommentType;
 
 import com.amazonaws.services.s3.model.S3Object;
 
@@ -26,4 +28,10 @@ public interface PizzashackDS {
 	Page<Pizzashack> paginatePizzashackByName(Integer pageOffset, Integer pageSize, String pizzashackName);
 
 	S3Object loadImageFromS3(String imageName) throws Exception;
+	
+	Long countCommentsByPizzashackId(String pizzashackId,PizzashackCommentType commentType);
+	
+	String createPizzashackComment(String pizzashackId, String userName, PizzashackComment comment) throws Exception;
+
+	void deleteCommentByPizzashackId(String pizzashackId) throws Exception;
 }

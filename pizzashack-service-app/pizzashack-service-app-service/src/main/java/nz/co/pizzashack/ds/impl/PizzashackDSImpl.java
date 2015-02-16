@@ -11,7 +11,12 @@ import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.ds.PizzashackDS;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
+import nz.co.pizzashack.model.PizzashackComment;
+import nz.co.pizzashack.model.PizzashackCommentType;
+import nz.co.pizzashack.model.User;
+import nz.co.pizzashack.repository.PizzashackCommentRepository;
 import nz.co.pizzashack.repository.PizzashackRepository;
+import nz.co.pizzashack.repository.UserRepository;
 
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
@@ -34,6 +39,12 @@ public class PizzashackDSImpl implements PizzashackDS {
 
 	@Inject
 	private PizzashackRepository pizzashackRepository;
+	
+	@Inject
+	private PizzashackCommentRepository pizzashackCommentRepository;
+	
+	@Inject
+	private UserRepository userRepository;
 
 	private final static String IMAGE_PATH = "/image/pizza/";
 
@@ -66,7 +77,7 @@ public class PizzashackDSImpl implements PizzashackDS {
 
 	@Override
 	public void deleteById(final String pizzashackId) throws Exception {
-		checkArgument(pizzashackId != null, "pizzashackId can not be null");
+		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
 		final Pizzashack found = pizzashackRepository.getById(pizzashackId);
 		final String icon = found.getIcon();
 		LOGGER.info("found icone:{}", icon);
@@ -79,13 +90,13 @@ public class PizzashackDSImpl implements PizzashackDS {
 
 	@Override
 	public Pizzashack getPizzashackById(final String pizzashackId) throws NotFoundException {
-		checkArgument(pizzashackId != null, "pizzashackId can not be null");
+		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
 		return pizzashackRepository.getById(pizzashackId);
 	}
 
 	@Override
 	public void updatePizzashack(final String pizzashackId, Pizzashack updatePizzashack) throws Exception {
-		checkArgument(pizzashackId != null, "pizzashackId can not be null");
+		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
 		checkArgument(updatePizzashack != null, "updatePizzashack can not be null");
 		pizzashackRepository.getById(pizzashackId);
 		updatePizzashack.setPizzashackId(pizzashackId);
@@ -133,4 +144,30 @@ public class PizzashackDSImpl implements PizzashackDS {
 		return page;
 	}
 
+	@Override
+	public Long countCommentsByPizzashackId(final String pizzashackId,final PizzashackCommentType commentType) {
+		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
+		checkArgument(commentType != null, "commentType can not be null");
+		try {
+			return pizzashackCommentRepository.countCommentsByPizzashackId(pizzashackId, commentType);
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	@Override
+	public String createPizzashackComment(final String pizzashackId,final String userName,final PizzashackComment comment) throws Exception {
+		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
+		checkArgument(!StringUtils.isEmpty(userName), "userName can not be null");
+		checkArgument(comment != null, "comment can not be null");
+		final Pizzashack foundPizzashack = pizzashackRepository.getById(pizzashackId);
+		final User foundUser = userRepository.getByName(userName);
+		return pizzashackCommentRepository.createPizzashackComment(foundPizzashack.getNodeUri(), foundUser.getNodeUri(), comment);
+	}
+
+	@Override
+	public void deleteCommentByPizzashackId(final String pizzashackId) throws Exception {
+		pizzashackCommentRepository.deleteCommentByPizzashackId(pizzashackId);
+	}
+	
 }
