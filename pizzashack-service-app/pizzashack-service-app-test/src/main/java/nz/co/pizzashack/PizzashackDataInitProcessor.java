@@ -168,7 +168,6 @@ public class PizzashackDataInitProcessor {
 
 	public static void initViewed() throws Exception {
 		final PizzashackDS pizzashackDS = injector.getInstance(PizzashackDS.class);
-
 		File initFile = new File(Resources.getResource(VIEWED_FILE).getFile());
 		try (BufferedReader reader = Files.newReader(initFile, Charsets.UTF_8)) {
 			String line = null;
