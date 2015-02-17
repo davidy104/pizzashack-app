@@ -118,6 +118,19 @@ public class PizzashackRepositoryIntegrationTest {
 			userRepository.deleteByName(user.getUserName());
 		}
 	}
+	
+	@Test
+	public void testCreateAndDeleteViewed()throws Exception {
+		final Pizzashack foundPizza = pizzashackRepository.getById(TEST_PIZZASHACK_ID);
+		final User foundUser = userRepository.getByName(TEST_USER_NAME);
+		pizzashackRepository.createView(foundPizza.getNodeUri(), foundUser.getNodeUri(), new Date());
+		Long count = pizzashackRepository.countViewed(TEST_PIZZASHACK_ID);
+		assertEquals(count.longValue(), 2);
+		
+		pizzashackRepository.deleteViewed(TEST_PIZZASHACK_ID, TEST_USER_NAME);
+		count = pizzashackRepository.countViewed(TEST_PIZZASHACK_ID);
+		assertEquals(count.longValue(), 1);
+	}
 
 	@Test
 	public void testGetViewed() throws Exception {
