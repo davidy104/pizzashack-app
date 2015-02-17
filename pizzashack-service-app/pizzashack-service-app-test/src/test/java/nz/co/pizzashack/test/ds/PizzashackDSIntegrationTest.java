@@ -35,7 +35,7 @@ import com.google.inject.Inject;
 public class PizzashackDSIntegrationTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackDSIntegrationTest.class);
-	
+
 	@Inject
 	private CamelContext camelContext;
 
@@ -58,8 +58,7 @@ public class PizzashackDSIntegrationTest {
 		initPizzashack = (Pizzashack) initialPizzashacks.toArray()[0];
 		final String imageName = initPizzashack.getIcon();
 		final InputStream imageStream = PizzashackDSIntegrationTest.class.getResourceAsStream("/" + imageName);
-		final String id = pizzashackDS.createPizzashack(initPizzashack, imageName, imageStream);
-		initPizzashack.setPizzashackId(id);
+		initPizzashack = pizzashackDS.createPizzashack(initPizzashack, imageName, imageStream);
 		LOGGER.info("initPizzashack:{} ", initPizzashack);
 		assertNotNull(initPizzashack);
 

@@ -1,11 +1,15 @@
 package nz.co.pizzashack.test.repository;
 
 import static nz.co.pizzashack.test.TestUtils.initPizzashackFromFile;
+import static nz.co.pizzashack.test.TestUtils.initUserFromFile;
+import static nz.co.pizzashack.util.GenericUtils.readClasspathFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,8 +19,10 @@ import nz.co.pizzashack.SharedModule;
 import nz.co.pizzashack.config.ConfigurationServiceModule;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.Pizzashack;
+import nz.co.pizzashack.model.User;
 import nz.co.pizzashack.repository.PizzashackRepository;
 import nz.co.pizzashack.repository.RepositoryModule;
+import nz.co.pizzashack.repository.UserRepository;
 import nz.co.pizzashack.test.GuiceJUnitRunner;
 import nz.co.pizzashack.test.GuiceJUnitRunner.GuiceModules;
 
@@ -30,6 +36,8 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -40,18 +48,33 @@ public class PizzashackRepositoryIntegrationTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackRepositoryIntegrationTest.class);
 	private static Set<Pizzashack> initialPizzashacks = Collections.<Pizzashack> emptySet();
+	private static Set<User> intialUsers = Collections.<User> emptySet();
 	private final static String NOT_EXIST_ID = "not exist id";
+	private static final String delimiter = "||";
+	private final static String VIEWED_FILE = "viewed-testdata.txt";
+
+	private static List<String> initViewedFileContent;
 
 	private Set<String> initPizzashackNodeUris = Sets.<String> newHashSet();
 
 	@Inject
 	private PizzashackRepository pizzashackRepository;
 
+	@Inject
+	private UserRepository userRepository;
+
+	private static String TEST_USER_NAME = "james";
+	private static String TEST_PIZZASHACK_ID = "PIZZA-8e1d96e7-fc83-4327-8038-631b2e1ac8d3";
+	private static String TEST_NOT_VIEWED_PIZZASHACK_ID = "PIZZA-079f9223-ef66-498a-8175-d0cba1a98973";
+
 	@BeforeClass
 	public static void setUp() throws Exception {
 		initialPizzashacks = initPizzashackFromFile();
+		intialUsers = initUserFromFile();
+		initViewedFileContent = readClasspathFile(VIEWED_FILE);
 		assertNotNull(initialPizzashacks);
 		assertEquals(initialPizzashacks.size(), 3);
+		assertEquals(intialUsers.size(), 2);
 	}
 
 	@Before
@@ -61,13 +84,47 @@ public class PizzashackRepositoryIntegrationTest {
 			LOGGER.info("----id:{} ", pizzashack.getPizzashackId());
 			initPizzashackNodeUris.add(nodeUri);
 		}
+
+		for (final User user : intialUsers) {
+			userRepository.create(user);
+		}
+		doInitViewed();
+	}
+
+	private void doInitViewed() throws Exception {
+		for (final String line : initViewedFileContent) {
+			Iterable<String> values = Splitter.on(delimiter).split(line);
+			final String pizzashackId = Iterables.get(values, 0);
+			final Pizzashack pizzashack = pizzashackRepository.getById(pizzashackId);
+			final User user = userRepository.getByName(Iterables.get(values, 1));
+			pizzashackRepository.createView(pizzashack.getNodeUri(), user.getNodeUri(), new Date());
+		}
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		for (final String line : initViewedFileContent) {
+			Iterable<String> values = Splitter.on(delimiter).split(line);
+			final String pizzashackId = Iterables.get(values, 0);
+			final String userName = Iterables.get(values, 1);
+			pizzashackRepository.deleteViewed(pizzashackId, userName);
+		}
+
 		for (final Pizzashack pizzashack : initialPizzashacks) {
 			pizzashackRepository.deleteById(pizzashack.getPizzashackId());
 		}
+
+		for (final User user : intialUsers) {
+			userRepository.deleteByName(user.getUserName());
+		}
+	}
+
+	@Test
+	public void testGetViewed() throws Exception {
+		Long count = pizzashackRepository.countViewed(TEST_PIZZASHACK_ID);
+		assertEquals(count.longValue(), 1);
+		count = pizzashackRepository.countViewed(TEST_NOT_VIEWED_PIZZASHACK_ID);
+		assertEquals(count.longValue(), 0);
 	}
 
 	@Test
@@ -94,8 +151,7 @@ public class PizzashackRepositoryIntegrationTest {
 
 	@Test(expected = ConflictException.class)
 	public void testCreateConflict() throws Exception {
-		final String duplicatedId = "PIZZA-8e1d96e7-fc83-4327-8038-631b2e1ac8d3";
-		pizzashackRepository.create(new Pizzashack.Builder().pizzaName("testConflictPizzaname").pizzashackId(duplicatedId).description("testConflictPizzadesc").build());
+		pizzashackRepository.create(new Pizzashack.Builder().pizzaName("testConflictPizzaname").pizzashackId(TEST_PIZZASHACK_ID).description("testConflictPizzadesc").build());
 	}
 
 	@Test
@@ -103,7 +159,7 @@ public class PizzashackRepositoryIntegrationTest {
 		Set<Pizzashack> allPizzashacks = pizzashackRepository.getAll();
 		assertNotNull(allPizzashacks);
 		assertFalse(allPizzashacks.isEmpty());
-		// assertEquals(allPizzashacks.size(), 10);
+		assertEquals(allPizzashacks.size(), 3);
 		for (final Pizzashack pizzashack : allPizzashacks) {
 			LOGGER.info("pizzashack name:{} ", pizzashack.getClass().getSimpleName());
 			LOGGER.info("pizzashack:{} ", pizzashack);

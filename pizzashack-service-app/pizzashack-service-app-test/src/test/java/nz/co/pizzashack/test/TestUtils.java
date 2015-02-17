@@ -29,21 +29,18 @@ public class TestUtils {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				Iterable<String> values = Splitter.on(delimiter).split(line);
-
 				final Pizzashack pizzashack = new Pizzashack.Builder().pizzashackId(Iterables.get(values, 0)).pizzaName(Iterables.get(values, 1))
 						.description(Iterables.get(values, 2)).price(new BigDecimal(Iterables.get(values, 3))).icon(Iterables.get(values, 4))
 						.amount(Integer.valueOf(Iterables.get(values, 5)))
 						.createTime(FORMAT.parse(Iterables.get(values, 6)))
-						.viewed(Long.valueOf(Iterables.get(values, 7)))
 						.build();
-				System.out.println("pizzashack:{} " + pizzashack);
 				pizzashackSet.add(pizzashack);
 			}
 		}
 		return pizzashackSet;
 	}
-	
-	public static Set<User> initUserFromFile()throws Exception {
+
+	public static Set<User> initUserFromFile() throws Exception {
 		Set<User> userSet = Sets.<User> newHashSet();
 		File initPizzashackFile = new File(Resources.getResource(TEST_USER_DATA_FILE).getFile());
 		try (BufferedReader reader = Files.newReader(initPizzashackFile, Charsets.UTF_8)) {
@@ -60,6 +57,5 @@ public class TestUtils {
 		}
 		return userSet;
 	}
-	
-	
+
 }
