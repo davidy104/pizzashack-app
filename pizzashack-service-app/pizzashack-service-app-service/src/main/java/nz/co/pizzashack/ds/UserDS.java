@@ -9,8 +9,8 @@ import nz.co.pizzashack.model.User;
 
 public interface UserDS {
 
-	String createUser(User addUser)throws Exception;
-	
+	User createUser(User addUser) throws Exception;
+
 	Set<User> getAllUsers() throws Exception;
 
 	User getUserByName(String userName) throws NotFoundException;
@@ -21,9 +21,9 @@ public interface UserDS {
 
 	void deleteUserByName(String userName) throws Exception;
 
-	Page<User> paginateAllUsers(int pageOffset,int pageSize) throws Exception;
-	
+	Page<User> paginateAllUsers(int pageOffset, int pageSize) throws Exception;
+
 	void deleteCommentByUserName(String userName) throws Exception;
-	
+
 	Set<PizzashackComment> getAllByUserName(String userName) throws Exception;
 }

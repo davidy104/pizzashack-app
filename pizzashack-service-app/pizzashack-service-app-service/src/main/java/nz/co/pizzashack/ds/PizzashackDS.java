@@ -13,7 +13,7 @@ import com.amazonaws.services.s3.model.S3Object;
 
 public interface PizzashackDS {
 
-	String createPizzashack(Pizzashack addPizzashack, String imageName, InputStream imageStream) throws Exception;
+	Pizzashack createPizzashack(Pizzashack addPizzashack, String imageName, InputStream imageStream) throws Exception;
 
 	void deleteById(String pizzashackId) throws Exception;
 
@@ -28,10 +28,12 @@ public interface PizzashackDS {
 	Page<Pizzashack> paginatePizzashackByName(Integer pageOffset, Integer pageSize, String pizzashackName);
 
 	S3Object loadImageFromS3(String imageName) throws Exception;
-	
-	Long countCommentsByPizzashackId(String pizzashackId,PizzashackCommentType commentType);
-	
+
+	Long countCommentsByPizzashackId(String pizzashackId, PizzashackCommentType commentType);
+
 	String createPizzashackComment(String pizzashackId, String userName, PizzashackComment comment) throws Exception;
 
 	void deleteCommentByPizzashackId(String pizzashackId) throws Exception;
+
+	void createViewed(String pizzashackId, String userName) throws Exception;
 }

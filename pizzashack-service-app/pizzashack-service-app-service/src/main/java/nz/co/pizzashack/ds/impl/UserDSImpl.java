@@ -18,20 +18,22 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-public class UserDSImpl implements UserDS{
+public class UserDSImpl implements UserDS {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserDSImpl.class);
-	
+
 	@Inject
 	private UserRepository userRepository;
-	
+
 	@Inject
 	private PizzashackCommentRepository pizzashackCommentRepository;
-	
+
 	@Override
-	public String createUser(final User addUser) throws Exception {
+	public User createUser(User addUser) throws Exception {
 		checkArgument(addUser != null, "addUser can not be null");
-		return userRepository.create(addUser);
+		final String nodeUri = userRepository.create(addUser);
+		addUser.setNodeUri(nodeUri);
+		return addUser;
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class UserDSImpl implements UserDS{
 	}
 
 	@Override
-	public boolean login(final String userName,final String password) {
+	public boolean login(final String userName, final String password) {
 		checkArgument(!StringUtils.isEmpty(userName), "userName can not be null");
 		checkArgument(!StringUtils.isEmpty(password), "password can not be null");
 		try {
@@ -72,7 +74,7 @@ public class UserDSImpl implements UserDS{
 	}
 
 	@Override
-	public Page<User> paginateAllUsers(final int pageOffset,final int pageSize) throws Exception {
+	public Page<User> paginateAllUsers(final int pageOffset, final int pageSize) throws Exception {
 		return userRepository.paginateAll(pageOffset, pageSize);
 	}
 
@@ -87,7 +89,5 @@ public class UserDSImpl implements UserDS{
 		checkArgument(!StringUtils.isEmpty(userName), "userName can not be null");
 		return null;
 	}
-	
-	
 
 }

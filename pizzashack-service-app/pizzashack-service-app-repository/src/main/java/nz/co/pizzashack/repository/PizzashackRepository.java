@@ -1,5 +1,6 @@
 package nz.co.pizzashack.repository;
 
+import java.util.Date;
 import java.util.Set;
 
 import nz.co.pizzashack.NotFoundException;
@@ -21,4 +22,10 @@ public interface PizzashackRepository {
 	Page<Pizzashack> paginateAll(int pageOffset, int pageSize) throws Exception;
 
 	Page<Pizzashack> paginateByName(int pageOffset, int pageSize, String pizzashackName) throws Exception;
+
+	void createView(String pizzashackNodeUri, String userNodeUri, Date viewedTime) throws Exception;
+
+	Long countViewed(String pizzashackId);
+
+	void deleteViewed(String pizzashackId, String userName) throws Exception;
 }

@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,10 +41,10 @@ public class PizzashackDSImpl implements PizzashackDS {
 
 	@Inject
 	private PizzashackRepository pizzashackRepository;
-	
+
 	@Inject
 	private PizzashackCommentRepository pizzashackCommentRepository;
-	
+
 	@Inject
 	private UserRepository userRepository;
 
@@ -57,16 +58,17 @@ public class PizzashackDSImpl implements PizzashackDS {
 	private AmazonS3 amazonS3;
 
 	@Override
-	public String createPizzashack(Pizzashack addPizzashack, final String imageName, final InputStream imageStream) throws Exception {
+	public Pizzashack createPizzashack(Pizzashack addPizzashack, final String imageName, final InputStream imageStream) throws Exception {
 		checkArgument(addPizzashack != null, "addPizzashack can not be null");
 		String id = addPizzashack.getPizzashackId();
 		id = id == null ? "PIZZA-" + UUID.randomUUID().toString() : id;
 		addPizzashack.setPizzashackId(id);
-		pizzashackRepository.create(addPizzashack);
+		final String nodeUri = pizzashackRepository.create(addPizzashack);
 		if (!StringUtils.isEmpty(imageName) && imageStream != null) {
 			producerTemplate.sendBodyAndProperty(imageStream, "outputPath", IMAGE_PATH + imageName);
 		}
-		return id;
+		addPizzashack.setNodeUri(nodeUri);
+		return addPizzashack;
 	}
 
 	@Override
@@ -92,7 +94,10 @@ public class PizzashackDSImpl implements PizzashackDS {
 	@Override
 	public Pizzashack getPizzashackById(final String pizzashackId) throws NotFoundException {
 		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
-		return pizzashackRepository.getById(pizzashackId);
+		Long viewed = pizzashackRepository.countViewed(pizzashackId);
+		Pizzashack found = pizzashackRepository.getById(pizzashackId);
+		found.setViewed(viewed);
+		return found;
 	}
 
 	@Override
@@ -146,7 +151,7 @@ public class PizzashackDSImpl implements PizzashackDS {
 	}
 
 	@Override
-	public Long countCommentsByPizzashackId(final String pizzashackId,final PizzashackCommentType commentType) {
+	public Long countCommentsByPizzashackId(final String pizzashackId, final PizzashackCommentType commentType) {
 		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
 		checkArgument(commentType != null, "commentType can not be null");
 		try {
@@ -157,7 +162,7 @@ public class PizzashackDSImpl implements PizzashackDS {
 	}
 
 	@Override
-	public String createPizzashackComment(final String pizzashackId,final String userName,final PizzashackComment comment) throws Exception {
+	public String createPizzashackComment(final String pizzashackId, final String userName, final PizzashackComment comment) throws Exception {
 		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
 		checkArgument(!StringUtils.isEmpty(userName), "userName can not be null");
 		checkArgument(comment != null, "comment can not be null");
@@ -167,10 +172,10 @@ public class PizzashackDSImpl implements PizzashackDS {
 		} catch (final NotFoundException e) {
 			commentExist = false;
 		}
-		if(commentExist){
-			throw new ConflictException("User["+userName+"] already has comment on this Pizzashack["+pizzashackId+"].");
+		if (commentExist) {
+			throw new ConflictException("User[" + userName + "] already has comment on this Pizzashack[" + pizzashackId + "].");
 		}
-		
+
 		final Pizzashack foundPizzashack = pizzashackRepository.getById(pizzashackId);
 		final User foundUser = userRepository.getByName(userName);
 		return pizzashackCommentRepository.createPizzashackComment(foundPizzashack.getNodeUri(), foundUser.getNodeUri(), comment);
@@ -180,5 +185,16 @@ public class PizzashackDSImpl implements PizzashackDS {
 	public void deleteCommentByPizzashackId(final String pizzashackId) throws Exception {
 		pizzashackCommentRepository.deleteCommentByPizzashackId(pizzashackId);
 	}
-	
+
+	@Override
+	public void createViewed(final String pizzashackId, final String userName) throws Exception {
+		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
+		checkArgument(!StringUtils.isEmpty(userName), "userName can not be null");
+
+		final Pizzashack foundPizza = pizzashackRepository.getById(pizzashackId);
+		final User foundUser = userRepository.getByName(userName);
+
+		pizzashackRepository.createView(foundPizza.getNodeUri(), foundUser.getNodeUri(), new Date());
+	}
+
 }
