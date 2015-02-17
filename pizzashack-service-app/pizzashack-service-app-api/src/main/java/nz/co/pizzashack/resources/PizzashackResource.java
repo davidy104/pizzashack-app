@@ -81,7 +81,8 @@ public class PizzashackResource {
 				}
 			}
 			if (!requestFormMap.isEmpty()) {
-				id = pizzashackDS.createPizzashack(this.buildPizzashackFromRequestMap(requestFormMap), requestFormMap.get("icon"), imageStream);
+				final Pizzashack added = pizzashackDS.createPizzashack(this.buildPizzashackFromRequestMap(requestFormMap), requestFormMap.get("icon"), imageStream);
+				id = added.getPizzashackId();
 			}
 		} catch (final Exception e) {
 			return buildResponseOnException(e);
