@@ -4,17 +4,22 @@
 				<div class="panel panel-default">
 		  			<div class="panel-body">
 		  				<div class="row">
-							<div class="col-md-3">
-								<img src="{{pizzaItem.icon}}" class="img-responsive img-thumbnail" >
+							<div class="col-md-4">
+								<img src="{{pizzaItem.data.icon}}" class="img-responsive img-thumbnail" >
 							</div>
-							<div class="col-md-9">
-								<p class="text-justify">
-									{{pizzaItem.description}}
-								</p>
+							<div class="col-md-8">
+								
+									<h4><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> {{pizzaItem.data.viewed}}</h4>
+									<h4><span class="glyphicon glyphicon-thumbs-up"></span> {{pizzaItem.like}}</h4>
+									<h4><span class="glyphicon glyphicon-thumbs-down"></span> {{pizzaItem.dislike}}</h4>
+								
 							</div>
 						</div>
 
-						<p class="h5 text-left">{{pizzaItem.pizzaName}}<br> <small>{{pizzaItem.createTime}}</small></p>
+						<p class="h5 text-left">{{pizzaItem.data.pizzaName}}<br> <small>{{pizzaItem.data.createTime}}</small></p>
+						<p class="text-justify">
+							{{pizzaItem.data.description}}
+						</p>
 						
 						<!--details start-->
 						<div class="table-responsive">
@@ -22,11 +27,11 @@
 							  <dt>Id</dt>
 							  <dd>{{id}}</dd>
 							  <dt>Name</dt>
-							  <dd>{{pizzaItem.pizzaName}}</dd>
+							  <dd>{{pizzaItem.data.pizzaName}}</dd>
 							  <dt>Price</dt>
-							  <dd>$ {{pizzaItem.price}}</dd>
+							  <dd>$ {{pizzaItem.data.price}}</dd>
 							  <dt>Amount</dt>
-							  <dd>{{pizzaItem.amount}}</dd>
+							  <dd>{{pizzaItem.data.amount}}</dd>
 							</dl>
 						</div>
 						<!--details end-->

@@ -1,0 +1,15 @@
+{
+	"uri":"http://localhost:8181/pizzashackApp/admin/pizzashack/PIZZA-fea77b62-2e9c-43b5-9345-6b5922e37412",
+	"dislike":1,
+	"like":1,
+	"data":{
+		"pizzashackId":"PIZZA-fea77b62-2e9c-43b5-9345-6b5922e37412",
+		"pizzaName":"Chicken Parmesan",
+		"description":"Grilled chicken, fresh tomatoes, feta and mozzarella cheese",
+		"price":38.00,
+		"icon":"http://localhost:8181/pizzashackApp/admin/pizzashack/image/1.png",
+		"amount":30,
+		"createTime":"2014-12-12 11:24:23",
+		"viewed":3
+	}
+}
