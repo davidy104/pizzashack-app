@@ -41,10 +41,10 @@ public class PizzashackDataInitProcessor {
 
 	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-	private final static String PIZZASHACK_INIT_FILE = "pizzashack-init.txt";
-	private final static String USER_INIT_FILE = "user-init.txt";
-	private final static String PIZZASHACK_COMMENTS_FILE = "comments-init.txt";
-	private final static String VIEWED_FILE = "viewed-init.txt";
+	private final static String PIZZASHACK_INIT_FILE = "init/pizzashack-init.txt";
+	private final static String USER_INIT_FILE = "init/user-init.txt";
+	private final static String PIZZASHACK_COMMENTS_FILE = "init/comments-init.txt";
+	private final static String VIEWED_FILE = "init/viewed-init.txt";
 
 	private static Set<Pizzashack> initPizzashacks = Sets.<Pizzashack> newHashSet();
 	private static Set<User> initUsers = Sets.<User> newHashSet();

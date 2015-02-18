@@ -61,7 +61,6 @@ public class PizzashackDSIntegrationTest {
 		initPizzashack = pizzashackDS.createPizzashack(initPizzashack, imageName, imageStream);
 		LOGGER.info("initPizzashack:{} ", initPizzashack);
 		assertNotNull(initPizzashack);
-
 	}
 
 	@After

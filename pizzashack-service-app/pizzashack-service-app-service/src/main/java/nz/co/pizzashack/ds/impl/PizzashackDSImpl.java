@@ -197,4 +197,11 @@ public class PizzashackDSImpl implements PizzashackDS {
 		pizzashackRepository.createView(foundPizza.getNodeUri(), foundUser.getNodeUri(), new Date());
 	}
 
+	@Override
+	public void deleteViewed(String pizzashackId, String userName) throws Exception {
+		checkArgument(!StringUtils.isEmpty(pizzashackId), "pizzashackId can not be null");
+		checkArgument(!StringUtils.isEmpty(userName), "userName can not be null");
+		pizzashackRepository.deleteViewed(pizzashackId, userName);
+	}
+
 }

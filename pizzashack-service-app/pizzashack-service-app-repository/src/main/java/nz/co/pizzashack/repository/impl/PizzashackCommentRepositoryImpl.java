@@ -93,14 +93,11 @@ public class PizzashackCommentRepositoryImpl extends RepositoryBase<PizzashackCo
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
-		if (result == null) {
+		Set<PizzashackComment> comments = this.doQueryResultMapToModelsConvert(result);
+		if (comments.isEmpty()) {
 			throw new NotFoundException("Comments not found by id[" + pizzashackId + "] and userName[" + userName + "]");
 		}
-		Set<PizzashackComment> comments = this.doQueryResultMapToModelsConvert(result);
-		if (!comments.isEmpty()) {
-			return (PizzashackComment) comments.toArray()[0];
-		}
-		return null;
+		return (PizzashackComment) comments.toArray()[0];
 	}
 
 	private Set<PizzashackComment> doQueryResultMapToModelsConvert(final AbstractCypherQueryResult result) {
@@ -155,21 +152,21 @@ public class PizzashackCommentRepositoryImpl extends RepositoryBase<PizzashackCo
 						.put("userName", userName)
 						.build()));
 	}
-	
+
 	@Override
 	public Long countCommentsByPizzashackId(final String pizzashackId, final PizzashackCommentType commentType) throws Exception {
 		Long count = new Long(0);
 		String queryJson = "MATCH (p:Pizzashack{pizzashackId:{pizzashackId}})-[r:" + RelationshipsLabel.HasComment.name() + "]->(pc:PizzashackComment{commentType:{commentType}}) RETURN COUNT(r) as count";
-		
+
 		final AbstractCypherQueryResult result = neo4jRestAPIAccessor.cypherQuery(queryJson,
 				Maps.newHashMap(new ImmutableMap.Builder<String, Object>()
 						.put("pizzashackId", pizzashackId)
 						.put("commentType", commentType)
 						.build()));
-		if(result != null){
+		if (result != null) {
 			Set<String> resultSet = result.getDataColumnMap().get("count");
-			if(!resultSet.isEmpty()){
-				String resultCount = (String)resultSet.toArray()[0];
+			if (!resultSet.isEmpty()) {
+				String resultCount = (String) resultSet.toArray()[0];
 				count = Long.valueOf(resultCount);
 			}
 		}

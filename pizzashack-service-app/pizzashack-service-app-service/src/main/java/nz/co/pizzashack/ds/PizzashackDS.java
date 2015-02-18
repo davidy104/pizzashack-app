@@ -36,4 +36,6 @@ public interface PizzashackDS {
 	void deleteCommentByPizzashackId(String pizzashackId) throws Exception;
 
 	void createViewed(String pizzashackId, String userName) throws Exception;
+
+	void deleteViewed(String pizzashackId, String userName) throws Exception;
 }
