@@ -5,12 +5,16 @@ import java.util.Map;
 import nz.co.pizzashack.model.Customer;
 import nz.co.pizzashack.model.Pizzashack;
 import nz.co.pizzashack.model.PizzashackComment;
+import nz.co.pizzashack.model.Role;
 import nz.co.pizzashack.model.User;
 import nz.co.pizzashack.repository.convert.CustomerMetaMapToModel;
 import nz.co.pizzashack.repository.convert.PizzashackCommentMetaMapToModel;
 import nz.co.pizzashack.repository.convert.PizzashackMetaMapToModel;
 import nz.co.pizzashack.repository.convert.PizzashackModelToCreateStatement;
 import nz.co.pizzashack.repository.convert.PizzashackModelToMap;
+import nz.co.pizzashack.repository.convert.RoleMetaMapToModel;
+import nz.co.pizzashack.repository.convert.RoleModelToCreateStatement;
+import nz.co.pizzashack.repository.convert.RoleModelToMap;
 import nz.co.pizzashack.repository.convert.UserMetaMapToModel;
 import nz.co.pizzashack.repository.convert.UserModelToCreateStatement;
 import nz.co.pizzashack.repository.convert.UserModelToMap;
@@ -81,6 +85,27 @@ public class ConverterModule extends AbstractModule {
 	@Named("customerMetaMapToModelConverter")
 	public Function<Map<String, String>, Customer> customerMetaMapToModelConverter() {
 		return new CustomerMetaMapToModel();
+	}
+
+	@Provides
+	@Singleton
+	@Named("roleMetaMapToModelConverter")
+	public Function<Map<String, String>, Role> roleMetaMapToModelConverter() {
+		return new RoleMetaMapToModel();
+	}
+
+	@Provides
+	@Singleton
+	@Named("roleModelToCreateStatementConverter")
+	public Function<Role, String> roleModelToCreateStatementConverter() {
+		return new RoleModelToCreateStatement();
+	}
+
+	@Provides
+	@Singleton
+	@Named("roleModelToMapConverter")
+	public Function<Role, Map<String, String>> roleModelToMapConverter() {
+		return new RoleModelToMap();
 	}
 
 }

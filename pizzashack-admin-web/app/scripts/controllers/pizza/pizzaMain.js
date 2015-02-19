@@ -40,7 +40,6 @@ angular.module('pizzashackAdminWebApp')
           if(data.currentPage == 1){
             $scope.previousclass = 'disabled';
           }
-          // $scope.pageoffset = data.currentPage -1;
            
           angular.forEach(pizzaList, function(item){
             $scope.pizzas.push(item);
@@ -49,6 +48,7 @@ angular.module('pizzashackAdminWebApp')
       };
 
       update();
+      $scope.$on('update', update);
 
       $scope.deleteOne = function($event, deleteItem) {
         console.log('deleteId:',deleteItem.pizzashackId);
@@ -57,7 +57,7 @@ angular.module('pizzashackAdminWebApp')
         pizzaAdminApi.delete(deleteItem.pizzashackId).then(function(data){
         });
         $templateCache.removeAll();
-        update();
+        $scope.$emit('update');
       };
 
       $scope.previous = function($event) {
@@ -65,7 +65,7 @@ angular.module('pizzashackAdminWebApp')
           $event.preventDefault();
           $event.stopPropagation();
           $scope.pageoffset = $scope.pageoffset - 1;
-          update();
+          $scope.$emit('update');
         } 
       };
 
@@ -76,7 +76,7 @@ angular.module('pizzashackAdminWebApp')
           $event.stopPropagation();
           $scope.pageoffset = $scope.pageoffset + 1;
           console.log('next pageoffset:',$scope.pageoffset);
-          update();
+          $scope.$emit('update');
         }         
       };
 

@@ -585,6 +585,5 @@
 		<module>pizzashack-service-app-service</module>
 		<module>pizzashack-service-app-api</module>
 		<module>pizzashack-service-app-integration</module>
-		<module>?</module>
 	</modules>
 </project>

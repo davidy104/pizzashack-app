@@ -1,5 +1,6 @@
 package nz.co.pizzashack.repository;
 
+import java.util.Date;
 import java.util.Set;
 
 import nz.co.pizzashack.NotFoundException;
@@ -20,5 +21,13 @@ public interface UserRepository {
 
 	void deleteByName(String userName) throws Exception;
 
-	Page<User> paginateAll(int pageOffset,int pageSize) throws Exception;
+	Page<User> paginateAll(int pageOffset, int pageSize) throws Exception;
+
+	Page<User> paginateByRole(int pageOffset, int pageSize, String roleName) throws Exception;
+
+	Page<User> paginateByUserName(int pageOffset, int pageSize, String userName) throws Exception;
+
+	void gruntRole(String userNodeUri, String roleNodeUri, Date createTime) throws Exception;
+
+	void revokeRole(String userName, String roleName) throws Exception;
 }

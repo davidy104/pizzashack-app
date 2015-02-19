@@ -6,6 +6,7 @@ import nz.co.pizzashack.repository.convert.template.Neo4jRestGenericConverter;
 import nz.co.pizzashack.repository.impl.CustomerRepositoryImpl;
 import nz.co.pizzashack.repository.impl.PizzashackCommentRepositoryImpl;
 import nz.co.pizzashack.repository.impl.PizzashackRepositoryImpl;
+import nz.co.pizzashack.repository.impl.RoleRepositoryImpl;
 import nz.co.pizzashack.repository.impl.UserRepositoryImpl;
 import nz.co.pizzashack.repository.support.Neo4jRestAPIAccessor;
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
@@ -35,6 +36,7 @@ public class RepositoryModule extends AbstractModule {
 		bind(UserRepository.class).to(UserRepositoryImpl.class).asEagerSingleton();
 		bind(CustomerRepository.class).to(CustomerRepositoryImpl.class).asEagerSingleton();
 		bind(PizzashackCommentRepository.class).to(PizzashackCommentRepositoryImpl.class).asEagerSingleton();
+		bind(RoleRepository.class).to(RoleRepositoryImpl.class).asEagerSingleton();
 	}
 
 	@Provides
