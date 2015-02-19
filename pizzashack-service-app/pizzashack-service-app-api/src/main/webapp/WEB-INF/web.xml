@@ -4,8 +4,6 @@
 
 <web-app>
 	<display-name>Pizzashack</display-name>
-
-
 	<listener>
 		<listener-class>nz.co.pizzashack.BootStrap</listener-class>
 	</listener>
