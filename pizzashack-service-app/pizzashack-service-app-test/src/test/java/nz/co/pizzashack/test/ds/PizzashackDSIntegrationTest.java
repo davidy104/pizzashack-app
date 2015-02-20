@@ -1,6 +1,6 @@
 package nz.co.pizzashack.test.ds;
 
-import static nz.co.pizzashack.test.TestUtils.initPizzashackFromFile;
+import static nz.co.pizzashack.test.TestUtils.initPizzashacks;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -47,7 +47,7 @@ public class PizzashackDSIntegrationTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		initialPizzashacks = initPizzashackFromFile();
+		initialPizzashacks = initPizzashacks();
 		assertNotNull(initialPizzashacks);
 		assertEquals(initialPizzashacks.size(), 3);
 	}

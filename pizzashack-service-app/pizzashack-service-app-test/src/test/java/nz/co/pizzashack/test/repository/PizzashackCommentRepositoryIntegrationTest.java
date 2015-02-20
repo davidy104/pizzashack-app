@@ -1,12 +1,13 @@
 package nz.co.pizzashack.test.repository;
 
-import static nz.co.pizzashack.test.TestUtils.initPizzashackFromFile;
-import static nz.co.pizzashack.test.TestUtils.initUserFromFile;
+import static nz.co.pizzashack.test.TestUtils.initPizzashacks;
+import static nz.co.pizzashack.test.TestUtils.initUsers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 import nz.co.pizzashack.SharedModule;
@@ -50,7 +51,7 @@ public class PizzashackCommentRepositoryIntegrationTest {
 	private UserRepository userRepository;
 
 	private static Set<Pizzashack> initialPizzashacks = Collections.<Pizzashack> emptySet();
-	private static Set<User> initialUsers = Collections.<User> emptySet();
+	private static Set<User> intialUsers = Sets.<User> newHashSet();
 
 	private Set<Pizzashack> initialedTestPizzashack = Sets.<Pizzashack> newHashSet();
 	private Set<User> initialedTestUser = Sets.<User> newHashSet();
@@ -67,13 +68,16 @@ public class PizzashackCommentRepositoryIntegrationTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		initialPizzashacks = initPizzashackFromFile();
+		initialPizzashacks = initPizzashacks();
 		assertNotNull(initialPizzashacks);
 		assertEquals(initialPizzashacks.size(), 3);
 
-		initialUsers = initUserFromFile();
-		assertNotNull(initialUsers);
-		assertEquals(initialUsers.size(), 2);
+		Map<User, String> initUserMap = initUsers();
+		for (Map.Entry<User, String> entry : initUserMap.entrySet()) {
+			intialUsers.add(entry.getKey());
+		}
+		assertNotNull(intialUsers);
+		assertEquals(intialUsers.size(), 2);
 	}
 
 	@Before
@@ -89,7 +93,7 @@ public class PizzashackCommentRepositoryIntegrationTest {
 			}
 		}
 		for (int i = 0; i < 2; i++) {
-			User user = (User) initialUsers.toArray()[i];
+			User user = (User) intialUsers.toArray()[i];
 			final String nodeUri = userRepository.create(user);
 			user.setNodeUri(nodeUri);
 			initialedTestUser.add(user);
@@ -132,21 +136,21 @@ public class PizzashackCommentRepositoryIntegrationTest {
 			pizzashackCommentRepository.deleteCommentByPizzashackId(pizzashack.getPizzashackId());
 			pizzashackRepository.deleteById(pizzashack.getPizzashackId());
 		}
-		if(withoutCommentPizzashackId != null){
+		if (withoutCommentPizzashackId != null) {
 			pizzashackRepository.deleteById(withoutCommentPizzashackId);
 		}
-		
+
 		for (final User user : initialedTestUser) {
 			userRepository.deleteByName(user.getUserName());
 		}
 	}
-	
+
 	@Test
-	public void testCountByPizzashackId()throws Exception {
+	public void testCountByPizzashackId() throws Exception {
 		Long count = pizzashackCommentRepository.countCommentsByPizzashackId(testPizzashackId, PizzashackCommentType.DISLIKE);
 		LOGGER.info("dislike count:{} ", count);
 		assertEquals(count.longValue(), 1);
-		
+
 		count = pizzashackCommentRepository.countCommentsByPizzashackId(testPizzashackId, PizzashackCommentType.LIKE);
 		LOGGER.info("like count:{} ", count);
 		assertEquals(count.longValue(), 1);
