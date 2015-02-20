@@ -119,7 +119,7 @@ public class UserRepositoryImpl extends RepositoryBase<User, String> implements 
 	public void gruntRole(final String userNodeUri, final String roleNodeUri, final Date createTime) throws Exception {
 		neo4jRestAPIAccessor.buildRelationshipBetween2Nodes(userNodeUri, roleNodeUri, RelationshipsLabel.HasRole.name(),
 				Maps.newHashMap(new ImmutableMap.Builder<String, String>()
-						.put("viewedTime", formatDate("yyyy-MM-dd hh:mm:ss", createTime))
+						.put("createTime", formatDate("yyyy-MM-dd hh:mm:ss", createTime))
 						.build()));
 	}
 

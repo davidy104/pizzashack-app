@@ -1,19 +1,24 @@
 package nz.co.pizzashack.test.repository;
 
-import static nz.co.pizzashack.test.TestUtils.initUserFromFile;
+import static nz.co.pizzashack.test.TestUtils.initRoles;
+import static nz.co.pizzashack.test.TestUtils.initUsers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import nz.co.pizzashack.ConflictException;
 import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.SharedModule;
 import nz.co.pizzashack.config.ConfigurationServiceModule;
+import nz.co.pizzashack.model.Role;
 import nz.co.pizzashack.model.User;
 import nz.co.pizzashack.repository.RepositoryModule;
+import nz.co.pizzashack.repository.RoleRepository;
 import nz.co.pizzashack.repository.UserRepository;
 import nz.co.pizzashack.test.GuiceJUnitRunner;
 import nz.co.pizzashack.test.GuiceJUnitRunner.GuiceModules;
@@ -28,6 +33,8 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -37,34 +44,74 @@ import com.google.inject.Inject;
 public class UserRepositoryIntegrationTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryIntegrationTest.class);
-	private static Set<User> initialUsers = Collections.<User> emptySet();
+	private Set<User> initialUsers = Sets.<User> newHashSet();
+	private static Map<User, String> userMap = null;
+	private static Set<Role> initialRoles = Collections.<Role> emptySet();
 	private final static String NOT_EXIST_ID = "not exist id";
-	private Set<String> initUserNodeUris = Sets.<String> newHashSet();
 
 	@Inject
 	private UserRepository userRepository;
 
+	@Inject
+	private RoleRepository roleRepository;
+
+	private String developerRoleNodeUri;
+	private String staffRoleNodeUri;
+
 	@BeforeClass
 	public static void setUp() throws Exception {
-		initialUsers = initUserFromFile();
-		assertNotNull(initialUsers);
-		assertEquals(initialUsers.size(), 2);
+		userMap = initUsers();
+		initialRoles = initRoles();
+		assertEquals(initialRoles.size(), 2);
 	}
 
 	@Before
 	public void init() throws Exception {
-		for (final User user : initialUsers) {
-			final String nodeUri = userRepository.create(user);
-			LOGGER.info("----userName:{} ", user.getUserName());
-			initUserNodeUris.add(nodeUri);
+		for (final Role role : initialRoles) {
+			String roleNodeUri = roleRepository.create(role);
+			if (role.getRoleName().equals("staff")) {
+				staffRoleNodeUri = roleNodeUri;
+			} else {
+				developerRoleNodeUri = roleNodeUri;
+			}
+		}
+		for (final Map.Entry<User, String> entry : userMap.entrySet()) {
+			final String rolesStr = entry.getValue();
+			User user = entry.getKey();
+			final String userNodeUri = userRepository.create(user);
+			user.setNodeUri(userNodeUri);
+			initialUsers.add(user);
+			Iterable<String> roleIterable = Splitter.on(",").split(rolesStr);
+			List<String> roleList = FluentIterable.<String> from(roleIterable).toList();
+			for (final String roleName : roleList) {
+				final Date createTime = new Date();
+				if (roleName.equals("staff")) {
+					userRepository.gruntRole(userNodeUri, staffRoleNodeUri, createTime);
+				} else if (roleName.equals("developer")) {
+					userRepository.gruntRole(userNodeUri, developerRoleNodeUri, createTime);
+				}
+			}
 		}
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		LOGGER.info("-----------------tearDown start--------------------");
 		for (final User user : initialUsers) {
 			userRepository.deleteByName(user.getUserName());
 		}
+		for (final Role role : initialRoles) {
+			roleRepository.deleteByName(role.getRoleName());
+		}
+		LOGGER.info("-----------------tearDown end--------------------");
+	}
+
+	@Test
+	public void testGetByName() throws Exception {
+		final String testUser = "eric";
+		final User user = userRepository.getByName(testUser);
+		assertNotNull(user);
+		LOGGER.info("found user:{} ", user);
 	}
 
 	@Test
@@ -83,7 +130,6 @@ public class UserRepositoryIntegrationTest {
 		assertNotNull(testAdd);
 		assertEquals(testAdd.getUserName(), "testUser");
 		assertEquals(testAdd.getPassword(), "testUptPassword");
-
 		userRepository.deleteByName("testUser");
 	}
 

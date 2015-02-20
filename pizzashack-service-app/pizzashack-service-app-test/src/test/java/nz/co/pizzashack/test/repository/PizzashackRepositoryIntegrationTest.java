@@ -1,7 +1,7 @@
 package nz.co.pizzashack.test.repository;
 
-import static nz.co.pizzashack.test.TestUtils.initPizzashackFromFile;
-import static nz.co.pizzashack.test.TestUtils.initUserFromFile;
+import static nz.co.pizzashack.test.TestUtils.initPizzashacks;
+import static nz.co.pizzashack.test.TestUtils.initUsers;
 import static nz.co.pizzashack.util.GenericUtils.readClasspathFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -48,10 +49,10 @@ public class PizzashackRepositoryIntegrationTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzashackRepositoryIntegrationTest.class);
 	private static Set<Pizzashack> initialPizzashacks = Collections.<Pizzashack> emptySet();
-	private static Set<User> intialUsers = Collections.<User> emptySet();
+	private static Set<User> intialUsers = Sets.<User> newHashSet();
 	private final static String NOT_EXIST_ID = "not exist id";
 	private static final String delimiter = "||";
-	private final static String VIEWED_FILE = "viewed-testdata.txt";
+	private final static String VIEWED_FILE = "init/viewed-testdata.txt";
 
 	private static List<String> initViewedFileContent;
 
@@ -69,8 +70,11 @@ public class PizzashackRepositoryIntegrationTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		initialPizzashacks = initPizzashackFromFile();
-		intialUsers = initUserFromFile();
+		initialPizzashacks = initPizzashacks();
+		Map<User, String> initUserMap = initUsers();
+		for (Map.Entry<User, String> entry : initUserMap.entrySet()) {
+			intialUsers.add(entry.getKey());
+		}
 		initViewedFileContent = readClasspathFile(VIEWED_FILE);
 		assertNotNull(initialPizzashacks);
 		assertEquals(initialPizzashacks.size(), 3);
@@ -118,15 +122,15 @@ public class PizzashackRepositoryIntegrationTest {
 			userRepository.deleteByName(user.getUserName());
 		}
 	}
-	
+
 	@Test
-	public void testCreateAndDeleteViewed()throws Exception {
+	public void testCreateAndDeleteViewed() throws Exception {
 		final Pizzashack foundPizza = pizzashackRepository.getById(TEST_PIZZASHACK_ID);
 		final User foundUser = userRepository.getByName(TEST_USER_NAME);
 		pizzashackRepository.createView(foundPizza.getNodeUri(), foundUser.getNodeUri(), new Date());
 		Long count = pizzashackRepository.countViewed(TEST_PIZZASHACK_ID);
 		assertEquals(count.longValue(), 2);
-		
+
 		pizzashackRepository.deleteViewed(TEST_PIZZASHACK_ID, TEST_USER_NAME);
 		count = pizzashackRepository.countViewed(TEST_PIZZASHACK_ID);
 		assertEquals(count.longValue(), 1);
