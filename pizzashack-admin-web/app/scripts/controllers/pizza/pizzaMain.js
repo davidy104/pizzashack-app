@@ -79,6 +79,4 @@ angular.module('pizzashackAdminWebApp')
           $scope.$emit('update');
         }         
       };
-
-      // $scope.$on('update', update);
     });
