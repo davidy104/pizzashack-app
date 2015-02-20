@@ -9,8 +9,8 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>pizzashack-service-app-repository</artifactId>
-	<name>pizzashack-service-app-repository</name>
+	<artifactId>pizzashack-service-app-workflow</artifactId>
+	<name>pizzashack-service-app-workflow</name>
 
 	<dependencies>
 		<dependency>

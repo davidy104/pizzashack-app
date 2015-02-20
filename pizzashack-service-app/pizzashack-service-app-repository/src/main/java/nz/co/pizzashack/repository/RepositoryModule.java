@@ -17,6 +17,7 @@ import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 import com.sun.jersey.api.client.Client;
 
 /**
@@ -29,8 +30,7 @@ public class RepositoryModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		this.install(new ConverterModule());
-		bind(GeneralJsonRestClientAccessor.class).toProvider(GeneralJsonRestClientAccessorProvider.class)
-				.asEagerSingleton();
+		bind(GeneralJsonRestClientAccessor.class).annotatedWith(Names.named("neo4jGeneralJsonRestClientAccessor")).toProvider(Neo4jGeneralJsonRestClientAccessorProvider.class).asEagerSingleton();
 		bind(Neo4jRestAPIAccessor.class).asEagerSingleton();
 		bind(PizzashackRepository.class).to(PizzashackRepositoryImpl.class).asEagerSingleton();
 		bind(UserRepository.class).to(UserRepositoryImpl.class).asEagerSingleton();
@@ -45,7 +45,7 @@ public class RepositoryModule extends AbstractModule {
 		return new Neo4jRestGenericConverter(jsonBuilder, jsonSlurper);
 	}
 
-	public static class GeneralJsonRestClientAccessorProvider implements Provider<GeneralJsonRestClientAccessor> {
+	public static class Neo4jGeneralJsonRestClientAccessorProvider implements Provider<GeneralJsonRestClientAccessor> {
 
 		@Inject
 		private Client jerseyClient;

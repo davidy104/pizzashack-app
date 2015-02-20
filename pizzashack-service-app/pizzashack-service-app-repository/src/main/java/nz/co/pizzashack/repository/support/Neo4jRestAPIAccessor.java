@@ -40,6 +40,7 @@ public class Neo4jRestAPIAccessor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Neo4jRestAPIAccessor.class);
 
 	@Inject
+	@Named("neo4jGeneralJsonRestClientAccessor")
 	private GeneralJsonRestClientAccessor generalJsonRestClientAccessor;
 
 	@Inject
