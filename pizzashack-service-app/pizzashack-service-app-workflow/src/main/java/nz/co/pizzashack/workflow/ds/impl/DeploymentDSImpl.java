@@ -8,6 +8,8 @@ import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.workflow.Deployment;
 import nz.co.pizzashack.model.workflow.DeploymentResource;
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
+import nz.co.pizzashack.workflow.convert.DeploymentMapToModel;
+import nz.co.pizzashack.workflow.convert.DeploymentResourceMapToModel;
 import nz.co.pizzashack.workflow.ds.DeploymentDS;
 import nz.co.pizzashack.workflow.ds.DeploymentQueryParameter;
 
@@ -15,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -32,40 +36,49 @@ public class DeploymentDSImpl implements DeploymentDS{
 	
 	private final static String DEPLOYMENT_PATH="/repository/deployments/";
 	
+	@Inject
+	private DeploymentMapToModel deploymentMapToModel;
+	
+	@Inject
+	private DeploymentResourceMapToModel deploymentResourceMapToModel;
+	
 	@Override
-	public Deployment deployment(String name, String category, File uploadFile) throws Exception {
-		return null;
-	}
-
-	@Override
-	public Deployment getDeployment(String name, String category) throws Exception {
-		return null;
-	}
-
-	@Override
-	public Deployment getDeployment(String deploymentId) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void unDeployment(String deploymentId) throws Exception {
-		// TODO Auto-generated method stub
+	public Deployment deployment(final String name,final String category,final File uploadFile) throws Exception {
 		
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Deployment getDeployment(final String name,final String category) throws Exception {
+		final String respString = activitiGeneralJsonRestClientAccessor.query(DEPLOYMENT_PATH, Maps.newHashMap(new ImmutableMap.Builder<DeploymentQueryParameter, String>()
+				.put(DeploymentQueryParameter.tenantId, name+":"+category)
+				.build()));
+		
+		return deploymentMapToModel.apply(jacksonObjectMapper.readValue(respString, Map.class));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Deployment getDeployment(final String deploymentId) throws Exception {
+		final String respString = activitiGeneralJsonRestClientAccessor.get(DEPLOYMENT_PATH+deploymentId);
+		return deploymentMapToModel.apply(jacksonObjectMapper.readValue(respString, Map.class));
 	}
 
 	@Override
-	public Set<DeploymentResource> getDeploymentResource(String deploymentId)
-			throws Exception {
-		// TODO Auto-generated method stub
+	public void unDeployment(final String deploymentId) throws Exception {
+		activitiGeneralJsonRestClientAccessor.delete(DEPLOYMENT_PATH+deploymentId);
+	}
+
+	@Override
+	public Set<DeploymentResource> getDeploymentResource(final String deploymentId) throws Exception {
+		activitiGeneralJsonRestClientAccessor.get(DEPLOYMENT_PATH+deploymentId+"/resources");
 		return null;
 	}
 
 	@Override
-	public Page<Deployment> paginateDeployment(
-			Map<DeploymentQueryParameter, String> deploymentQueryParameters,
-			Integer pageOffset, Integer pageSize) {
-		// TODO Auto-generated method stub
+	public Page<Deployment> paginateDeployment(final Map<DeploymentQueryParameter, String> deploymentQueryParameters,
+			final Integer pageOffset, Integer pageSize) {
 		return null;
 	}
 
