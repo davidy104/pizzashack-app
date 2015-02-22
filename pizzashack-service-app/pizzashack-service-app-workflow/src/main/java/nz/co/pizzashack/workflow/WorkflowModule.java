@@ -1,6 +1,10 @@
 package nz.co.pizzashack.workflow;
 
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
+import nz.co.pizzashack.workflow.ds.GroupDS;
+import nz.co.pizzashack.workflow.ds.UserDS;
+import nz.co.pizzashack.workflow.ds.impl.GroupDSImpl;
+import nz.co.pizzashack.workflow.ds.impl.UserDSImpl;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -15,6 +19,8 @@ public class WorkflowModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(GeneralJsonRestClientAccessor.class).annotatedWith(Names.named("activitiGeneralJsonRestClientAccessor")).toProvider(ActivitiGeneralJsonRestClientAccessorProvider.class).asEagerSingleton();
+		bind(GroupDS.class).to(GroupDSImpl.class).asEagerSingleton();
+		bind(UserDS.class).to(UserDSImpl.class).asEagerSingleton();
 	}
 
 	public static class ActivitiGeneralJsonRestClientAccessorProvider implements Provider<GeneralJsonRestClientAccessor> {

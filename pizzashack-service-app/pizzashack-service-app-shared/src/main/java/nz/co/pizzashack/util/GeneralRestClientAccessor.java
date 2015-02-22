@@ -5,7 +5,6 @@ import static nz.co.pizzashack.util.JerseyClientUtil.getResponsePayload;
 
 import java.util.Map;
 
-import nz.co.pizzashack.AbstractEnumQueryParameter;
 import nz.co.pizzashack.ConflictException;
 import nz.co.pizzashack.NotFoundException;
 
@@ -31,20 +30,20 @@ public class GeneralRestClientAccessor {
 		this.hostUri = hostUri;
 	}
 
-	public String process(String path, final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters, final int expectedStatus,
+	public String process(String path, final Map<String, String> emunQueryParameters, final int expectedStatus,
 			final RestClientExecuteCallback restClientCallback, final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
 		checkArgument(!StringUtils.isEmpty(path), "path can not be null");
 		return this.doProcess(hostUri, path, emunQueryParameters, expectedStatus, restClientCallback, customErrorHandlers);
 	}
 
-	public String doProcess(final String resource, String path, final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters, final int expectedStatus,
+	public String doProcess(final String resource, String path, final Map<String, String> emunQueryParameters, final int expectedStatus,
 			final RestClientExecuteCallback restClientCallback, final RestClientCustomErrorHandler... customErrorHandlers) throws Exception {
 		checkArgument(!StringUtils.isEmpty(resource), "resource can not be null");
 		checkArgument(restClientCallback != null, "restClientCallback can not be null");
 		WebResource webResource = jerseyClient.resource(resource);
 		if (!MapUtils.isEmpty(emunQueryParameters)) {
-			for (Map.Entry<? extends AbstractEnumQueryParameter, String> entry : emunQueryParameters.entrySet()) {
-				webResource = webResource.queryParam(entry.getKey().name(), entry.getValue());
+			for (Map.Entry<String, String> entry : emunQueryParameters.entrySet()) {
+				webResource = webResource.queryParam(entry.getKey(), entry.getValue());
 			}
 		}
 		if (!StringUtils.isEmpty(path)) {
@@ -55,7 +54,7 @@ public class GeneralRestClientAccessor {
 		}
 
 		final ClientResponse clientResponse = restClientCallback.execute(webResource);
-		
+
 		final int statusCode = clientResponse.getStatusInfo().getStatusCode();
 		final String respStr = getResponsePayload(clientResponse);
 		if (statusCode != expectedStatus) {

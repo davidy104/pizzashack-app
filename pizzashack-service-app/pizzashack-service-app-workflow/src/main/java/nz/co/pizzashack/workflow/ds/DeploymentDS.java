@@ -7,6 +7,7 @@ import java.util.Set;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.workflow.Deployment;
 import nz.co.pizzashack.model.workflow.DeploymentResource;
+import nz.co.pizzashack.model.workflow.query.DeploymentQueryParameter;
 
 public interface DeploymentDS {
 	Deployment deployment(String name, String category, File uploadFile) throws Exception;

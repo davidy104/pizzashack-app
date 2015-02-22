@@ -1,4 +1,4 @@
-package nz.co.pizzashack.workflow.convert;
+package nz.co.pizzashack.workflow.convert.component;
 
 import java.util.Map;
 

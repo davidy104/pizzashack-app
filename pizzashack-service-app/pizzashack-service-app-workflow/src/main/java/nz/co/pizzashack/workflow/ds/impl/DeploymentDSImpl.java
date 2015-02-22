@@ -7,11 +7,11 @@ import java.util.Set;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.workflow.Deployment;
 import nz.co.pizzashack.model.workflow.DeploymentResource;
+import nz.co.pizzashack.model.workflow.query.DeploymentQueryParameter;
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
-import nz.co.pizzashack.workflow.convert.DeploymentMapToModel;
-import nz.co.pizzashack.workflow.convert.DeploymentResourceMapToModel;
+import nz.co.pizzashack.workflow.convert.component.DeploymentMapToModel;
+import nz.co.pizzashack.workflow.convert.component.DeploymentResourceMapToModel;
 import nz.co.pizzashack.workflow.ds.DeploymentDS;
-import nz.co.pizzashack.workflow.ds.DeploymentQueryParameter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

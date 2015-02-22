@@ -9,6 +9,7 @@ import nz.co.pizzashack.PagingAndSortingParameter;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.Maps;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -24,7 +25,7 @@ public class GeneralJsonRestClientAccessor extends GeneralRestClientAccessor {
 	}
 
 	public String query(final String path, final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters) throws Exception {
-		return process(path, emunQueryParameters, ClientResponse.Status.OK.getStatusCode(), new RestClientExecuteCallback() {
+		return process(path, enumQueryParamsMapConvert(emunQueryParameters), ClientResponse.Status.OK.getStatusCode(), new RestClientExecuteCallback() {
 			@Override
 			public ClientResponse execute(WebResource webResource) {
 				return webResource.accept(MediaType.APPLICATION_JSON)
@@ -61,14 +62,15 @@ public class GeneralJsonRestClientAccessor extends GeneralRestClientAccessor {
 		});
 	}
 
-	public String paginate(final String path, Map<AbstractEnumQueryParameter, String> emunQueryParameters, final Integer pageOffset, final Integer pageSize) throws Exception {
+	public String paginate(final String path, Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters, final Integer pageOffset, final Integer pageSize) throws Exception {
+		Map<String, String> paramMap = enumQueryParamsMapConvert(emunQueryParameters);
 		if (pageOffset != null) {
-			emunQueryParameters.put(PagingAndSortingParameter.start, String.valueOf(pageOffset));
+			paramMap.put(PagingAndSortingParameter.start.name(), String.valueOf(pageOffset));
 		}
 		if (pageSize != null) {
-			emunQueryParameters.put(PagingAndSortingParameter.size, String.valueOf(pageSize));
+			paramMap.put(PagingAndSortingParameter.size.name(), String.valueOf(pageSize));
 		}
-		return process(path, emunQueryParameters, ClientResponse.Status.OK.getStatusCode(), new RestClientExecuteCallback() {
+		return process(path, paramMap, ClientResponse.Status.OK.getStatusCode(), new RestClientExecuteCallback() {
 			@Override
 			public ClientResponse execute(final WebResource webResource) {
 				return webResource.accept(MediaType.APPLICATION_JSON)
@@ -116,5 +118,13 @@ public class GeneralJsonRestClientAccessor extends GeneralRestClientAccessor {
 						.type(MediaType.APPLICATION_JSON).put(ClientResponse.class, updateJsonBody);
 			}
 		});
+	}
+
+	private Map<String, String> enumQueryParamsMapConvert(final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters) {
+		Map<String, String> paramMap = Maps.<String, String> newHashMap();
+		for (Map.Entry<? extends AbstractEnumQueryParameter, String> entry : emunQueryParameters.entrySet()) {
+			paramMap.put(entry.getKey().name(), entry.getValue());
+		}
+		return paramMap;
 	}
 }

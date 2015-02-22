@@ -29,7 +29,7 @@ public class RepositoryModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		this.install(new ConverterModule());
+		this.install(new RepositoryConverterModule());
 		bind(GeneralJsonRestClientAccessor.class).annotatedWith(Names.named("neo4jGeneralJsonRestClientAccessor")).toProvider(Neo4jGeneralJsonRestClientAccessorProvider.class).asEagerSingleton();
 		bind(Neo4jRestAPIAccessor.class).asEagerSingleton();
 		bind(PizzashackRepository.class).to(PizzashackRepositoryImpl.class).asEagerSingleton();

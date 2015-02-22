@@ -25,7 +25,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
-public class ConverterModule extends AbstractModule {
+public class RepositoryConverterModule extends AbstractModule {
 
 	@Override
 	protected void configure() {

@@ -1,4 +1,4 @@
-package nz.co.pizzashack.workflow.ds;
+package nz.co.pizzashack.model.workflow.query;
 
 import nz.co.pizzashack.AbstractEnumQueryParameter;
 
