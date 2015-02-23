@@ -1,15 +1,12 @@
-package nz.co.pizzashack.workflow.convert;
+package nz.co.pizzashack.activiti.convert;
 
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-
-import java.util.Set
-
 import nz.co.pizzashack.OperationType
+import nz.co.pizzashack.activiti.convert.component.PageMapToModel;
+import nz.co.pizzashack.activiti.convert.component.UserMapToModel;
 import nz.co.pizzashack.model.Page
 import nz.co.pizzashack.model.workflow.User
-import nz.co.pizzashack.workflow.convert.component.PageMapToModel
-import nz.co.pizzashack.workflow.convert.component.UserMapToModel
 
 import com.google.inject.Inject
 
@@ -37,11 +34,11 @@ class UserConverter {
 		return jsonBuilder.toString()
 	}
 
-	User jsonToUser(final String jsonText){
+	User jsonToUserModel(final String jsonText){
 		return userMapToModel.apply((Map)jsonSlurper.parseText(jsonText))
 	}
 
-	Set<User> jsonToUsers(final String jsonText){
+	Set<User> jsonToUserModels(final String jsonText){
 		Set<User> users = []
 		Map resultMap =(Map)jsonSlurper.parseText(jsonText)
 		List resultList = resultMap['data']

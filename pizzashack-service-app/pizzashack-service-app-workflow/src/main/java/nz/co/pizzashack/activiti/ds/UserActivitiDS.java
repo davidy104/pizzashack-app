@@ -1,15 +1,15 @@
-package nz.co.pizzashack.workflow.ds;
+package nz.co.pizzashack.activiti.ds;
 
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 
 import nz.co.pizzashack.model.Page;
-import nz.co.pizzashack.model.User;
+import nz.co.pizzashack.model.workflow.User;
 import nz.co.pizzashack.model.workflow.query.UserQueryParameter;
 
-public interface UserDS {
-	User getUserById(String userId);
+public interface UserActivitiDS {
+	User getUserById(String userId) throws Exception;
 
 	Set<User> getUserByEmail(String email);
 

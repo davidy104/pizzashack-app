@@ -1,4 +1,4 @@
-package nz.co.pizzashack.workflow.convert.component;
+package nz.co.pizzashack.activiti.convert.component;
 
 import groovy.util.logging.Slf4j;
 

@@ -1,12 +1,12 @@
-package nz.co.pizzashack.workflow.convert
+package nz.co.pizzashack.activiti.convert
 
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import nz.co.pizzashack.OperationType
+import nz.co.pizzashack.activiti.convert.component.PageMapToModel;
 import nz.co.pizzashack.model.Page
 import nz.co.pizzashack.model.workflow.Group
 import nz.co.pizzashack.model.workflow.MemberShip
-import nz.co.pizzashack.workflow.convert.component.PageMapToModel
 
 import com.google.common.base.Function
 import com.google.inject.Inject

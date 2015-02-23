@@ -1,17 +1,17 @@
-package nz.co.pizzashack.workflow.ds.impl;
+package nz.co.pizzashack.activiti.ds.impl;
 
 import java.io.File;
 import java.util.Map;
 import java.util.Set;
 
+import nz.co.pizzashack.activiti.convert.component.DeploymentMapToModel;
+import nz.co.pizzashack.activiti.convert.component.DeploymentResourceMapToModel;
+import nz.co.pizzashack.activiti.ds.DeploymentActivitiDS;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.workflow.Deployment;
 import nz.co.pizzashack.model.workflow.DeploymentResource;
 import nz.co.pizzashack.model.workflow.query.DeploymentQueryParameter;
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
-import nz.co.pizzashack.workflow.convert.component.DeploymentMapToModel;
-import nz.co.pizzashack.workflow.convert.component.DeploymentResourceMapToModel;
-import nz.co.pizzashack.workflow.ds.DeploymentDS;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +22,9 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-public class DeploymentDSImpl implements DeploymentDS{
+public class DeploymentActivitiDSImpl implements DeploymentActivitiDS{
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentDSImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentActivitiDSImpl.class);
 
 	@Inject
 	@Named("activitiGeneralJsonRestClientAccessor")

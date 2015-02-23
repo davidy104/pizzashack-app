@@ -1,4 +1,4 @@
-package nz.co.pizzashack.workflow.ds.impl;
+package nz.co.pizzashack.activiti.ds.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 import nz.co.pizzashack.OperationType;
+import nz.co.pizzashack.activiti.convert.GroupConverter;
+import nz.co.pizzashack.activiti.ds.GroupActivitiDS;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.workflow.Group;
 import nz.co.pizzashack.model.workflow.MemberShip;
 import nz.co.pizzashack.model.workflow.query.GroupQueryParameter;
 import nz.co.pizzashack.util.GeneralJsonRestClientAccessor;
-import nz.co.pizzashack.workflow.convert.GroupConverter;
-import nz.co.pizzashack.workflow.ds.GroupDS;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-public class GroupDSImpl implements GroupDS {
+public class GroupActivitiDSImpl implements GroupActivitiDS {
 
 	@Inject
 	@Named("activitiGeneralJsonRestClientAccessor")
@@ -34,7 +34,7 @@ public class GroupDSImpl implements GroupDS {
 	@Inject
 	private GroupConverter groupConverter;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GroupDSImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GroupActivitiDSImpl.class);
 
 	@Override
 	public Group createGroup(final Group group) throws Exception {

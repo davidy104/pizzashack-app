@@ -1,4 +1,4 @@
-package nz.co.pizzashack.workflow.ds;
+package nz.co.pizzashack.activiti.ds;
 
 import java.io.File;
 import java.util.Map;
@@ -9,7 +9,7 @@ import nz.co.pizzashack.model.workflow.Deployment;
 import nz.co.pizzashack.model.workflow.DeploymentResource;
 import nz.co.pizzashack.model.workflow.query.DeploymentQueryParameter;
 
-public interface DeploymentDS {
+public interface DeploymentActivitiDS {
 	Deployment deployment(String name, String category, File uploadFile) throws Exception;
 	Deployment getDeployment(String name,String category) throws Exception;
 	Deployment getDeployment(String deploymentId) throws Exception;

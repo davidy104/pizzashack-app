@@ -1,4 +1,4 @@
-package nz.co.pizzashack.workflow.ds;
+package nz.co.pizzashack.activiti.ds;
 
 import java.util.Map;
 
@@ -7,7 +7,7 @@ import nz.co.pizzashack.model.workflow.Group;
 import nz.co.pizzashack.model.workflow.MemberShip;
 import nz.co.pizzashack.model.workflow.query.GroupQueryParameter;
 
-public interface GroupDS {
+public interface GroupActivitiDS {
 	Group createGroup(Group group) throws Exception;
 
 	Group getGroupById(String groupId) throws Exception;
