@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 
+import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.OperationType;
 import nz.co.pizzashack.activiti.convert.UserConverter;
 import nz.co.pizzashack.activiti.ds.UserActivitiDS;
@@ -44,9 +45,16 @@ public class UserActivitiDSImpl implements UserActivitiDS {
 	private UserConverter userConverter;
 
 	@Override
-	public User getUserById(final String userId) throws Exception {
+	public User getUserById(final String userId) throws NotFoundException {
 		checkArgument(!StringUtils.isEmpty(userId), "userId can not be null.");
-		return userConverter.jsonToUserModel(activitiGeneralJsonRestClientAccessor.get(USER_PATH + userId));
+		try {
+			return userConverter.jsonToUserModel(activitiGeneralJsonRestClientAccessor.get(USER_PATH + userId));
+		} catch (final Exception e) {
+			if (!(e instanceof NotFoundException)) {
+				throw new IllegalStateException(e);
+			}
+			throw new NotFoundException(e);
+		}
 	}
 
 	@Override

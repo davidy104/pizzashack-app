@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.Map;
 import java.util.Set;
 
+import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.OperationType;
 import nz.co.pizzashack.activiti.convert.GroupConverter;
 import nz.co.pizzashack.activiti.ds.GroupActivitiDS;
@@ -45,9 +46,16 @@ public class GroupActivitiDSImpl implements GroupActivitiDS {
 	}
 
 	@Override
-	public Group getGroupById(final String groupId) throws Exception {
+	public Group getGroupById(final String groupId) throws NotFoundException {
 		checkArgument(!StringUtils.isEmpty(groupId), "groupId can not be null.");
-		return groupConverter.jsonToGroupModel(activitiGeneralJsonRestClientAccessor.get(GROUP_PATH + groupId));
+		try {
+			return groupConverter.jsonToGroupModel(activitiGeneralJsonRestClientAccessor.get(GROUP_PATH + groupId));
+		} catch (final Exception e) {
+			if (!(e instanceof NotFoundException)) {
+				throw new IllegalStateException(e);
+			}
+			throw new NotFoundException(e);
+		}
 	}
 
 	@Override

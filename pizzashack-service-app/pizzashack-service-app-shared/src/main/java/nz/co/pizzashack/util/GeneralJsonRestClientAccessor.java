@@ -122,8 +122,10 @@ public class GeneralJsonRestClientAccessor extends GeneralRestClientAccessor {
 
 	private Map<String, String> enumQueryParamsMapConvert(final Map<? extends AbstractEnumQueryParameter, String> emunQueryParameters) {
 		Map<String, String> paramMap = Maps.<String, String> newHashMap();
-		for (Map.Entry<? extends AbstractEnumQueryParameter, String> entry : emunQueryParameters.entrySet()) {
-			paramMap.put(entry.getKey().name(), entry.getValue());
+		if (emunQueryParameters != null) {
+			for (Map.Entry<? extends AbstractEnumQueryParameter, String> entry : emunQueryParameters.entrySet()) {
+				paramMap.put(entry.getKey().name(), entry.getValue());
+			}
 		}
 		return paramMap;
 	}

@@ -3,7 +3,7 @@ package nz.co.pizzashack.activiti.convert
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import nz.co.pizzashack.OperationType
-import nz.co.pizzashack.activiti.convert.component.PageMapToModel;
+import nz.co.pizzashack.activiti.convert.component.PageMapToModel
 import nz.co.pizzashack.model.Page
 import nz.co.pizzashack.model.workflow.Group
 import nz.co.pizzashack.model.workflow.MemberShip
