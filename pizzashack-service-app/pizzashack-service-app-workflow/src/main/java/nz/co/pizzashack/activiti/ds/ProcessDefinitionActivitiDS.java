@@ -18,10 +18,8 @@ public interface ProcessDefinitionActivitiDS {
 	ProcessDefinition getProcessDefinitionByProcessDefinitionId(String processDefinitionId) throws Exception;
 
 	ProcessDefinition updateCategory(String processDefinitionId, String category) throws Exception;
-
-	ProcessDefinition suspendProcessDefinition(String processDefinitionId, boolean includeProcessInstances, Date effectiveDate) throws Exception;
-
-	ProcessDefinition activeProcessDefinition(String processDefinitionId, boolean includeProcessInstances, Date effectiveDate) throws Exception;
+	
+	ProcessDefinition actionProcess(ProcessDefinitionActionType actionType, String processDefinitionId, boolean includeProcessInstances, Date effectiveDate)throws Exception;
 
 	Set<Identity> getAllIdentities(String processDefinitionId) throws Exception;
 

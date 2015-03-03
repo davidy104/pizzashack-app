@@ -8,6 +8,7 @@ import java.util.Set;
 
 import nz.co.pizzashack.NotFoundException;
 import nz.co.pizzashack.activiti.convert.ProcessDefinitionConverter;
+import nz.co.pizzashack.activiti.ds.ProcessDefinitionActionType;
 import nz.co.pizzashack.activiti.ds.ProcessDefinitionActivitiDS;
 import nz.co.pizzashack.model.Page;
 import nz.co.pizzashack.model.workflow.Deployment;
@@ -60,12 +61,8 @@ public class ProcessDefinitionActivitiDSImpl implements ProcessDefinitionActivit
 	}
 
 	@Override
-	public ProcessDefinition suspendProcessDefinition(String processDefinitionId, boolean includeProcessInstances, Date effectiveDate) throws Exception {
-		return null;
-	}
-
-	@Override
-	public ProcessDefinition activeProcessDefinition(String processDefinitionId, boolean includeProcessInstances, Date effectiveDate) throws Exception {
+	public ProcessDefinition actionProcess(ProcessDefinitionActionType actionType, String processDefinitionId, boolean includeProcessInstances, Date effectiveDate)
+			throws Exception {
 		return null;
 	}
 
