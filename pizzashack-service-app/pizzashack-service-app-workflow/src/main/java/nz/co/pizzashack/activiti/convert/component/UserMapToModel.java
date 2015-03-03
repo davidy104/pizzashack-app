@@ -1,14 +1,11 @@
 package nz.co.pizzashack.activiti.convert.component;
 
-import groovy.util.logging.Slf4j;
-
 import java.util.Map;
 
 import nz.co.pizzashack.model.workflow.User;
 
 import com.google.common.base.Function;
 
-@Slf4j
 public class UserMapToModel implements Function<Map<String, String>, User> {
 
 	@Override

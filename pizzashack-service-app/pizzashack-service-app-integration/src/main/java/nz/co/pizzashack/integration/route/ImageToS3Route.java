@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 
@@ -25,11 +26,11 @@ public class ImageToS3Route extends RouteBuilder {
 				.maximumRedeliveries(2)
 				.redeliveryDelay(1000)
 				.handled(true)
-				.to("log:errors?level=ERROR&showAll=true&multiline=true");
+				.to("log:ImageProcessTimeout?level=ERROR&showAll=true&multiline=true");
 
 		onException(Exception.class)
 				.handled(true)
-				.to("log:errors?level=ERROR&showAll=true&multiline=true");
+				.to("log:ImageProcessGeneralException?level=ERROR&showAll=true&multiline=true");
 
 		from("direct:ImageToS3")
 				.routeId("ImageProcess")
@@ -41,6 +42,8 @@ public class ImageToS3Route extends RouteBuilder {
 				.end();
 
 		from("direct:pushImage")
+				.routeId("PushImage")
+				.log(LoggingLevel.INFO, "PushImageLog", "Before Push Image - ${body}")
 				.process(new Processor() {
 					@Override
 					public void process(Exchange exchange) throws Exception {

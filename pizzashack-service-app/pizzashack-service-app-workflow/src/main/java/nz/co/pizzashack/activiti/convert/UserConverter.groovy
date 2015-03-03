@@ -3,11 +3,11 @@ package nz.co.pizzashack.activiti.convert;
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import nz.co.pizzashack.OperationType
-import nz.co.pizzashack.activiti.convert.component.PageMapToModel;
-import nz.co.pizzashack.activiti.convert.component.UserMapToModel;
+import nz.co.pizzashack.activiti.convert.component.PageMapToModel
 import nz.co.pizzashack.model.Page
 import nz.co.pizzashack.model.workflow.User
 
+import com.google.common.base.Function
 import com.google.inject.Inject
 
 class UserConverter {
@@ -19,7 +19,7 @@ class UserConverter {
 	JsonBuilder jsonBuilder
 
 	@Inject
-	UserMapToModel userMapToModel
+	Function<Map<String, String>, User> userMapToModelConverter
 
 	String userModelToJson(final User user,final OperationType operationType){
 		jsonBuilder{
@@ -35,7 +35,7 @@ class UserConverter {
 	}
 
 	User jsonToUserModel(final String jsonText){
-		return userMapToModel.apply((Map)jsonSlurper.parseText(jsonText))
+		return userMapToModelConverter.apply((Map)jsonSlurper.parseText(jsonText))
 	}
 
 	Set<User> jsonToUserModels(final String jsonText){
@@ -44,7 +44,7 @@ class UserConverter {
 		List resultList = resultMap['data']
 		if(resultList){
 			resultList.each {
-				users << userMapToModel.apply((Map)it)
+				users << userMapToModelConverter.apply((Map)it)
 			}
 		}
 		return users
@@ -56,7 +56,7 @@ class UserConverter {
 		List resultList = resultMap['data']
 		if(resultList){
 			resultList.each {
-				page.content << userMapToModel.apply((Map)it)
+				page.content << userMapToModelConverter.apply((Map)it)
 			}
 		}
 		return page
