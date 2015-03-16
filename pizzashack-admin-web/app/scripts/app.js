@@ -43,6 +43,10 @@ angular
                 },
         controller: 'PizzaDetailCtrl'
       })
+      .when('/about', {
+        templateUrl: 'views/about.html',
+        controller: 'AboutCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

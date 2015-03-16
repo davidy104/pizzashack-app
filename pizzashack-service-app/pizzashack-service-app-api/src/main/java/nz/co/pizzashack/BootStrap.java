@@ -22,11 +22,6 @@ import com.google.inject.Module;
 import com.sun.jdi.Bootstrap;
 import com.sun.jersey.api.client.Client;
 
-/**
- * 
- * @author Davidy
- *
- */
 public class BootStrap extends GuiceResteasyBootstrapServletContextListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Bootstrap.class);
 
@@ -47,12 +42,7 @@ public class BootStrap extends GuiceResteasyBootstrapServletContextListener {
 	@Override
 	protected List<? extends Module> getModules(final ServletContext context) {
 		JvmAgent.agentmain(null);
-		return Arrays.asList(new ConfigurationServiceModule(),
-				new SharedModule(),
-				new IntegrationModule(),
-				new RepositoryModule(),
-				new ServiceModule(),
-				new ResourceModule());
+		return Arrays.asList(new ConfigurationServiceModule(), new SharedModule(), new IntegrationModule(), new RepositoryModule(), new ServiceModule(), new ResourceModule());
 	}
 
 	@Override

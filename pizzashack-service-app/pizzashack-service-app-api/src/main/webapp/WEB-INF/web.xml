@@ -1,8 +1,8 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-<web-app>
 	<display-name>Pizzashack</display-name>
 	<listener>
 		<listener-class>nz.co.pizzashack.BootStrap</listener-class>
@@ -19,15 +19,6 @@
 		<url-pattern>/camel/*</url-pattern>
 	</servlet-mapping>
 
-	<filter>
-		<filter-name>CORS Filter</filter-name>
-		<filter-class>nz.co.pizzashack.CorsFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>CORS Filter</filter-name>
-		<servlet-name>Resteasy</servlet-name>
-	</filter-mapping>
-
 	<servlet>
 		<servlet-name>Resteasy</servlet-name>
 		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
@@ -37,4 +28,13 @@
 		<servlet-name>Resteasy</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
+
+	<filter>
+		<filter-name>CORS Filter</filter-name>
+		<filter-class>nz.co.pizzashack.CorsFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CORS Filter</filter-name>
+		<servlet-name>Resteasy</servlet-name>
+	</filter-mapping>
 </web-app>
